@@ -37,6 +37,12 @@
 		/>
 		<input class="input input-bordered w-full mb-2" type="date" bind:value={dayDate} />
 
-		<button on:click={addDay} class="btn btn-primary w-full">Save</button>
+		<div class="w-full text-right">
+			<button class="btn btn-ghost">Cancel</button>
+			<button on:click={addDay} class="btn btn-primary">Save</button>
+		</div>
+	</form>
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
 	</form>
 </dialog>
