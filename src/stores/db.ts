@@ -1,7 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 
 export interface Day {
-  date: Date;
+  date: string;
   temperature: number;
 }
 

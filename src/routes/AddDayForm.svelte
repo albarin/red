@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
 	import dayjs from 'dayjs';
 	import { db } from '../stores/db';
 
-	let today = dayjs().format('YYYY-MM-DD');
+	let defaultDay = dayjs().format('YYYY-MM-DD');
+	let defaultTemperature = 36.0;
 
-	let dayDate = today;
-	let dayTemperature;
+	let dayDate = defaultDay;
+	let dayTemperature: number = defaultTemperature;
 
 	async function addDay() {
 		try {
@@ -14,29 +15,27 @@
 				temperature: dayTemperature
 			});
 
-			dayDate = '';
-			dayTemperature = today;
+			dayDate = defaultDay;
+			dayTemperature = defaultTemperature;
 		} catch (error) {
 			console.log(`Failed to add ${dayDate}-${dayTemperature}: ${error}`);
 		}
 	}
 </script>
 
-<div class="bg-slate-300 p-2">
-	<input
-		class="mb-2 p-2 border-gray-200 border rounded-lg w-full"
-		type="number"
-		step="0.01"
-		min="30"
-		max="40"
-		placeholder="Temperature"
-		bind:value={dayTemperature}
-	/>
-	<input
-		class="mb-2 p-2 border-gray-200 border rounded-lg w-full"
-		type="date"
-		bind:value={dayDate}
-	/>
+<dialog id="add_day_modal" class="modal modal-bottom sm:modal-middle">
+	<form method="dialog" class="modal-box">
+		<input
+			class="input input-bordered w-full mb-2"
+			type="number"
+			step="0.01"
+			min="30"
+			max="40"
+			placeholder="Temperature"
+			bind:value={dayTemperature}
+		/>
+		<input class="input input-bordered w-full mb-2" type="date" bind:value={dayDate} />
 
-	<button on:click={addDay} class="bg-blue-500 text-white rounded-lg px-3 py-1">Save</button>
-</div>
+		<button on:click={addDay} class="btn btn-primary w-full">Save</button>
+	</form>
+</dialog>

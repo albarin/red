@@ -8,11 +8,13 @@
 </script>
 
 <div>
+	<button class="btn" onclick="add_day_modal.showModal()">Add day</button>
+
 	<AddDayForm />
 
 	<ul>
 		{#if $days}
-			{#each $days as day (day.id)}
+			{#each $days as day}
 				<li>{day.date}, {day.temperature}</li>
 			{/each}
 		{/if}
