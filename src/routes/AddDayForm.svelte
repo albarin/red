@@ -1,8 +1,9 @@
 <script lang="ts">
-	import dayjs from 'dayjs';
+	import { DateTime } from 'luxon';
+
 	import { db } from '../stores/db';
 
-	let defaultDay = dayjs().format('YYYY-MM-DD');
+	let defaultDay = DateTime.now().toFormat('yyyy-MM-dd');
 	let defaultTemperature = 36.0;
 
 	let dayDate = defaultDay;

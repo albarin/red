@@ -1,5 +1,6 @@
 <script>
 	import AddDayForm from './AddDayForm.svelte';
+	import Calendar from './Calendar.svelte';
 
 	import { db } from '../stores/db';
 	import { liveQuery } from 'dexie';
@@ -8,15 +9,17 @@
 </script>
 
 <div>
-	<button class="btn" onclick="add_day_modal.showModal()">Add day</button>
+	<Calendar />
 
 	<AddDayForm />
 
-	<ul>
+	<button class="btn" onclick="add_day_modal.showModal()">Add day</button>
+
+	<!-- <ul>
 		{#if $days}
 			{#each $days as day}
 				<li>{day.date}, {day.temperature}</li>
 			{/each}
 		{/if}
-	</ul>
+	</ul> -->
 </div>
