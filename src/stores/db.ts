@@ -6,13 +6,20 @@ export interface Day {
 }
 
 export class RedDB extends Dexie {
-  days!: Table<Day>; 
+  days!: Table<Day>;
 
   constructor() {
     super('reddb');
     this.version(1).stores({
       days: 'date, temperature'
     });
+  }
+
+  async getDaysBetween(start: string, end: string) {
+    return await this.days
+      .where('date')
+      .between(start, end)
+      .toArray();
   }
 }
 

@@ -1,25 +1,24 @@
 <script lang="ts">
+	import { format } from '$lib/utils/date';
 	import { DateTime } from 'luxon';
 
 	import { db } from '../stores/db';
 
-	let defaultDay = DateTime.now().toFormat('yyyy-MM-dd');
-	let defaultTemperature = 36.0;
+	let defaultDay = format(DateTime.now());
 
-	let dayDate = defaultDay;
-	let dayTemperature: number = defaultTemperature;
+	export let date: string = defaultDay;
+	export let temperature: number;
 
 	async function addDay() {
 		try {
-			const id = await db.days.add({
-				date: dayDate,
-				temperature: dayTemperature
+			await db.days.put({
+				date: date,
+				temperature: temperature
 			});
 
-			dayDate = defaultDay;
-			dayTemperature = defaultTemperature;
+			date = defaultDay;
 		} catch (error) {
-			console.log(`Failed to add ${dayDate}-${dayTemperature}: ${error}`);
+			console.log(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 	}
 </script>
@@ -32,10 +31,10 @@
 			step="0.01"
 			min="30"
 			max="40"
-			placeholder="Temperature"
-			bind:value={dayTemperature}
+			placeholder="36"
+			bind:value={temperature}
 		/>
-		<input class="input input-bordered w-full mb-2" type="date" bind:value={dayDate} />
+		<input class="input input-bordered w-full mb-2" type="date" bind:value={date} />
 
 		<div class="w-full text-right">
 			<button class="btn btn-ghost">Cancel</button>

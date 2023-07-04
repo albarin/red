@@ -16,3 +16,14 @@ export const getCurrentMonthCalendar = () => {
 
   return getMonthCalendarByWeek(now.year, now.month);
 }
+
+export const format = (date: DateTime | Interval): string => {
+  if (date instanceof Interval) {
+    if (date.start) {
+      return date.start?.toFormat('yyyy-MM-dd');
+    }
+    return '';
+  }
+
+  return date.toFormat('yyyy-MM-dd');
+}
