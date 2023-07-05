@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { countDecimals } from '$lib/utils/number';
 	import { db } from '../stores/db';
 	import { DateTime } from 'luxon';
 
 	export let date: string;
-	export let temperature: number;
-
+	export let temperature: number | null;
+	console.log({ date });
 	let dateError: string;
 	let temperatureError: string;
 
@@ -26,6 +27,14 @@
 			temperatureError = 'Temperature is required';
 		}
 
+		if (temperature && (temperature < 30 || temperature > 40)) {
+			temperatureError = 'Temperature must be between 30 and 40';
+		}
+
+		if (temperature && countDecimals(temperature) > 2) {
+			temperatureError = 'Temperature must have at most 2 decimals';
+		}
+
 		if (dateError || temperatureError) {
 			return;
 		}
@@ -35,6 +44,9 @@
 		} catch (error) {
 			console.log(`Failed to add ${date}-${temperature}: ${error}`);
 		}
+
+		date = '';
+		temperature = null;
 
 		window.add_day_modal.close();
 	};
@@ -52,6 +64,8 @@
 	};
 
 	const handleClose = () => {
+		temperature = null;
+
 		dateError = '';
 		temperatureError = '';
 	};
@@ -64,8 +78,6 @@
 			class:input-error={temperatureError}
 			type="number"
 			step="0.01"
-			min="30"
-			max="40"
 			placeholder="36"
 			bind:value={temperature}
 		/>
