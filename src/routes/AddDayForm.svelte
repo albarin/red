@@ -84,9 +84,11 @@
 		{/if}
 
 		<div class="flex mt-2">
-			<form on:submit={handleDelete}>
-				<button class="btn btn-error" type="submit">Delete</button>
-			</form>
+			{#if temperature}
+				<form on:submit={handleDelete}>
+					<button class="btn btn-error" type="submit">Delete</button>
+				</form>
+			{/if}
 
 			<div class="w-full text-right">
 				<button class="btn btn-ghost" onclick="add_day_modal.close()">Cancel</button>
