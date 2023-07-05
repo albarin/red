@@ -5,11 +5,12 @@
 
 	export let date: string;
 	export let temperature: number | null;
-	console.log({ date });
+
 	let dateError: string;
 	let temperatureError: string;
 
 	const handleSubmit = async (e: Event) => {
+		console.log('submit');
 		e.preventDefault();
 
 		dateError = '';
@@ -52,6 +53,7 @@
 	};
 
 	const handleDelete = async (e: Event) => {
+		console.log('delete');
 		e.preventDefault();
 
 		try {
@@ -64,15 +66,19 @@
 	};
 
 	const handleClose = () => {
+		console.log('close');
+
 		temperature = null;
 
 		dateError = '';
 		temperatureError = '';
+
+		window.add_day_modal.close();
 	};
 </script>
 
 <dialog id="add_day_modal" class="modal modal-bottom sm:modal-middle" on:close={handleClose}>
-	<form class="modal-box" on:submit={handleSubmit}>
+	<div class="modal-box">
 		<input
 			class="input input-bordered w-full"
 			class:input-error={temperatureError}
@@ -97,17 +103,16 @@
 
 		<div class="flex mt-2">
 			{#if temperature}
-				<form on:submit={handleDelete}>
-					<button class="btn btn-error" type="submit">Delete</button>
-				</form>
+				<button class="btn btn-error" on:click={handleDelete}>Delete</button>
 			{/if}
 
 			<div class="w-full text-right">
-				<button class="btn btn-ghost" onclick="add_day_modal.close()">Cancel</button>
-				<button class="btn btn-primary" type="submit">Save</button>
+				<button class="btn btn-ghost" on:click={handleClose}>Cancel</button>
+				<button class="btn btn-primary" on:click={handleSubmit}>Save</button>
 			</div>
 		</div>
-	</form>
+	</div>
+
 	<form method="dialog" class="modal-backdrop">
 		<button>close</button>
 	</form>
