@@ -16,7 +16,6 @@
 	let isBleeding: boolean | null = false;
 
 	$: isBleeding = flow > 0;
-	$: console.log({ date, temperature, flow, isBleeding });
 
 	$: {
 		if (addDayDialog && isOpen) {
@@ -33,9 +32,7 @@
 		}
 
 		try {
-			console.log('handleSubmit', date, temperature, flow);
 			if (!(date && temperature)) return;
-			console.log('handleSubmit');
 
 			await db.days.put({
 				date,
@@ -43,7 +40,7 @@
 				...(isBleeding && { flow: flow })
 			});
 		} catch (error) {
-			console.log(`Failed to add ${date}-${temperature}: ${error}`);
+			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
 		temperature = null;
@@ -55,7 +52,7 @@
 		try {
 			await db.days.delete(date);
 		} catch (error) {
-			console.log(`Failed to delete ${date}: ${error}`);
+			console.error(`Failed to delete ${date}: ${error}`);
 		}
 
 		dispatch('close');
