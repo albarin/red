@@ -11,8 +11,7 @@
 	const calendar = getCurrentMonthCalendar();
 
 	let isAddDayModalOpen = false;
-	let selectedDate: string | null;
-	let selectedTemperature: number | null;
+	let selectedDay: Day | null;
 
 	$: days = liveQuery(async () => {
 		const days = await db.getDaysBetween(format(now.startOf('month')), format(now.endOf('month')));
@@ -27,17 +26,19 @@
 	const openAddDayModal = (day: Interval) => () => {
 		if (day?.start && day.start > DateTime.now()) return;
 
-		selectedDate = format(day);
-		selectedTemperature = $days[selectedDate]?.temperature;
+		selectedDay = $days[format(day)];
+		if (!selectedDay) {
+			selectedDay = {
+				date: format(day)
+			};
+		}
 
 		isAddDayModalOpen = true;
 	};
 
 	const closeAddDayModal = () => {
 		isAddDayModalOpen = false;
-
-		selectedDate = null;
-		selectedTemperature = null;
+		selectedDay = null;
 	};
 </script>
 
@@ -59,9 +60,4 @@
 	{/each}
 </div>
 
-<AddDayForm
-	date={selectedDate}
-	temperature={selectedTemperature}
-	isOpen={isAddDayModalOpen}
-	on:close={closeAddDayModal}
-/>
+<AddDayForm {...selectedDay} isOpen={isAddDayModalOpen} on:close={closeAddDayModal} />
