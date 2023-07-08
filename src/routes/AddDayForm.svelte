@@ -6,24 +6,25 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let isOpen = false;
-	export let date: string | null = null;
-	export let temperature: number | null = null;
-	export let flow: number = 0;
+	export let date: string;
+	export let temperature: number | undefined = undefined;
+	export let flow: number | undefined = undefined;
 
 	let addDayDialog: HTMLDialogElement;
-	let temperatureError: string | null;
+	let temperatureError: string | undefined;
 	let isBleeding: boolean | null = false;
 
-	$: isBleeding = flow > 0;
-
 	$: {
-		if (addDayDialog && isOpen) {
-			addDayDialog.showModal();
-		} else if (addDayDialog) {
-			addDayDialog.close();
+		if (isBleeding && !flow) {
+			flow = 2; //set default flow to medium
+		}
+
+		if (flow) {
+			isBleeding = true;
 		}
 	}
+
+	$: addDayDialog?.showModal();
 
 	const handleSubmit = async () => {
 		temperatureError = validateTemperature(temperature);
@@ -32,8 +33,6 @@
 		}
 
 		try {
-			if (!(date && temperature)) return;
-
 			await db.days.put({
 				date,
 				temperature,
@@ -42,8 +41,6 @@
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
-
-		temperature = null;
 
 		dispatch('close');
 	};
@@ -59,9 +56,6 @@
 	};
 
 	const handleClose = () => {
-		temperature = null;
-		flow = 0;
-
 		temperatureError = '';
 
 		dispatch('close');
@@ -116,7 +110,7 @@
 		</div>
 
 		<div class="flex mt-4">
-			{#if temperature}
+			{#if temperature || flow}
 				<button class="btn btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 			{/if}
 

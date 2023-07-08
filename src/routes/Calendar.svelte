@@ -19,8 +19,24 @@
 		return arrayToObject(days, 'date');
 	});
 
+	$: console.table($days);
+
+	const dayHasPeriod = (days: Day[], day: Interval) => {
+		return (
+			days &&
+			format(day) in days &&
+			(days[format(day)] as unknown as boolean) &&
+			days[format(day)].flow
+		);
+	};
+
 	const dayHasTemperature = (days: Day[], day: Interval) => {
-		return days && format(day) in days && (days[format(day)] as unknown as boolean);
+		return (
+			days &&
+			format(day) in days &&
+			(days[format(day)] as unknown as boolean) &&
+			days[format(day)].temperature
+		);
 	};
 
 	const openAddDayModal = (day: Interval) => () => {
@@ -49,6 +65,7 @@
 				on:click|preventDefault={openAddDayModal(day)}
 				class="badge badge-lg py-5 border-none font-bold"
 				class:badge-primary={dayHasTemperature($days, day)}
+				class:badge-error={dayHasPeriod($days, day)}
 				class:text-base-300={day.start > now}
 				class:cursor-default={day.start > now}
 				class:px-4={day.start?.day < 10}
@@ -60,4 +77,6 @@
 	{/each}
 </div>
 
-<AddDayForm {...selectedDay} isOpen={isAddDayModalOpen} on:close={closeAddDayModal} />
+{#if isAddDayModalOpen}
+	<AddDayForm {...selectedDay} on:close={closeAddDayModal} />
+{/if}
