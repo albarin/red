@@ -4,13 +4,15 @@
 
 	import { format, getCurrentMonthCalendar } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import { db } from '../stores/db';
+	import { db, type Day } from '../stores/db';
 	import AddDayForm from './AddDayForm.svelte';
 
-	let selectedDate: string;
-	let selectedTemperature: number;
-
 	const now = DateTime.now();
+	const calendar = getCurrentMonthCalendar();
+
+	let isAddDayModalOpen = false;
+	let selectedDate: string | null;
+	let selectedTemperature: number | null;
 
 	$: days = liveQuery(async () => {
 		const days = await db.getDaysBetween(format(now.startOf('month')), format(now.endOf('month')));
@@ -18,27 +20,32 @@
 		return arrayToObject(days, 'date');
 	});
 
-	const dayHasTemperature = (days, day: Interval) => {
-		return days && days[format(day)];
+	const dayHasTemperature = (days: Day[], day: Interval) => {
+		return days && format(day) in days && (days[format(day)] as unknown as boolean);
 	};
 
 	const openAddDayModal = (day: Interval) => () => {
-		if (day.start > now) return;
+		if (day?.start && day.start > DateTime.now()) return;
 
 		selectedDate = format(day);
 		selectedTemperature = $days[selectedDate]?.temperature;
 
-		window.add_day_modal.showModal();
+		isAddDayModalOpen = true;
 	};
 
-	const calendar = getCurrentMonthCalendar();
+	const closeAddDayModal = () => {
+		isAddDayModalOpen = false;
+
+		selectedDate = null;
+		selectedTemperature = null;
+	};
 </script>
 
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
 	{#each calendar as week}
 		{#each week as day}
 			<button
-				on:click={openAddDayModal(day)}
+				on:click|preventDefault={openAddDayModal(day)}
 				class="badge badge-lg py-5 border-none font-bold"
 				class:badge-primary={dayHasTemperature($days, day)}
 				class:text-base-300={day.start > now}
@@ -52,4 +59,9 @@
 	{/each}
 </div>
 
-<AddDayForm date={selectedDate} temperature={selectedTemperature} />
+<AddDayForm
+	date={selectedDate}
+	temperature={selectedTemperature}
+	isOpen={isAddDayModalOpen}
+	on:close={closeAddDayModal}
+/>

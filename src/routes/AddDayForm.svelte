@@ -1,60 +1,48 @@
 <script lang="ts">
-	import { countDecimals } from '$lib/utils/number';
-	import { db } from '../stores/db';
-	import { DateTime } from 'luxon';
+	import { createEventDispatcher } from 'svelte';
 
-	export let date: string;
+	import { validateTemperature } from '$lib/utils/validation';
+	import { db } from '../stores/db';
+
+	const dispatch = createEventDispatcher();
+
+	export let isOpen = false;
+	export let date: string | null;
 	export let temperature: number | null;
 
-	let dateError: string;
-	let temperatureError: string;
+	let temperatureError: string | null;
+	let addDayDialog: HTMLDialogElement;
+
+	$: {
+		if (addDayDialog && isOpen) {
+			addDayDialog.showModal();
+		} else if (addDayDialog) {
+			addDayDialog.close();
+		}
+	}
 
 	const handleSubmit = async (e: Event) => {
 		console.log('submit');
-		e.preventDefault();
 
-		dateError = '';
-		temperatureError = '';
-
-		if (!date) {
-			dateError = 'Date is required';
-		}
-
-		if (DateTime.fromISO(date) > DateTime.now()) {
-			dateError = 'Date cannot be in the future';
-		}
-
-		if (!temperature) {
-			temperatureError = 'Temperature is required';
-		}
-
-		if (temperature && (temperature < 30 || temperature > 40)) {
-			temperatureError = 'Temperature must be between 30 and 40';
-		}
-
-		if (temperature && countDecimals(temperature) > 2) {
-			temperatureError = 'Temperature must have at most 2 decimals';
-		}
-
-		if (dateError || temperatureError) {
+		temperatureError = validateTemperature(temperature);
+		if (temperatureError) {
 			return;
 		}
 
 		try {
+			if (!(date && temperature)) return;
 			await db.days.put({ date, temperature });
 		} catch (error) {
 			console.log(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
-		date = '';
 		temperature = null;
 
-		window.add_day_modal.close();
+		dispatch('close');
 	};
 
 	const handleDelete = async (e: Event) => {
-		console.log('delete');
-		e.preventDefault();
+		console.log('delete', date);
 
 		try {
 			await db.days.delete(date);
@@ -62,22 +50,24 @@
 			console.log(`Failed to delete ${date}: ${error}`);
 		}
 
-		window.add_day_modal.close();
+		dispatch('close');
 	};
 
 	const handleClose = () => {
 		console.log('close');
 
 		temperature = null;
-
-		dateError = '';
 		temperatureError = '';
 
-		window.add_day_modal.close();
+		dispatch('close');
 	};
 </script>
 
-<dialog id="add_day_modal" class="modal modal-bottom sm:modal-middle" on:close={handleClose}>
+<dialog
+	bind:this={addDayDialog}
+	class="modal modal-bottom sm:modal-middle"
+	on:close|preventDefault={handleClose}
+>
 	<div class="modal-box">
 		<input
 			class="input input-bordered w-full"
@@ -91,24 +81,14 @@
 			<span class="mb-2 text-sm text-error">{temperatureError}</span>
 		{/if}
 
-		<input
-			class="input input-bordered w-full mt-2"
-			class:input-error={dateError}
-			type="date"
-			bind:value={date}
-		/>
-		{#if dateError}
-			<span class="mb-2 text-sm text-error">{dateError}</span>
-		{/if}
-
-		<div class="flex mt-2">
+		<div class="flex mt-4">
 			{#if temperature}
-				<button class="btn btn-error" on:click={handleDelete}>Delete</button>
+				<button class="btn btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 			{/if}
 
 			<div class="w-full text-right">
-				<button class="btn btn-ghost" on:click={handleClose}>Cancel</button>
-				<button class="btn btn-primary" on:click={handleSubmit}>Save</button>
+				<button class="btn btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
+				<button class="btn btn-primary" on:click|preventDefault={handleSubmit}>Save</button>
 			</div>
 		</div>
 	</div>
