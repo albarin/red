@@ -21,9 +21,7 @@
 		}
 	}
 
-	const handleSubmit = async (e: Event) => {
-		console.log('submit');
-
+	const handleSubmit = async () => {
 		temperatureError = validateTemperature(temperature);
 		if (temperatureError) {
 			return;
@@ -41,9 +39,7 @@
 		dispatch('close');
 	};
 
-	const handleDelete = async (e: Event) => {
-		console.log('delete', date);
-
+	const handleDelete = async () => {
 		try {
 			await db.days.delete(date);
 		} catch (error) {
@@ -54,8 +50,6 @@
 	};
 
 	const handleClose = () => {
-		console.log('close');
-
 		temperature = null;
 		temperatureError = '';
 
