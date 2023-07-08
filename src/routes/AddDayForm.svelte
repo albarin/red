@@ -70,7 +70,8 @@
 	<div class="modal-box text-center">
 		<div class="mb-4">
 			<input
-				class="input input-bordered w-full"
+				style="width:110px"
+				class="input input-ghost text-center text-3xl focus:outline-none"
 				class:input-error={temperatureError}
 				type="number"
 				step="0.01"
