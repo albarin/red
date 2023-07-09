@@ -14,23 +14,23 @@
 	import AddDayForm from './AddDayForm.svelte';
 
 	const now = DateTime.now();
-	let currentDate = DateTime.now();
+	let currentMonth = DateTime.now();
+	let currentMonthIsNow = true;
 
-	$: calendar = getMonthCalendarByWeek(currentDate);
+	$: calendar = getMonthCalendarByWeek(currentMonth);
+	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 
 	let isAddDayModalOpen = false;
 	let selectedDay: Day | null;
 
 	$: days = liveQuery(async () => {
 		const days = await db.getDaysBetween(
-			format(currentDate.startOf('month')),
-			format(currentDate.endOf('month'))
+			format(currentMonth.startOf('month')),
+			format(currentMonth.endOf('month'))
 		);
 
 		return arrayToObject(days, 'date');
 	});
-
-	$: console.table($days);
 
 	const dayFlow = (days: Day[], day: Interval) => {
 		return days && format(day) in $days && $days[format(day)].flow;
@@ -73,19 +73,27 @@
 	};
 
 	const handleBack = (interval: string) => () => {
-		currentDate = currentDate.minus({ [interval]: 1 });
+		currentMonth = currentMonth.minus({ [interval]: 1 });
 	};
 
 	const handleForward = (interval: string) => () => {
-		currentDate = currentDate.plus({ [interval]: 1 });
+		currentMonth = currentMonth.plus({ [interval]: 1 });
+	};
+
+	const goToToday = () => () => {
+		currentMonth = now;
 	};
 </script>
+
+{#if !currentMonthIsNow}
+	<button class="btn absolute bottom-4 right-4" on:click={goToToday()}>Today</button>
+{/if}
 
 <div class="bg-gray-200 rounded-md flex justify-between py-2 px-2 mb-2">
 	<ArrowLeftDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('year')} />
 	<ArrowLeftSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('month')} />
 
-	<h1 class="text-center font-bold">{currentDate.toFormat('MMMM')} {currentDate.year}</h1>
+	<h1 class="text-center font-bold">{currentMonth.toFormat('MMMM')} {currentMonth.year}</h1>
 
 	<ArrowRightSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('month')} />
 	<ArrowRightDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('year')} />
@@ -106,7 +114,7 @@
 				class:text-base-300={day.start > now}
 				class:cursor-default={day.start > now}
 				class:px-4={day.start?.day < 10}
-				class:invisible={day.start?.month !== currentDate.month}
+				class:invisible={day.start?.month !== currentMonth.month}
 			>
 				{day.start?.day}
 				{#if dayHasTemperature($days, day)}
