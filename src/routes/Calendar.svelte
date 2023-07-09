@@ -22,6 +22,10 @@
 
 	$: console.table($days);
 
+	const dayFlow = (days: Day[], day: Interval) => {
+		return days && format(day) in $days && $days[format(day)].flow;
+	};
+
 	const dayHasPeriod = (days: Day[], day: Interval) => {
 		return (
 			days &&
@@ -65,8 +69,10 @@
 			<button
 				on:click|preventDefault={openAddDayModal(day)}
 				class="badge badge-lg py-5 border-none font-bold"
-				class:bg-blue-200={dayHasTemperature($days, day)}
-				class:badge-error={dayHasPeriod($days, day)}
+				class:bg-blue-200={dayHasTemperature($days, day) && !dayHasPeriod($days, day)}
+				class:bg-red-200={dayFlow($days, day) === 1}
+				class:bg-red-300={dayFlow($days, day) === 2}
+				class:bg-red-400={dayFlow($days, day) === 3}
 				class:text-base-300={day.start > now}
 				class:cursor-default={day.start > now}
 				class:px-4={day.start?.day < 10}
@@ -74,10 +80,15 @@
 			>
 				{day.start?.day}
 				{#if dayHasTemperature($days, day)}
-					<TempColdLine
-						class="text-blue-600 relative"
-						style="position: relative;top: 20px;margin-top: -20px;left: 19px;margin-left: -15px;"
-					/>
+					<span
+						class="icon"
+						class:icon-left={day.start?.day >= 10}
+						class:text-blue-600={!dayHasPeriod($days, day)}
+						class:text-red-700={dayHasPeriod($days, day)}
+						style=""
+					>
+						<TempColdLine />
+					</span>
 				{/if}
 			</button>
 		{/each}
@@ -87,3 +98,17 @@
 {#if isAddDayModalOpen}
 	<AddDayForm {...selectedDay} on:close={closeAddDayModal} />
 {/if}
+
+<style>
+	.icon {
+		position: relative;
+		top: 20px;
+		margin-top: -20px;
+		left: 19px;
+		margin-left: -16px;
+	}
+
+	.icon-left {
+		left: 14px;
+	}
+</style>
