@@ -1,9 +1,7 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
-
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
-
 	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import { db, type Day } from '../stores/db';

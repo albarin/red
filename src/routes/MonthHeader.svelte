@@ -14,21 +14,21 @@
 <div class="bg-gray-200 rounded-md flex justify-between py-2 px-2 mb-2">
 	<ArrowLeftDoubleLine
 		class="mt-1 bg-gray-300 rounded-md"
-		on:click={() => dispatch('back', { interval: 'month' })}
+		on:click={() => dispatch('back', { interval: 'year' })}
 	/>
 	<ArrowLeftSLine
 		class="mt-1 bg-gray-300 rounded-md"
-		on:click={() => dispatch('back', { interval: 'year' })}
+		on:click={() => dispatch('back', { interval: 'month' })}
 	/>
 
 	<h1 class="text-center font-bold">{month.toFormat('MMMM')} {month.year}</h1>
 
 	<ArrowRightSLine
 		class="mt-1 bg-gray-300 rounded-md"
-		on:click={() => dispatch('forward', { interval: 'year' })}
+		on:click={() => dispatch('forward', { interval: 'month' })}
 	/>
 	<ArrowRightDoubleLine
 		class="mt-1 bg-gray-300 rounded-md"
-		on:click={() => dispatch('forward', { interval: 'month' })}
+		on:click={() => dispatch('forward', { interval: 'year' })}
 	/>
 </div>
