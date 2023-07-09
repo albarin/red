@@ -9,6 +9,10 @@
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 
+	interface Days {
+		[key: string]: Day;
+	}
+
 	const now = DateTime.now();
 	let currentMonth = DateTime.now();
 	let currentMonthIsNow = true;
@@ -28,26 +32,16 @@
 		return arrayToObject(days, 'date');
 	});
 
-	const dayFlow = (days: Day[], day: Interval) => {
-		return days && format(day) in $days && $days[format(day)].flow;
+	const dayFlow = (days: Days, day: Interval): number => {
+		return (days && days[format(day)]?.flow) || 0;
 	};
 
-	const dayHasPeriod = (days: Day[], day: Interval) => {
-		return (
-			days &&
-			format(day) in days &&
-			(days[format(day)] as unknown as boolean) &&
-			days[format(day)].flow
-		);
+	const dayHasPeriod = (days: Days, day: Interval): boolean => {
+		return !!days[format(day)]?.flow;
 	};
 
-	const dayHasTemperature = (days: Day[], day: Interval) => {
-		return (
-			days &&
-			format(day) in days &&
-			(days[format(day)] as unknown as boolean) &&
-			days[format(day)].temperature
-		);
+	const dayHasTemperature = (days: Days, day: Interval): boolean => {
+		return !!(days && days[format(day)]?.temperature);
 	};
 
 	const openAddDayModal = (day: Interval) => () => {
