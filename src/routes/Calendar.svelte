@@ -10,7 +10,7 @@
 
 	const now = DateTime.now();
 	const calendar = getCurrentMonthCalendar();
-
+	console.log(calendar[0][0].start.toFormat('ccc'));
 	let isAddDayModalOpen = false;
 	let selectedDay: Day | null;
 
@@ -63,7 +63,11 @@
 	};
 </script>
 
+<h1 class="text-center mb-2 py-1 font-bold text-lg bg-gray-200 rounded-md">June 2023</h1>
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
+	{#each calendar[0] as day}
+		<p class="text-sm text-gray-600">{day.start.toFormat('ccc')}</p>
+	{/each}
 	{#each calendar as week}
 		{#each week as day}
 			<button
