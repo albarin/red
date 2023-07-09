@@ -8,19 +8,24 @@
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 
-	import { format, getCurrentMonthCalendar } from '$lib/utils/date';
+	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import { db, type Day } from '../stores/db';
 	import AddDayForm from './AddDayForm.svelte';
 
 	const now = DateTime.now();
-	const calendar = getCurrentMonthCalendar();
+	let currentDate = DateTime.now();
+
+	$: calendar = getMonthCalendarByWeek(currentDate);
 
 	let isAddDayModalOpen = false;
 	let selectedDay: Day | null;
 
 	$: days = liveQuery(async () => {
-		const days = await db.getDaysBetween(format(now.startOf('month')), format(now.endOf('month')));
+		const days = await db.getDaysBetween(
+			format(currentDate.startOf('month')),
+			format(currentDate.endOf('month'))
+		);
 
 		return arrayToObject(days, 'date');
 	});
@@ -66,16 +71,24 @@
 		isAddDayModalOpen = false;
 		selectedDay = null;
 	};
+
+	const handleBack = (interval: string) => () => {
+		currentDate = currentDate.minus({ [interval]: 1 });
+	};
+
+	const handleForward = (interval: string) => () => {
+		currentDate = currentDate.plus({ [interval]: 1 });
+	};
 </script>
 
 <div class="bg-gray-200 rounded-md flex justify-between py-2 px-2 mb-2">
-	<ArrowLeftDoubleLine class="mt-1" />
-	<ArrowLeftSLine class="mt-1" />
+	<ArrowLeftDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('year')} />
+	<ArrowLeftSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('month')} />
 
-	<h1 class="text-center font-bold">June 2023</h1>
+	<h1 class="text-center font-bold">{currentDate.toFormat('MMMM')} {currentDate.year}</h1>
 
-	<ArrowRightSLine class="mt-1" />
-	<ArrowRightDoubleLine class="mt-1" />
+	<ArrowRightSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('month')} />
+	<ArrowRightDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('year')} />
 </div>
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
 	{#each calendar[0] as day}
@@ -93,7 +106,7 @@
 				class:text-base-300={day.start > now}
 				class:cursor-default={day.start > now}
 				class:px-4={day.start?.day < 10}
-				class:invisible={day.start?.month !== now.month}
+				class:invisible={day.start?.month !== currentDate.month}
 			>
 				{day.start?.day}
 				{#if dayHasTemperature($days, day)}
