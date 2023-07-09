@@ -70,13 +70,13 @@
 		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
 
-	const goToToday = () => () => {
+	const goToToday = () => {
 		currentMonth = now;
 	};
 </script>
 
 {#if !currentMonthIsNow}
-	<button class="btn absolute bottom-4 right-4" on:click={goToToday()}>Today</button>
+	<button class="btn absolute bottom-4 right-4" on:click={goToToday}>Today</button>
 {/if}
 
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
