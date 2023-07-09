@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 
@@ -64,7 +65,7 @@
 			<button
 				on:click|preventDefault={openAddDayModal(day)}
 				class="badge badge-lg py-5 border-none font-bold"
-				class:badge-primary={dayHasTemperature($days, day)}
+				class:bg-blue-200={dayHasTemperature($days, day)}
 				class:badge-error={dayHasPeriod($days, day)}
 				class:text-base-300={day.start > now}
 				class:cursor-default={day.start > now}
@@ -72,6 +73,12 @@
 				class:invisible={day.start?.month !== now.month}
 			>
 				{day.start?.day}
+				{#if dayHasTemperature($days, day)}
+					<TempColdLine
+						class="text-blue-600 relative"
+						style="position: relative;top: 20px;margin-top: -20px;left: 19px;margin-left: -15px;"
+					/>
+				{/if}
 			</button>
 		{/each}
 	{/each}
