@@ -1,5 +1,10 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
+	import ArrowLeftSLine from 'svelte-remixicon/lib/icons/ArrowLeftSLine.svelte';
+	import ArrowRightSLine from 'svelte-remixicon/lib/icons/ArrowRightSLine.svelte';
+	import ArrowLeftDoubleLine from 'svelte-remixicon/lib/icons/ArrowLeftDoubleLine.svelte';
+	import ArrowRightDoubleLine from 'svelte-remixicon/lib/icons/ArrowRightDoubleLine.svelte';
+
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 
@@ -10,7 +15,7 @@
 
 	const now = DateTime.now();
 	const calendar = getCurrentMonthCalendar();
-	console.log(calendar[0][0].start.toFormat('ccc'));
+
 	let isAddDayModalOpen = false;
 	let selectedDay: Day | null;
 
@@ -63,7 +68,15 @@
 	};
 </script>
 
-<h1 class="text-center mb-2 py-1 font-bold text-lg bg-gray-200 rounded-md">June 2023</h1>
+<div class="bg-gray-200 rounded-md flex justify-between py-2 px-2 mb-2">
+	<ArrowLeftDoubleLine class="mt-1" />
+	<ArrowLeftSLine class="mt-1" />
+
+	<h1 class="text-center font-bold">June 2023</h1>
+
+	<ArrowRightSLine class="mt-1" />
+	<ArrowRightDoubleLine class="mt-1" />
+</div>
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
 	{#each calendar[0] as day}
 		<p class="text-sm text-gray-600">{day.start.toFormat('ccc')}</p>
