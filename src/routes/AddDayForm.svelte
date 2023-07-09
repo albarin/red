@@ -3,6 +3,8 @@
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db } from '../stores/db';
+	import { format } from '$lib/utils/date';
+	import { DateTime } from 'luxon';
 
 	const dispatch = createEventDispatcher();
 
@@ -64,6 +66,7 @@
 	on:close|preventDefault={handleClose}
 >
 	<div class="modal-box text-center">
+		<p class="text-gray-400">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
 		<div class="mb-4">
 			<input
 				style="width:110px"
