@@ -6,7 +6,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let date: string;
+	export let date: string | undefined = undefined;
 	export let temperature: number | undefined = undefined;
 	export let flow: number | undefined = undefined;
 
