@@ -12,15 +12,11 @@
 
 	let addDayDialog: HTMLDialogElement;
 	let temperatureError: string | undefined;
-	let isBleeding: boolean | null = false;
+	let isBleeding: boolean | null = !!flow;
 
 	$: {
 		if (isBleeding && !flow) {
 			flow = 2; //set default flow to medium
-		}
-
-		if (flow) {
-			isBleeding = true;
 		}
 	}
 
