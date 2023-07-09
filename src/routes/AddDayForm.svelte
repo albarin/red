@@ -72,14 +72,14 @@
 			<input
 				style="width:110px"
 				class="input input-ghost text-center text-3xl focus:outline-none"
-				class:input-error={temperatureError}
+				class:text-error={temperatureError}
 				type="number"
 				step="0.01"
 				placeholder="36"
 				bind:value={temperature}
 			/>
 			{#if temperatureError}
-				<span class="text-sm text-error">{temperatureError}</span>
+				<p class="text-sm text-error">{temperatureError}</p>
 			{/if}
 		</div>
 
