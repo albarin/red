@@ -83,7 +83,7 @@
 			<input
 				class="btn btn-sm mb-2"
 				type="checkbox"
-				aria-label={!isBleeding ? 'Bleeding?' : 'Flow'}
+				aria-label={!isBleeding ? 'Period?' : 'Flow'}
 				bind:checked={isBleeding}
 			/>
 
@@ -108,12 +108,12 @@
 
 		<div class="flex mt-4">
 			{#if temperature || flow}
-				<button class="btn btn-error" on:click|preventDefault={handleDelete}>Delete</button>
+				<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 			{/if}
 
 			<div class="w-full text-right">
-				<button class="btn btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
-				<button class="btn btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
+				<button class="btn btn-sm btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
+				<button class="btn btn-sm btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
 			</div>
 		</div>
 	</div>
