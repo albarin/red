@@ -4,7 +4,7 @@
 	import ArrowLeftDoubleLine from 'svelte-remixicon/lib/icons/ArrowLeftDoubleLine.svelte';
 	import ArrowRightDoubleLine from 'svelte-remixicon/lib/icons/ArrowRightDoubleLine.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import type { DateTime, Interval } from 'luxon';
+	import type { DateTime } from 'luxon';
 
 	const dispatch = createEventDispatcher();
 
