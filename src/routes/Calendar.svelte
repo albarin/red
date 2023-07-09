@@ -1,9 +1,5 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
-	import ArrowLeftSLine from 'svelte-remixicon/lib/icons/ArrowLeftSLine.svelte';
-	import ArrowRightSLine from 'svelte-remixicon/lib/icons/ArrowRightSLine.svelte';
-	import ArrowLeftDoubleLine from 'svelte-remixicon/lib/icons/ArrowLeftDoubleLine.svelte';
-	import ArrowRightDoubleLine from 'svelte-remixicon/lib/icons/ArrowRightDoubleLine.svelte';
 
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
@@ -12,6 +8,8 @@
 	import { arrayToObject } from '$lib/utils/array';
 	import { db, type Day } from '../stores/db';
 	import AddDayForm from './AddDayForm.svelte';
+	import CalendarHeader from './CalendarHeader.svelte';
+	import MonthHeader from './MonthHeader.svelte';
 
 	const now = DateTime.now();
 	let currentMonth = DateTime.now();
@@ -72,12 +70,12 @@
 		selectedDay = null;
 	};
 
-	const handleBack = (interval: string) => () => {
-		currentMonth = currentMonth.minus({ [interval]: 1 });
+	const handleBack = (event) => {
+		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
 
-	const handleForward = (interval: string) => () => {
-		currentMonth = currentMonth.plus({ [interval]: 1 });
+	const handleForward = (event) => {
+		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
 
 	const goToToday = () => () => {
@@ -89,19 +87,10 @@
 	<button class="btn absolute bottom-4 right-4" on:click={goToToday()}>Today</button>
 {/if}
 
-<div class="bg-gray-200 rounded-md flex justify-between py-2 px-2 mb-2">
-	<ArrowLeftDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('year')} />
-	<ArrowLeftSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleBack('month')} />
+<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
-	<h1 class="text-center font-bold">{currentMonth.toFormat('MMMM')} {currentMonth.year}</h1>
-
-	<ArrowRightSLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('month')} />
-	<ArrowRightDoubleLine class="mt-1 bg-gray-300 rounded-md" on:click={handleForward('year')} />
-</div>
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
-	{#each calendar[0] as day}
-		<p class="text-sm text-gray-600">{day.start.toFormat('ccc')}</p>
-	{/each}
+	<CalendarHeader week={calendar[0]} />
 	{#each calendar as week}
 		{#each week as day}
 			<button
