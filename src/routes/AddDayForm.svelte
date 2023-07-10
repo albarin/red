@@ -69,7 +69,14 @@
 	};
 
 	const handleTemperatureChange = ({ detail }) => {
-		temperature = Number(detail.inputState.visibleValue);
+		const value = parseFloat(detail.inputState.visibleValue);
+
+		if (value > 10) {
+			temperature = value.toFixed(2);
+			return;
+		}
+
+		temperature = value;
 	};
 
 	const handleTemperatureFocus = (e) => {
