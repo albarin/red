@@ -3,7 +3,6 @@
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db } from '../stores/db';
-	import { format } from '$lib/utils/date';
 	import { DateTime } from 'luxon';
 
 	const dispatch = createEventDispatcher();
@@ -13,8 +12,13 @@
 	export let flow: number | undefined = undefined;
 
 	let addDayDialog: HTMLDialogElement;
+	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
 	let isBleeding: boolean | null = !!flow;
+
+	$: if (wasSubmitted) {
+		temperatureError = validateTemperature(temperature);
+	}
 
 	$: {
 		if (isBleeding && !flow) {
@@ -25,6 +29,8 @@
 	$: addDayDialog?.showModal();
 
 	const handleSubmit = async () => {
+		wasSubmitted = true;
+
 		temperatureError = validateTemperature(temperature);
 		if (temperatureError) {
 			return;
@@ -40,6 +46,7 @@
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
+		wasSubmitted = false;
 		dispatch('close');
 	};
 
@@ -50,12 +57,15 @@
 			console.error(`Failed to delete ${date}: ${error}`);
 		}
 
+		wasSubmitted = false;
 		dispatch('close');
 	};
 
 	const handleClose = () => {
+		wasSubmitted = false;
 		temperatureError = '';
 
+		wasSubmitted = false;
 		dispatch('close');
 	};
 </script>
@@ -72,6 +82,7 @@
 				style="width:110px"
 				class="input input-ghost text-center text-3xl focus:outline-none"
 				class:text-error={temperatureError}
+				class:focus:text-error={temperatureError}
 				type="number"
 				step="0.01"
 				placeholder="36"
