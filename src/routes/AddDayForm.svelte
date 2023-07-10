@@ -74,18 +74,25 @@
 	on:close|preventDefault={handleClose}
 >
 	<div class="modal-box text-center">
-		<p class="text-gray-400">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
+		<p class="text-gray-400 mb-1">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
 		<div class="mb-4">
-			<input
-				style="width:110px"
-				class="input input-ghost text-center text-3xl focus:outline-none"
-				class:text-error={temperatureError}
-				class:focus:text-error={temperatureError}
-				type="number"
-				step="0.01"
-				placeholder="36"
-				bind:value={temperature}
-			/>
+			<div class="text-center">
+				<input
+					style="width:100px"
+					class="input input-ghost text-center text-3xl focus:outline-none p-0"
+					class:text-error={temperatureError}
+					class:focus:text-error={temperatureError}
+					type="text"
+					placeholder="36.00"
+					bind:value={temperature}
+				/>
+				<span
+					class="text-3xl relative -left-3"
+					class:text-gray-400={!temperature}
+					class:text-error={temperatureError}>ºC</span
+				>
+			</div>
+
 			{#if temperatureError}
 				<p class="text-sm text-error">{temperatureError}</p>
 			{/if}
