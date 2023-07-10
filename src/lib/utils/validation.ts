@@ -3,6 +3,10 @@ const countDecimals = (number: number): number => {
 }
 
 export const validateTemperature = (temperature: number | undefined): string | undefined => {
+  if (!temperature) {
+    return 'Temperature is required';
+  }
+
   if (temperature && (temperature < 30 || temperature > 40)) {
     return 'Temperature must be between 30 and 40';
   }
