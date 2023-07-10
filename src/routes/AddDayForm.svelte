@@ -20,10 +20,8 @@
 		temperatureError = validateTemperature(temperature);
 	}
 
-	$: {
-		if (isBleeding && !flow) {
-			flow = 2; //set default flow to medium
-		}
+	$: if (isBleeding && !flow) {
+		flow = 2; //set default flow to medium
 	}
 
 	$: addDayDialog?.showModal();
