@@ -97,18 +97,12 @@
 					alwaysShowMask
 					maskChar="_"
 					mask="00.00"
-					value={String(temperature)}
+					value={temperature ? String(temperature) : ''}
 					on:change={handleTemperatureChange}
 					on:focus={handleTemperatureFocus}
 				/>
 
-				<span
-					class="text-3xl relative -left-3"
-					class:text-gray-400={!temperature}
-					class:text-error={temperatureError}
-				>
-					ºC
-				</span>
+				<span class="text-3xl relative -left-3" class:text-error={temperatureError}> ºC </span>
 			</div>
 
 			{#if temperatureError}
