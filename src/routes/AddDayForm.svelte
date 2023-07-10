@@ -82,7 +82,8 @@
 					class="input input-ghost text-center text-3xl focus:outline-none p-0"
 					class:text-error={temperatureError}
 					class:focus:text-error={temperatureError}
-					type="text"
+					type="number"
+					step="0.01"
 					placeholder="36.00"
 					bind:value={temperature}
 				/>

@@ -1,5 +1,6 @@
 const countDecimals = (number: number): number => {
-  return String(number).split(".")[1]?.length;
+  const split = String(number).split(".")
+  return split.length !== 1 ? split[1]?.length : 0;
 }
 
 export const validateTemperature = (temperature: number | undefined): string | undefined => {
