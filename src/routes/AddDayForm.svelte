@@ -1,9 +1,11 @@
 <script lang="ts">
+	import MaskInput from 'svelte-input-mask/MaskInput.svelte';
+
 	import { createEventDispatcher } from 'svelte';
+	import { DateTime } from 'luxon';
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db } from '../stores/db';
-	import { DateTime } from 'luxon';
 
 	const dispatch = createEventDispatcher();
 
@@ -63,8 +65,16 @@
 		wasSubmitted = false;
 		temperatureError = '';
 
-		wasSubmitted = false;
 		dispatch('close');
+	};
+
+	const handleTemperatureChange = ({ detail }) => {
+		temperature = Number(detail.inputState.visibleValue);
+	};
+
+	const handleTemperatureFocus = (e) => {
+		const length = temperature ? String(temperature).length : 0;
+		e.detail.target.setSelectionRange(length, length);
 	};
 </script>
 
@@ -76,22 +86,29 @@
 	<div class="modal-box text-center">
 		<p class="text-gray-400 mb-1">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
 		<div class="mb-4">
-			<div class="text-center">
-				<input
+			<div
+				class="text-center"
+				class:text-error={temperatureError}
+				class:focus:text-error={temperatureError}
+			>
+				<MaskInput
 					style="width:100px"
 					class="input input-ghost text-center text-3xl focus:outline-none p-0"
-					class:text-error={temperatureError}
-					class:focus:text-error={temperatureError}
-					type="number"
-					step="0.01"
-					placeholder="36.00"
-					bind:value={temperature}
+					alwaysShowMask
+					maskChar="_"
+					mask="00.00"
+					value={String(temperature)}
+					on:change={handleTemperatureChange}
+					on:focus={handleTemperatureFocus}
 				/>
+
 				<span
 					class="text-3xl relative -left-3"
 					class:text-gray-400={!temperature}
-					class:text-error={temperatureError}>ºC</span
+					class:text-error={temperatureError}
 				>
+					ºC
+				</span>
 			</div>
 
 			{#if temperatureError}
