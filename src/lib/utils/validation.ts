@@ -14,11 +14,11 @@ export const validateTemperature = (value: string | undefined): string | undefin
     return 'Temperature must be between 30 and 40';
   }
 
-  if (countDecimals(temperature) < 2) {
+  if (value && value?.length < 5) {
     return 'Temperature must have at least 2 decimals';
   }
 
-  if (countDecimals(temperature) > 2) {
+  if (value && value?.length > 5) {
     return 'Temperature must have at most 2 decimals';
   }
 };

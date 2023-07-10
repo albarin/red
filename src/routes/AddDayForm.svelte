@@ -76,7 +76,7 @@
 			return;
 		}
 
-		temperature = value;
+		temperature = String(value);
 	};
 
 	const handleTemperatureFocus = (e) => {
