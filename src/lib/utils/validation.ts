@@ -3,7 +3,9 @@ const countDecimals = (number: number): number => {
   return split.length !== 1 ? split[1]?.length : 0;
 }
 
-export const validateTemperature = (temperature: number | undefined): string | undefined => {
+export const validateTemperature = (value: string | undefined): string | undefined => {
+  const temperature = value ? parseFloat(value) : 0;
+
   if (!temperature) {
     return 'Temperature is required';
   }
