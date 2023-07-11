@@ -7,6 +7,7 @@
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db } from '../../stores/db';
 	import { format } from '$lib/utils/date';
+	import { arrayToObject } from '$lib/utils/array';
 
 	const dispatch = createEventDispatcher();
 
@@ -66,10 +67,13 @@
 	};
 
 	const fillPeriodGaps = async (date: string) => {
-		const prevWeekPeriodDays = await db.getDaysBetween(
+		const prevWeekDays = await db.getDaysBetween(
 			format(DateTime.fromISO(date).minus({ days: 6 })),
 			format(DateTime.fromISO(date))
 		);
+		const prevWeekDaysByDate = arrayToObject(prevWeekDays, 'date');
+
+		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
 		if (!closestPeriodDay) {
@@ -82,6 +86,10 @@
 		).splitBy({ days: 1 });
 
 		const prevWeekWithPeriod = prevWeek.map((day) => {
+			if (prevWeekDaysByDate[format(day)]) {
+				prevWeekDaysByDate[format(day)].flow = flow;
+				return prevWeekDaysByDate[format(day)];
+			}
 			return { date: format(day), flow };
 		});
 
