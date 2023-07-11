@@ -5,7 +5,7 @@
 	import { DateTime } from 'luxon';
 
 	import { validateTemperature } from '$lib/utils/validation';
-	import { db } from '../stores/db';
+	import { db } from '../../stores/db';
 
 	const dispatch = createEventDispatcher();
 

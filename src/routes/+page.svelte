@@ -1,6 +1,5 @@
 <script>
-	import AddDayForm from './AddDayForm.svelte';
-	import Calendar from './Calendar.svelte';
+	import Calendar from '$lib/components/Calendar.svelte';
 </script>
 
 <Calendar />

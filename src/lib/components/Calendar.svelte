@@ -4,7 +4,7 @@
 	import { liveQuery } from 'dexie';
 	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import { db, type Day } from '../stores/db';
+	import { db, type Day } from '../../stores/db';
 	import AddDayForm from './AddDayForm.svelte';
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
