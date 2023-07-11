@@ -2,10 +2,11 @@
 	import MaskInput from 'svelte-input-mask/MaskInput.svelte';
 
 	import { createEventDispatcher } from 'svelte';
-	import { DateTime } from 'luxon';
+	import { DateTime, Interval } from 'luxon';
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db } from '../../stores/db';
+	import { format } from '$lib/utils/date';
 
 	const dispatch = createEventDispatcher();
 
@@ -58,8 +59,37 @@
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
+		fillPeriodGaps(date);
+
 		wasSubmitted = false;
 		dispatch('close');
+	};
+
+	const fillPeriodGaps = async (date: string) => {
+		const prevWeekPeriodDays = await db.getDaysBetween(
+			format(DateTime.fromISO(date).minus({ days: 6 })),
+			format(DateTime.fromISO(date))
+		);
+
+		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
+		if (!closestPeriodDay) {
+			return;
+		}
+
+		const prevWeek = Interval.fromDateTimes(
+			DateTime.fromISO(closestPeriodDay.date).plus({ days: 1 }),
+			DateTime.fromISO(date)
+		).splitBy({ days: 1 });
+
+		const prevWeekWithPeriod = prevWeek.map((day) => {
+			return { date: format(day), flow };
+		});
+
+		try {
+			await db.days.bulkPut(prevWeekWithPeriod);
+		} catch (error) {
+			console.error(`Failed to add ${prevWeekWithPeriod}: ${error}`);
+		}
 	};
 
 	const handleDelete = async () => {
