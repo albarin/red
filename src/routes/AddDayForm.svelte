@@ -42,6 +42,12 @@
 			return;
 		}
 
+		if (!temperature && !isBleeding) {
+			wasSubmitted = false;
+			dispatch('close');
+			return;
+		}
+
 		try {
 			await db.days.put({
 				date,
