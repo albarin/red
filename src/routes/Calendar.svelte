@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
@@ -61,6 +62,15 @@
 
 {#if !currentMonthIsNow}
 	<button class="btn absolute bottom-4 right-4" on:click={goToToday}>Today</button>
+{/if}
+
+{#if !($days && $days[format(now)])}
+	<button
+		class="btn btn-accent absolute bottom-4"
+		on:click={openAddDayModal(Interval.fromDateTimes(now, now))}
+	>
+		Add<TempColdLine class="text-lg -ml-1" />
+	</button>
 {/if}
 
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
