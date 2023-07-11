@@ -2,7 +2,7 @@ import Dexie, { type Table } from 'dexie';
 
 export interface Day {
   date: string;
-  temperature?: number;
+  temperature?: string;
   flow?: number;
 }
 
