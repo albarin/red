@@ -18,6 +18,8 @@
 	let temperatureError: string | undefined;
 	let isBleeding: boolean | null = !!flow;
 
+	$: temperature = updateTemperature(temperature);
+
 	$: if (wasSubmitted) {
 		temperatureError = validateTemperature(temperature);
 	}
@@ -36,10 +38,14 @@
 			return;
 		}
 
+		if (!date) {
+			return;
+		}
+
 		try {
 			await db.days.put({
 				date,
-				temperature,
+				...(temperature && { temperature: Number(temperature) }),
 				...(isBleeding && { flow: flow })
 			});
 		} catch (error) {
@@ -68,15 +74,26 @@
 		dispatch('close');
 	};
 
-	const handleTemperatureChange = ({ detail }) => {
-		const value = parseFloat(detail.inputState.visibleValue);
-
-		if (value > 10) {
-			temperature = value.toFixed(2);
-			return;
+	const updateTemperature = (t: string | undefined): string | undefined => {
+		if (t === '' || t === undefined) {
+			return undefined;
 		}
 
-		temperature = String(value);
+		const value = parseFloat(t);
+
+		if (isNaN(value) || value === 0) {
+			return undefined;
+		}
+
+		if (value > 10) {
+			return value.toFixed(2);
+		}
+
+		return String(value);
+	};
+
+	const handleTemperatureChange = ({ detail }) => {
+		temperature = updateTemperature(detail.inputState.visibleValue);
 	};
 
 	const handleTemperatureFocus = (e) => {
