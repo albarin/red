@@ -21,7 +21,7 @@
 		on:click={() => dispatch('back', { interval: 'month' })}
 	/>
 
-	<h1 class="text-center font-bold">{month.toFormat('MMMM')} {month.year}</h1>
+	<h1 class="text-center font-semibold">{month.toFormat('MMMM')} {month.year}</h1>
 
 	<ArrowRightSLine
 		class="mt-1 bg-gray-300 rounded-md"

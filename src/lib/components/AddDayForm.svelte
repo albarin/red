@@ -5,7 +5,7 @@
 	import { DateTime, Interval } from 'luxon';
 
 	import { validateTemperature } from '$lib/utils/validation';
-	import { db } from '../../stores/db';
+	import { db, type Day } from '../../stores/db';
 	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 
@@ -19,6 +19,7 @@
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
 	let isBleeding: boolean | null = !!flow;
+	let shouldFillPeriodGaps: boolean = true;
 
 	$: temperature = updateTemperature(temperature);
 
@@ -60,10 +61,28 @@
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
-		fillPeriodGaps(date);
+		if (shouldFillPeriodGaps) {
+			fillPeriodGaps(date);
+		}
 
 		wasSubmitted = false;
 		dispatch('close');
+	};
+
+	const periodLastDay = async (date: string): Promise<string | undefined> => {
+		const prevWeekDays = await db.getDaysBetween(
+			format(DateTime.fromISO(date).minus({ days: 6 })),
+			format(DateTime.fromISO(date))
+		);
+
+		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
+		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
+
+		if (!closestPeriodDay) {
+			return undefined;
+		}
+
+		return format(DateTime.fromISO(closestPeriodDay.date).plus({ days: 1 }));
 	};
 
 	const fillPeriodGaps = async (date: string) => {
@@ -148,7 +167,7 @@
 
 <dialog
 	bind:this={addDayDialog}
-	class="modal modal-bottom sm:modal-middle"
+	class="modal modal-bottom sm:modal-middle font-light"
 	on:close|preventDefault={handleClose}
 >
 	<div class="modal-box text-center">
@@ -202,6 +221,28 @@
 						<span>High</span>
 					</div>
 				</div>
+
+				{#await periodLastDay(date) then periodLastDay}
+					{#if periodLastDay}
+						<div class="form-control">
+							<label class="label cursor-pointer justify-start gap-2">
+								<input
+									type="checkbox"
+									class="checkbox checkbox-primary"
+									bind:checked={shouldFillPeriodGaps}
+								/>
+								<span class="label-text">
+									Set days from <strong class="font-semibold text-primary">
+										{DateTime.fromISO(periodLastDay).toLocaleString({
+											month: 'long',
+											day: 'numeric'
+										})}
+									</strong> as period days
+								</span>
+							</label>
+						</div>
+					{/if}
+				{/await}
 			{/if}
 		</div>
 

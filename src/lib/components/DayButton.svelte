@@ -31,7 +31,7 @@
 
 <button
 	on:click={() => dispatch('open-modal')}
-	class="badge badge-lg py-5 border-none font-bold"
+	class="badge badge-lg py-5 border-none"
 	class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
 	class:bg-red-200={dayFlow(days, day) === 1}
 	class:bg-red-300={dayFlow(days, day) === 2}
