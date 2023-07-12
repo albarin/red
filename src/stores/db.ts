@@ -1,4 +1,6 @@
+import { format } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
+import { DateTime } from 'luxon';
 
 export interface Day {
   date: string;
@@ -16,11 +18,18 @@ export class RedDB extends Dexie {
     });
   }
 
-  async getDaysBetween(start: string, end: string) {
+  async getDaysBetween(start: string, end: string): Promise<Day[]> {
     return await this.days
       .where('date')
       .between(start, end)
       .toArray();
+  }
+
+  async getPreviousWeekDays(date: string): Promise<Day[]> {
+    return await this.getDaysBetween(
+      format(DateTime.fromISO(date).minus({ days: 6 })),
+      date
+    );
   }
 }
 

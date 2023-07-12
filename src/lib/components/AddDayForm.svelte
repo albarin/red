@@ -70,28 +70,16 @@
 	};
 
 	const periodLastDay = async (date: string): Promise<string | undefined> => {
-		const prevWeekDays = await db.getDaysBetween(
-			format(DateTime.fromISO(date).minus({ days: 6 })),
-			format(DateTime.fromISO(date))
-		);
-
+		const prevWeekDays = await db.getPreviousWeekDays(date);
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
 
-		if (!closestPeriodDay) {
-			return undefined;
-		}
-
-		return format(DateTime.fromISO(closestPeriodDay.date).plus({ days: 1 }));
+		return closestPeriodDay.date || undefined;
 	};
 
 	const fillPeriodGaps = async (date: string) => {
-		const prevWeekDays = await db.getDaysBetween(
-			format(DateTime.fromISO(date).minus({ days: 6 })),
-			format(DateTime.fromISO(date))
-		);
+		const prevWeekDays = await db.getPreviousWeekDays(date);
 		const prevWeekDaysByDate = arrayToObject(prevWeekDays, 'date');
-
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
@@ -109,7 +97,7 @@
 				prevWeekDaysByDate[format(day)].flow = flow;
 				return prevWeekDaysByDate[format(day)];
 			}
-			return { date: format(day), flow };
+			return { date: format(day), flow } as Day;
 		});
 
 		try {
@@ -233,7 +221,7 @@
 								/>
 								<span class="label-text">
 									Set days from <strong class="font-semibold text-primary">
-										{DateTime.fromISO(periodLastDay).toLocaleString({
+										{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
 											month: 'long',
 											day: 'numeric'
 										})}
