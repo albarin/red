@@ -211,7 +211,7 @@
 				</div>
 
 				{#await periodLastDay(date) then periodLastDay}
-					{#if periodLastDay}
+					{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
 						<div class="form-control">
 							<label class="label cursor-pointer justify-start gap-2">
 								<input
