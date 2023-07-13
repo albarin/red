@@ -1,5 +1,6 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
+	import Download2Line from 'svelte-remixicon/lib/icons/Download2Line.svelte';
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
@@ -47,6 +48,29 @@
 		selectedDay = null;
 	};
 
+	const exportDays = async () => {
+		const days = await db.getAllDays();
+
+		if (!days) {
+			return;
+		}
+
+		const dataRows = days.map((day) => {
+			return [day.date, day.temperature, day.flow];
+		});
+
+		const rows = [Object.keys(days[0]), ...dataRows];
+		let csvContent = 'data:text/csv;charset=utf-8,' + rows.map((e) => e.join(',')).join('\n');
+
+		var encodedUri = encodeURI(csvContent);
+		var link = document.createElement('a');
+		link.setAttribute('href', encodedUri);
+		link.setAttribute('download', 'days.csv');
+		document.body.appendChild(link); // Required for FF
+
+		link.click();
+	};
+
 	const handleBack = (event) => {
 		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
@@ -64,14 +88,14 @@
 	<button class="btn absolute bottom-4 right-4" on:click={goToToday}>Today</button>
 {/if}
 
-{#if !($days && $days[format(now)])}
-	<button
-		class="btn btn-accent absolute bottom-4"
-		on:click={openAddDayModal(Interval.fromDateTimes(now, now))}
-	>
+<div class="absolute bottom-4">
+	<button class="btn btn-accent" on:click={openAddDayModal(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />
 	</button>
-{/if}
+	<button class="btn btn-primary" on:click={exportDays}>
+		Export<Download2Line class="text-lg -ml-1" />
+	</button>
+</div>
 
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 

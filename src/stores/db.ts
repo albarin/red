@@ -18,6 +18,10 @@ export class RedDB extends Dexie {
     });
   }
 
+  async getAllDays(): Promise<Day[]> {
+    return await this.days.toArray();
+  }
+
   async getDaysBetween(start: string, end: string): Promise<Day[]> {
     return await this.days
       .where('date')
