@@ -46,8 +46,7 @@
 		}
 
 		if (!temperature && !isBleeding) {
-			wasSubmitted = false;
-			dispatch('close');
+			handleDelete();
 			return;
 		}
 
