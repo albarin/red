@@ -15,7 +15,7 @@
 	export let temperature: string | undefined = undefined;
 	export let flow: number | undefined = undefined;
 
-	let addDayDialog: HTMLDialogElement;
+	//let addDayDialog: HTMLDialogElement;
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
 	let isBleeding: boolean | null = !!flow;
@@ -31,7 +31,7 @@
 		flow = 2; //set default flow to medium
 	}
 
-	$: addDayDialog?.showModal();
+	//$: addDayDialog?.showModal();
 
 	const handleSubmit = async () => {
 		wasSubmitted = true;
@@ -152,100 +152,88 @@
 	};
 </script>
 
-<dialog
-	bind:this={addDayDialog}
-	class="modal modal-bottom sm:modal-middle font-light"
-	on:close|preventDefault={handleClose}
->
-	<div class="modal-box text-center">
-		<p class="text-gray-400 mb-1">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
-		<div class="mb-4">
-			<div
-				class="text-center"
-				class:text-error={temperatureError}
-				class:focus:text-error={temperatureError}
-			>
-				<MaskInput
-					style="width:100px"
-					class="input input-ghost text-center text-3xl focus:outline-none p-0"
-					alwaysShowMask
-					maskChar="_"
-					mask="00.00"
-					value={temperature ? String(temperature) : ''}
-					on:change={handleTemperatureChange}
-					on:focus={handleTemperatureFocus}
-				/>
+<p class="text-gray-400 mb-1">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
+<div class="mb-4">
+	<div
+		class="text-center"
+		class:text-error={temperatureError}
+		class:focus:text-error={temperatureError}
+	>
+		<MaskInput
+			style="width:100px"
+			class="input input-ghost text-center text-3xl focus:outline-none p-0"
+			alwaysShowMask
+			maskChar="_"
+			mask="00.00"
+			value={temperature ? String(temperature) : ''}
+			on:change={handleTemperatureChange}
+			on:focus={handleTemperatureFocus}
+		/>
 
-				<span class="text-3xl relative -left-3" class:text-error={temperatureError}> ºC </span>
-			</div>
-
-			{#if temperatureError}
-				<p class="text-sm text-error">{temperatureError}</p>
-			{/if}
-		</div>
-
-		<div class="mb-4">
-			<input
-				class="btn btn-sm mb-2"
-				type="checkbox"
-				aria-label={!isBleeding ? 'Period?' : 'Flow'}
-				bind:checked={isBleeding}
-			/>
-
-			{#if isBleeding}
-				<div class="form-control w-full">
-					<input
-						id="bleeding"
-						type="range"
-						min="1"
-						max="3"
-						class="range range-primary"
-						bind:value={flow}
-					/>
-					<div class="w-full flex justify-between text-xs px-2">
-						<span>Low</span>
-						<span>Medium</span>
-						<span>High</span>
-					</div>
-				</div>
-
-				{#await periodLastDay(date) then periodLastDay}
-					{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
-						<div class="form-control">
-							<label class="label cursor-pointer justify-start gap-2">
-								<input
-									type="checkbox"
-									class="checkbox checkbox-primary"
-									bind:checked={shouldFillPeriodGaps}
-								/>
-								<span class="label-text">
-									Set days from <strong class="font-semibold text-primary">
-										{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
-											month: 'long',
-											day: 'numeric'
-										})}
-									</strong> as period days
-								</span>
-							</label>
-						</div>
-					{/if}
-				{/await}
-			{/if}
-		</div>
-
-		<div class="flex mt-4">
-			{#if temperature || flow}
-				<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
-			{/if}
-
-			<div class="w-full text-right">
-				<button class="btn btn-sm btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
-				<button class="btn btn-sm btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
-			</div>
-		</div>
+		<span class="text-3xl relative -left-3" class:text-error={temperatureError}> ºC </span>
 	</div>
 
-	<form method="dialog" class="modal-backdrop">
-		<button>close</button>
-	</form>
-</dialog>
+	{#if temperatureError}
+		<p class="text-sm text-error">{temperatureError}</p>
+	{/if}
+</div>
+
+<div class="mb-4">
+	<input
+		class="btn btn-sm mb-2"
+		type="checkbox"
+		aria-label={!isBleeding ? 'Period?' : 'Flow'}
+		bind:checked={isBleeding}
+	/>
+
+	{#if isBleeding}
+		<div class="form-control w-full">
+			<input
+				id="bleeding"
+				type="range"
+				min="1"
+				max="3"
+				class="range range-primary"
+				bind:value={flow}
+			/>
+			<div class="w-full flex justify-between text-xs px-2">
+				<span>Low</span>
+				<span>Medium</span>
+				<span>High</span>
+			</div>
+		</div>
+
+		{#await periodLastDay(date) then periodLastDay}
+			{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
+				<div class="form-control">
+					<label class="label cursor-pointer justify-start gap-2">
+						<input
+							type="checkbox"
+							class="checkbox checkbox-primary"
+							bind:checked={shouldFillPeriodGaps}
+						/>
+						<span class="label-text">
+							Set days from <strong class="font-semibold text-primary">
+								{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
+									month: 'long',
+									day: 'numeric'
+								})}
+							</strong> as period days
+						</span>
+					</label>
+				</div>
+			{/if}
+		{/await}
+	{/if}
+</div>
+
+<div class="flex mt-4">
+	{#if temperature || flow}
+		<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
+	{/if}
+
+	<div class="w-full text-right">
+		<button class="btn btn-sm btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
+		<button class="btn btn-sm btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
+	</div>
+</div>

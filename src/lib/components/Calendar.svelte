@@ -18,7 +18,6 @@
 	$: calendar = getMonthCalendarByWeek(currentMonth);
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 
-	let isAddDayModalOpen = false;
 	let selectedDay: Day | null;
 
 	$: days = liveQuery(async () => {
@@ -30,7 +29,7 @@
 		return arrayToObject(days, 'date');
 	});
 
-	const openAddDayModal = (day: Interval) => () => {
+	const changeSelectedDay = (day: Interval) => () => {
 		if (day?.start && day.start > DateTime.now()) return;
 
 		selectedDay = $days[format(day)];
@@ -39,13 +38,6 @@
 				date: format(day)
 			};
 		}
-
-		isAddDayModalOpen = true;
-	};
-
-	const closeAddDayModal = () => {
-		isAddDayModalOpen = false;
-		selectedDay = null;
 	};
 
 	const exportDays = async () => {
@@ -117,25 +109,21 @@
 		});
 
 		try {
-			const foo = await db.days.bulkPut(data);
+			await db.days.bulkPut(data);
 		} catch (error) {
 			console.error(`Failed to import ${file.name}: ${error}`);
 		}
 	};
 </script>
 
-{#if !currentMonthIsNow}
-	<button class="btn absolute bottom-4 right-4" on:click={goToToday}>Today</button>
-{/if}
-
-<div class="absolute bottom-4">
-	<button class="btn btn-accent" on:click={openAddDayModal(Interval.fromDateTimes(now, now))}>
+<!-- <div class="absolute bottom-4"> -->
+<!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />
-	</button>
-	<!-- <button class="btn btn-primary" on:click={exportDays}>
+	</button> -->
+<!-- <button class="btn btn-primary" on:click={exportDays}>
 		Export<Download2Line class="text-lg -ml-1" />
 	</button> -->
-</div>
+<!-- </div> -->
 
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
@@ -143,18 +131,15 @@
 	<CalendarHeader week={calendar[0]} />
 	{#each calendar as week}
 		{#each week as day}
-			<DayButton days={$days} {day} {now} {currentMonth} on:open-modal={openAddDayModal(day)} />
+			<span>
+				<DayButton days={$days} {day} {now} {currentMonth} on:change-day />
+			</span>
 		{/each}
 	{/each}
 </div>
 
-{#if isAddDayModalOpen}
-	<AddDayForm
-		date={selectedDay?.date}
-		temperature={selectedDay?.temperature?.toString()}
-		flow={selectedDay?.flow}
-		on:close={closeAddDayModal}
-	/>
+{#if !currentMonthIsNow}
+	<button class="btn absolute right-4" on:click={goToToday}>Today</button>
 {/if}
 
 <!-- <input

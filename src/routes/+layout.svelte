@@ -9,6 +9,4 @@
 	import '@fontsource/roboto/900.css';
 </script>
 
-<div class="h-screen p-4 base-100">
-	<slot />
-</div>
+<slot />

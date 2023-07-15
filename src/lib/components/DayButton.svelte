@@ -1,6 +1,6 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
-	import type { Day } from '../stores/db';
+	import type { Day } from '../../stores/db';
 	import { format } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
@@ -30,7 +30,7 @@
 </script>
 
 <button
-	on:click={() => dispatch('open-modal')}
+	on:click={() => dispatch('change-day', { day })}
 	class="badge badge-lg py-5 border-none"
 	class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
 	class:bg-red-200={dayFlow(days, day) === 1}
