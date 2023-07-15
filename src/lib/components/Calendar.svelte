@@ -132,9 +132,9 @@
 	<button class="btn btn-accent" on:click={openAddDayModal(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />
 	</button>
-	<button class="btn btn-primary" on:click={exportDays}>
+	<!-- <button class="btn btn-primary" on:click={exportDays}>
 		Export<Download2Line class="text-lg -ml-1" />
-	</button>
+	</button> -->
 </div>
 
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
@@ -157,9 +157,9 @@
 	/>
 {/if}
 
-<input
+<!-- <input
 	type="file"
 	class="file-input file-input-bordered file-input-primary w-full max-w-xs"
 	bind:this={uploader}
 	on:change|preventDefault={upload}
-/>
+/> -->
