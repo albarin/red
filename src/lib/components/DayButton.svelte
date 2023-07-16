@@ -34,10 +34,9 @@
 </script>
 
 <button
+	style={isCurrentDay ? `box-shadow:0px 0px 0px 1px black inset` : ''}
 	on:click={() => dispatch('change-day', { day })}
-	class="badge badge-lg py-5"
-	class:badge-outline={isCurrentDay}
-	class:border-none={!isCurrentDay}
+	class="badge badge-lg py-5 border-none"
 	class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
 	class:bg-red-200={dayFlow(days, day) === 1}
 	class:bg-red-300={dayFlow(days, day) === 2}
