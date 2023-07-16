@@ -18,7 +18,8 @@
 	//let addDayDialog: HTMLDialogElement;
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
-	let isBleeding: boolean | null = !!flow;
+	//let isBleeding: boolean | null = !!flow;
+
 	let shouldFillPeriodGaps: boolean = true;
 
 	$: temperature = updateTemperature(temperature);
@@ -27,11 +28,13 @@
 		temperatureError = validateTemperature(temperature);
 	}
 
-	$: if (isBleeding && !flow) {
-		flow = 2; //set default flow to medium
-	}
+	// $: if (isBleeding && !flow) {
+	// 	flow = 2; //set default flow to medium
+	// }
 
-	//$: addDayDialog?.showModal();
+	$: if (typeof flow == 'boolean') {
+		flow = 2;
+	}
 
 	const handleSubmit = async () => {
 		wasSubmitted = true;
@@ -45,16 +48,21 @@
 			return;
 		}
 
-		if (!temperature && !isBleeding) {
-			handleDelete();
-			return;
-		}
+		// if (!temperature && !isBleeding) {
+		// 	handleDelete();
+		// 	return;
+		// }
 
 		try {
+			console.log('Adding day', {
+				date,
+				...(temperature && { temperature: Number(temperature) }),
+				flow
+			});
 			await db.days.put({
 				date,
 				...(temperature && { temperature: Number(temperature) }),
-				...(isBleeding && { flow: flow })
+				...(flow && { flow: flow })
 			});
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
@@ -73,14 +81,13 @@
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
 
-		return closestPeriodDay.date || undefined;
+		return closestPeriodDay ? closestPeriodDay.date : undefined;
 	};
 
 	const fillPeriodGaps = async (date: string) => {
 		const prevWeekDays = await db.getPreviousWeekDays(date);
 		const prevWeekDaysByDate = arrayToObject(prevWeekDays, 'date');
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
-
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
 		if (!closestPeriodDay) {
 			return;
@@ -182,11 +189,11 @@
 	<input
 		class="btn btn-sm mb-2"
 		type="checkbox"
-		aria-label={!isBleeding ? 'Period?' : 'Flow'}
-		bind:checked={isBleeding}
+		aria-label={!flow ? 'Period?' : 'Flow'}
+		bind:checked={flow}
 	/>
 
-	{#if isBleeding}
+	{#if flow}
 		<div class="form-control w-full">
 			<input
 				id="bleeding"

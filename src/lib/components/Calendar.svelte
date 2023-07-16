@@ -6,7 +6,6 @@
 	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import { db, type Day } from '../../stores/db';
-	import AddDayForm from './AddDayForm.svelte';
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
@@ -18,7 +17,7 @@
 	$: calendar = getMonthCalendarByWeek(currentMonth);
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 
-	let selectedDay: Day | null;
+	export let selectedDay: Day | null;
 
 	$: days = liveQuery(async () => {
 		const days = await db.getDaysBetween(
@@ -28,17 +27,6 @@
 
 		return arrayToObject(days, 'date');
 	});
-
-	const changeSelectedDay = (day: Interval) => () => {
-		if (day?.start && day.start > DateTime.now()) return;
-
-		selectedDay = $days[format(day)];
-		if (!selectedDay) {
-			selectedDay = {
-				date: format(day)
-			};
-		}
-	};
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
@@ -116,15 +104,6 @@
 	};
 </script>
 
-<!-- <div class="absolute bottom-4"> -->
-<!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
-		Add<TempColdLine class="text-lg -ml-1" />
-	</button> -->
-<!-- <button class="btn btn-primary" on:click={exportDays}>
-		Export<Download2Line class="text-lg -ml-1" />
-	</button> -->
-<!-- </div> -->
-
 <MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
 <div class="grid grid-cols-7 gap-2 text-center mb-4">
@@ -132,7 +111,14 @@
 	{#each calendar as week}
 		{#each week as day}
 			<span>
-				<DayButton days={$days} {day} {now} {currentMonth} on:change-day />
+				<DayButton
+					days={$days}
+					{day}
+					{now}
+					selectedDay={selectedDay?.date}
+					{currentMonth}
+					on:change-day
+				/>
 			</span>
 		{/each}
 	{/each}
@@ -141,6 +127,15 @@
 {#if !currentMonthIsNow}
 	<button class="btn absolute right-4" on:click={goToToday}>Today</button>
 {/if}
+
+<!-- <div class="absolute bottom-4"> -->
+<!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
+		Add<TempColdLine class="text-lg -ml-1" />
+	</button> -->
+<!-- <button class="btn btn-primary" on:click={exportDays}>
+		Export<Download2Line class="text-lg -ml-1" />
+	</button> -->
+<!-- </div> -->
 
 <!-- <input
 	type="file"

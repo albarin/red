@@ -15,6 +15,7 @@
 	export let days: Days;
 	export let now: DateTime;
 	export let currentMonth: DateTime;
+	export let selectedDay: string | undefined = undefined;
 
 	const dayFlow = (days: Days, day: Interval): number => {
 		return (days && days[format(day)]?.flow) || 0;
@@ -27,11 +28,16 @@
 	const dayHasTemperature = (days: Days, day: Interval): boolean => {
 		return !!(days && days[format(day)]?.temperature);
 	};
+
+	let isCurrentDay: boolean = format(day.start) === selectedDay;
+	$: isCurrentDay = format(day.start) === selectedDay;
 </script>
 
 <button
 	on:click={() => dispatch('change-day', { day })}
-	class="badge badge-lg py-5 border-none"
+	class="badge badge-lg py-5"
+	class:badge-outline={isCurrentDay}
+	class:border-none={!isCurrentDay}
 	class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
 	class:bg-red-200={dayFlow(days, day) === 1}
 	class:bg-red-300={dayFlow(days, day) === 2}

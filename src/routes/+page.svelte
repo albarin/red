@@ -4,18 +4,16 @@
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 	import { db, type Day } from '../stores/db';
-	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
+	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import NavBar from '$lib/components/NavBar.svelte';
 
 	const isSmallScreen = (width: number) => width < 768;
-	let innerWidth = 0;
+	let innerWidth: number;
+	$: innerWidth > 768 && (isAddDayModalOpen = false);
 
 	const now = DateTime.now();
 	let currentMonth = DateTime.now();
-	let currentMonthIsNow = true;
-	let isAddDayModalOpen = false;
-	let selectedDay: Day | null;
 
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 	$: days = liveQuery(async () => {
@@ -27,6 +25,12 @@
 		return arrayToObject(days, 'date');
 	});
 
+	let isAddDayModalOpen = false;
+
+	let selectedDay: Day | null =
+		$days && $days[format(now)] ? $days[format(now)] : { date: format(now) };
+	//$: selectedDay = $days && $days[format(now)] ? $days[format(now)] : { date: format(now) };
+
 	const changeSelectedDay = (day: Interval) => {
 		if (day?.start && day.start > DateTime.now()) return;
 
@@ -36,6 +40,8 @@
 				date: format(day)
 			};
 		}
+
+		isAddDayModalOpen = true;
 	};
 </script>
 
@@ -47,7 +53,7 @@
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
 		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content p-4">
-			<Calendar on:change-day={(event) => changeSelectedDay(event.detail.day)} />
+			<Calendar {selectedDay} on:change-day={(event) => changeSelectedDay(event.detail.day)} />
 		</div>
 		<div class="drawer-side">
 			<label for="menu-sidebar" class="drawer-overlay" />
@@ -65,6 +71,15 @@
 				date={selectedDay?.date}
 				temperature={selectedDay?.temperature?.toString()}
 				flow={selectedDay?.flow}
+			/>
+		</div>
+	{:else if isAddDayModalOpen}
+		<div class="bg-white absolute top-0 left-0 h-full w-full p-10">
+			<AddDayForm
+				date={selectedDay?.date}
+				temperature={selectedDay?.temperature?.toString()}
+				flow={selectedDay?.flow}
+				on:close={() => (isAddDayModalOpen = false)}
 			/>
 		</div>
 	{/if}
