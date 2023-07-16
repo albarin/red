@@ -15,10 +15,8 @@
 	export let temperature: string | undefined = undefined;
 	export let flow: number | undefined = undefined;
 
-	//let addDayDialog: HTMLDialogElement;
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
-	//let isBleeding: boolean | null = !!flow;
 
 	let shouldFillPeriodGaps: boolean = true;
 
@@ -27,10 +25,6 @@
 	$: if (wasSubmitted) {
 		temperatureError = validateTemperature(temperature);
 	}
-
-	// $: if (isBleeding && !flow) {
-	// 	flow = 2; //set default flow to medium
-	// }
 
 	$: if (typeof flow == 'boolean') {
 		flow = 2;
@@ -48,10 +42,10 @@
 			return;
 		}
 
-		// if (!temperature && !isBleeding) {
-		// 	handleDelete();
-		// 	return;
-		// }
+		if (!temperature && !flow) {
+			dispatch('close');
+			return;
+		}
 
 		try {
 			console.log('Adding day', {

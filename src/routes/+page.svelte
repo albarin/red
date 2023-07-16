@@ -29,7 +29,6 @@
 
 	let selectedDay: Day | null =
 		$days && $days[format(now)] ? $days[format(now)] : { date: format(now) };
-	//$: selectedDay = $days && $days[format(now)] ? $days[format(now)] : { date: format(now) };
 
 	const changeSelectedDay = (day: Interval) => {
 		if (day?.start && day.start > DateTime.now()) return;
