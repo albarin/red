@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.cdnfonts.com/css/avenir');
 
 @layer base {
   input[type='number']::-webkit-outer-spin-button,
