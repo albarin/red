@@ -6,7 +6,6 @@
 	import { db, type Day } from '../stores/db';
 	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import NavBar from '$lib/components/NavBar.svelte';
 
 	const isSmallScreen = (width: number) => width < 768;
 	let innerWidth: number;
@@ -45,8 +44,6 @@
 </script>
 
 <svelte:window bind:innerWidth />
-
-<NavBar />
 
 <div class="flex">
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
