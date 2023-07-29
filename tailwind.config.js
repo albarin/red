@@ -13,7 +13,7 @@ export default {
         "primary": "#F5F0FF",
         "secondary": "#D7CAF2",
         "accent": "#2D165E",
-        "neutral": "#2b3440",
+        "neutral": "#2D165E",
         "base-100": "#ffffff",
         "info": "#3abff8",
         "success": "#36d399",

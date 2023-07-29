@@ -45,23 +45,19 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="flex">
+<div class="flex bg-primary">
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
 		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content p-4">
 			<Calendar {selectedDay} on:change-day={(event) => changeSelectedDay(event.detail.day)} />
 		</div>
-		<div class="drawer-side">
+		<div class="drawer-side bg-base-100">
 			<label for="menu-sidebar" class="drawer-overlay" />
-			<ul class="w-64 h-full bg-base-200 text-base-content p-4">
-				<li><a>Sidebar Item 1</a></li>
-				<li><a>Sidebar Item 2</a></li>
-			</ul>
+			<ul class="w-64 h-full text-base-content p-4" />
 		</div>
 	</div>
 
 	{#if !isSmallScreen(innerWidth)}
-		<div class="divider lg:divider-horizontal px-0 !m-0" />
 		<div class="w-1/4 p-4">
 			<AddDayForm
 				date={selectedDay?.date}
@@ -70,7 +66,7 @@
 			/>
 		</div>
 	{:else if isAddDayModalOpen}
-		<div class="bg-white absolute top-0 left-0 h-full w-full p-10">
+		<div class="bg-base-100 absolute top-0 left-0 h-full w-full p-10">
 			<AddDayForm
 				date={selectedDay?.date}
 				temperature={selectedDay?.temperature?.toString()}

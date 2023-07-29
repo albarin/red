@@ -104,30 +104,31 @@
 	};
 </script>
 
-<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
+<div class="bg-base-100">
+	<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
-<div class="grid grid-cols-7 gap-2 text-center mb-4">
-	<CalendarHeader week={calendar[0]} />
-	{#each calendar as week}
-		{#each week as day}
-			<span>
-				<DayButton
-					days={$days}
-					{day}
-					{now}
-					selectedDay={selectedDay?.date}
-					{currentMonth}
-					on:change-day
-				/>
-			</span>
+	<div class="grid grid-cols-7 gap-2 text-center mb-4">
+		<CalendarHeader week={calendar[0]} />
+		{#each calendar as week}
+			{#each week as day}
+				<span>
+					<DayButton
+						days={$days}
+						{day}
+						{now}
+						selectedDay={selectedDay?.date}
+						{currentMonth}
+						on:change-day
+					/>
+				</span>
+			{/each}
 		{/each}
-	{/each}
+	</div>
+
+	{#if !currentMonthIsNow}
+		<button class="btn absolute right-4" on:click={goToToday}>Today</button>
+	{/if}
 </div>
-
-{#if !currentMonthIsNow}
-	<button class="btn absolute right-4" on:click={goToToday}>Today</button>
-{/if}
-
 <!-- <div class="absolute bottom-4"> -->
 <!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />
