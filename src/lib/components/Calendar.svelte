@@ -111,7 +111,7 @@
 		<CalendarHeader week={calendar[0]} />
 		{#each calendar as week}
 			{#each week as day}
-				<span class="bg-primary rounded-lg h-[4.5em] text-right">
+				<span class="bg-primary rounded-lg h-[4.3em] text-right text-lg">
 					<DayButton
 						days={$days}
 						{day}
