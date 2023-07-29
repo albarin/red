@@ -5,5 +5,5 @@
 </script>
 
 {#each week as day}
-	<p class="text-sm text-gray-600">{day?.start?.toFormat('ccc')}</p>
+	<p class="text-xl text-neutral">{day?.start?.toFormat('ccc')}</p>
 {/each}

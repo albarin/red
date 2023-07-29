@@ -107,11 +107,11 @@
 <div class="bg-base-100 p-4 rounded-xl">
 	<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
-	<div class="grid grid-cols-7 gap-2 text-center mb-4">
+	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
 		<CalendarHeader week={calendar[0]} />
 		{#each calendar as week}
 			{#each week as day}
-				<span>
+				<span class="bg-primary rounded-lg h-[4.5em] text-right">
 					<DayButton
 						days={$days}
 						{day}

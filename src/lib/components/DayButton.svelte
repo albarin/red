@@ -33,21 +33,21 @@
 	$: isCurrentDay = format(day.start) === selectedDay;
 </script>
 
+<!-- class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
+class:bg-red-200={dayFlow(days, day) === 1}
+class:bg-red-300={dayFlow(days, day) === 2}
+class:bg-red-400={dayFlow(days, day) === 3} -->
+<!-- class:px-4={day.start && day.start?.day < 10} -->
+<!-- style={isCurrentDay ? `box-shadow:0px 0px 0px 1px black inset` : ''} -->
 <button
-	style={isCurrentDay ? `box-shadow:0px 0px 0px 1px black inset` : ''}
 	on:click={() => dispatch('change-day', { day })}
-	class="badge badge-lg py-5 border-none"
-	class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
-	class:bg-red-200={dayFlow(days, day) === 1}
-	class:bg-red-300={dayFlow(days, day) === 2}
-	class:bg-red-400={dayFlow(days, day) === 3}
-	class:text-base-300={day.start && day.start > now}
+	class="pr-4 pt-2"
+	class:text-secondary={day.start && day.start > now}
 	class:cursor-default={day.start && day.start > now}
-	class:px-4={day.start && day.start?.day < 10}
 	class:invisible={day.start?.month !== currentMonth.month}
 >
 	{day.start?.day}
-	{#if dayHasTemperature(days, day)}
+	<!-- {#if dayHasTemperature(days, day)}
 		<span
 			class="icon"
 			class:icon-left={day.start && day.start?.day >= 10}
@@ -57,7 +57,7 @@
 		>
 			<TempColdLine />
 		</span>
-	{/if}
+	{/if} -->
 </button>
 
 <style>
