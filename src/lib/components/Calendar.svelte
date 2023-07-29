@@ -104,7 +104,7 @@
 	};
 </script>
 
-<div class="bg-base-100">
+<div class="bg-base-100 p-4 rounded-xl">
 	<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
 
 	<div class="grid grid-cols-7 gap-2 text-center mb-4">

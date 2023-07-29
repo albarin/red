@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {},
     fontFamily: {
-      sans: ['Avenir', 'sans-serif'],
+      sans: ['Nunito', 'sans-serif'],
     }
   },
   daisyui: {
