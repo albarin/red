@@ -45,7 +45,7 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="flex bg-accent">
+<div class="flex bg-accent h-screen">
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
 		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content p-4">
