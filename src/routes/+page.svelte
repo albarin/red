@@ -45,20 +45,20 @@
 
 <svelte:window bind:innerWidth />
 
-<div class="flex bg-primary">
+<div class="flex bg-accent">
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
 		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content p-4">
 			<Calendar {selectedDay} on:change-day={(event) => changeSelectedDay(event.detail.day)} />
 		</div>
-		<div class="drawer-side bg-base-100">
+		<!-- <div class="drawer-side bg-red-200">
 			<label for="menu-sidebar" class="drawer-overlay" />
 			<ul class="w-64 h-full text-base-content p-4" />
-		</div>
+		</div> -->
 	</div>
 
 	{#if !isSmallScreen(innerWidth)}
-		<div class="w-1/4 p-4">
+		<div class="w-1/4 py-4 pr-4">
 			<AddDayForm
 				date={selectedDay?.date}
 				temperature={selectedDay?.temperature?.toString()}

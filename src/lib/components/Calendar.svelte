@@ -111,16 +111,14 @@
 		<CalendarHeader week={calendar[0]} />
 		{#each calendar as week}
 			{#each week as day}
-				<span class="bg-primary rounded-lg h-[4.3em] text-right text-lg">
-					<DayButton
-						days={$days}
-						{day}
-						{now}
-						selectedDay={selectedDay?.date}
-						{currentMonth}
-						on:change-day
-					/>
-				</span>
+				<DayButton
+					days={$days}
+					{day}
+					{now}
+					selectedDay={selectedDay?.date}
+					{currentMonth}
+					on:change-day
+				/>
 			{/each}
 		{/each}
 	</div>

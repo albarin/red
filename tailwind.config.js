@@ -1,3 +1,5 @@
+import plugin from '@sveltejs/adapter-auto';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
@@ -10,9 +12,9 @@ export default {
   daisyui: {
     themes: [{
       red: {
-        "primary": "#F5F0FF",
+        "primary": "#2D165E",
         "secondary": "#D7CAF2",
-        "accent": "#2D165E",
+        "accent": "#F5F0FF",
         "neutral": "#896CC7",
         "base-100": "#ffffff",
         "info": "#3abff8",

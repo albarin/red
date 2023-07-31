@@ -39,37 +39,39 @@ class:bg-red-300={dayFlow(days, day) === 2}
 class:bg-red-400={dayFlow(days, day) === 3} -->
 <!-- class:px-4={day.start && day.start?.day < 10} -->
 <!-- style={isCurrentDay ? `box-shadow:0px 0px 0px 1px black inset` : ''} -->
-<button
+<div
 	on:click={() => dispatch('change-day', { day })}
-	class="pr-4 pt-2"
-	class:text-secondary={day.start && day.start > now}
-	class:cursor-default={day.start && day.start > now}
-	class:invisible={day.start?.month !== currentMonth.month}
+	on:keydown={() => dispatch('change-day', { day })}
+	role="button"
+	tabindex="0"
+	class="bg-accent cursor-pointer rounded-lg py-[0.6em] px-3 h-[5.5em] flex flex-col justify-between"
 >
-	{day.start?.day}
-	<!-- {#if dayHasTemperature(days, day)}
+	<div class="text-right text-lg">
 		<span
-			class="icon"
-			class:icon-left={day.start && day.start?.day >= 10}
-			class:text-blue-600={!dayHasPeriod(days, day)}
-			class:text-red-700={dayHasPeriod(days, day)}
-			style=""
+			class:text-secondary={day.start && day.start > now}
+			class:cursor-default={day.start && day.start > now}
+			class:invisible={day.start?.month !== currentMonth.month}
 		>
-			<TempColdLine />
+			{day.start?.day}
 		</span>
-	{/if} -->
-</button>
+	</div>
+	<div class="text-left flex justify-between">
+		{#if dayFlow(days, day)}
+			<div
+				class="badge badge-primary badge-lg align-text-bottom"
+				class:bg-red-200={dayFlow(days, day) === 1}
+				class:border-red-200={dayFlow(days, day) === 1}
+				class:bg-red-300={dayFlow(days, day) === 2}
+				class:border-red-300={dayFlow(days, day) === 2}
+				class:bg-red-400={dayFlow(days, day) === 3}
+				class:border-red-400={dayFlow(days, day) === 3}
+			/>
+		{/if}
 
-<style>
-	.icon {
-		position: relative;
-		top: 20px;
-		margin-top: -20px;
-		left: 19px;
-		margin-left: -16px;
-	}
-
-	.icon-left {
-		left: 14px;
-	}
-</style>
+		{#if dayHasTemperature(days, day)}
+			<span class="text-2xl text-primary">
+				<TempColdLine />
+			</span>
+		{/if}
+	</div>
+</div>

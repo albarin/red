@@ -8,6 +8,7 @@
 	import { db, type Day } from '../../stores/db';
 	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
+	import AttributeBox from './AttributeBox.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -153,16 +154,16 @@
 	};
 </script>
 
-<p class="text-gray-400 mb-1">{DateTime.fromISO(date).toLocaleString(DateTime.DATE_MED)}</p>
-<div class="mb-4">
-	<div
-		class="text-center"
-		class:text-error={temperatureError}
-		class:focus:text-error={temperatureError}
-	>
+<div class="py-4 overflow-y-auto max-h-screen no-scrollbar">
+	<p class="text-primary text-2xl mb-4">
+		{#if date === format(DateTime.now())}Today,{/if}
+		{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
+	</p>
+
+	<AttributeBox title="Temperature" align="center">
 		<MaskInput
 			style="width:100px"
-			class="input input-ghost text-center text-3xl focus:outline-none p-0"
+			class="input input-ghost text-center text-3xl text-secondary focus:outline-none p-0"
 			alwaysShowMask
 			maskChar="_"
 			mask="00.00"
@@ -171,70 +172,128 @@
 			on:focus={handleTemperatureFocus}
 		/>
 
-		<span class="text-3xl relative -left-3" class:text-error={temperatureError}> ºC </span>
-	</div>
+		<span class="text-3xl text-secondary relative -left-3" class:text-error={temperatureError}>
+			ºC
+		</span>
+		<!-- 
+		<div
+			class="bg-white rounded-xl py-5 px-5"
+			class:text-error={temperatureError}
+			class:focus:text-error={temperatureError}
+		>
+			<p class="text-primary text-xl">Temperature</p>
+		</div> -->
 
-	{#if temperatureError}
-		<p class="text-sm text-error">{temperatureError}</p>
-	{/if}
-</div>
+		{#if temperatureError}
+			<p class="text-sm text-error">{temperatureError}</p>
+		{/if}
+	</AttributeBox>
 
-<div class="mb-4">
-	<input
-		class="btn btn-sm mb-2"
-		type="checkbox"
-		aria-label={!flow ? 'Period?' : 'Flow'}
-		bind:checked={flow}
-	/>
-
-	{#if flow}
-		<div class="form-control w-full">
+	<AttributeBox title="Bleeding">
+		<div class="flex justify-between">
 			<input
-				id="bleeding"
-				type="range"
-				min="1"
-				max="3"
-				class="range range-primary"
-				bind:value={flow}
+				class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mb-2"
+				type="checkbox"
+				aria-label={!flow ? 'Period?' : 'Flow'}
+				bind:checked={flow}
 			/>
-			<div class="w-full flex justify-between text-xs px-2">
-				<span>Low</span>
-				<span>Medium</span>
-				<span>High</span>
-			</div>
+			<input
+				class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mb-2"
+				type="checkbox"
+				aria-label="Spotting"
+			/>
 		</div>
 
-		{#await periodLastDay(date) then periodLastDay}
-			{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
-				<div class="form-control">
-					<label class="label cursor-pointer justify-start gap-2">
-						<input
-							type="checkbox"
-							class="checkbox checkbox-primary"
-							bind:checked={shouldFillPeriodGaps}
-						/>
-						<span class="label-text">
-							Set days from <strong class="font-semibold text-primary">
-								{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
-									month: 'long',
-									day: 'numeric'
-								})}
-							</strong> as period days
-						</span>
-					</label>
+		{#if flow}
+			<div class="form-control w-full">
+				<input
+					id="bleeding"
+					type="range"
+					min="1"
+					max="3"
+					class="range range-primary"
+					bind:value={flow}
+				/>
+				<div class="w-full flex justify-between text-xs px-2">
+					<span>Low</span>
+					<span>Medium</span>
+					<span>High</span>
 				</div>
-			{/if}
-		{/await}
-	{/if}
-</div>
+			</div>
 
-<div class="flex mt-4">
-	{#if temperature || flow}
-		<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
-	{/if}
+			{#await periodLastDay(date) then periodLastDay}
+				{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
+					<div class="form-control">
+						<label class="label cursor-pointer justify-start gap-2">
+							<input
+								type="checkbox"
+								class="checkbox checkbox-primary"
+								bind:checked={shouldFillPeriodGaps}
+							/>
+							<span class="label-text">
+								Set days from <strong class="font-semibold text-primary">
+									{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
+										month: 'long',
+										day: 'numeric'
+									})}
+								</strong> as period days
+							</span>
+						</label>
+					</div>
+				{/if}
+			{/await}
+		{/if}
+	</AttributeBox>
 
-	<div class="w-full text-right">
-		<button class="btn btn-sm btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
-		<button class="btn btn-sm btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
+	<AttributeBox title="Cervical fluid">
+		<input
+			name="cervical-fluid"
+			type="radio"
+			aria-label="Dry"
+			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2 mb-3"
+		/>
+		<input
+			name="cervical-fluid"
+			type="radio"
+			aria-label="Sticky"
+			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+		/>
+		<input
+			name="cervical-fluid"
+			type="radio"
+			aria-label="Creamy"
+			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+		/>
+		<input
+			name="cervical-fluid"
+			type="radio"
+			aria-label="Watery"
+			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+		/>
+		<input
+			name="cervical-fluid"
+			type="radio"
+			aria-label="Egg white"
+			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
+		/>
+	</AttributeBox>
+
+	<AttributeBox title="Notes">
+		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+	</AttributeBox>
+
+	<AttributeBox title="Notes">
+		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+	</AttributeBox>
+
+	<div class="flex">
+		{#if temperature || flow}
+			<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
+		{/if}
+
+		<div class="w-full text-right">
+			<button class="btn btn-sm btn-ghost" on:click|preventDefault={handleClose}>Cancel</button>
+			<button class="btn btn-sm btn-accent" on:click|preventDefault={handleSubmit}>Save</button>
+		</div>
 	</div>
 </div>
