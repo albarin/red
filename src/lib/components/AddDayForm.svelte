@@ -215,7 +215,7 @@
 					bind:value={flow}
 				/>
 				<div class="w-full flex justify-between text-xs px-2">
-					<span>Low</span>
+					<span>Light</span>
 					<span>Medium</span>
 					<span>High</span>
 				</div>

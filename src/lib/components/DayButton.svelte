@@ -21,12 +21,31 @@
 		return (days && days[format(day)]?.flow) || 0;
 	};
 
+	const dayFlowText = (days: Days, day: Interval): string => {
+		const flow = days && days[format(day)]?.flow;
+
+		switch (flow) {
+			case 1:
+				return 'light';
+			case 2:
+				return 'medium';
+			case 3:
+				return 'heavy';
+			default:
+				return '';
+		}
+	};
+
 	const dayHasPeriod = (days: Days, day: Interval): boolean => {
 		return !!days[format(day)]?.flow;
 	};
 
 	const dayHasTemperature = (days: Days, day: Interval): boolean => {
 		return !!(days && days[format(day)]?.temperature);
+	};
+
+	const dayTemperature = (days: Days, day: Interval): number | undefined => {
+		return days && days[format(day)]?.temperature;
 	};
 
 	let isCurrentDay: boolean = format(day.start) === selectedDay;
@@ -58,20 +77,27 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 	<div class="text-left flex justify-between">
 		{#if dayFlow(days, day)}
 			<div
-				class="badge badge-primary badge-lg align-text-bottom"
-				class:bg-red-200={dayFlow(days, day) === 1}
-				class:border-red-200={dayFlow(days, day) === 1}
-				class:bg-red-300={dayFlow(days, day) === 2}
-				class:border-red-300={dayFlow(days, day) === 2}
-				class:bg-red-400={dayFlow(days, day) === 3}
-				class:border-red-400={dayFlow(days, day) === 3}
-			/>
+				class="lg:tooltip tooltip-primary"
+				data-tip={`Period day: ${dayFlowText(days, day)} flow`}
+			>
+				<div
+					class="badge badge-primary badge-lg align-text-bottom"
+					class:bg-red-200={dayFlow(days, day) === 1}
+					class:border-red-200={dayFlow(days, day) === 1}
+					class:bg-red-300={dayFlow(days, day) === 2}
+					class:border-red-300={dayFlow(days, day) === 2}
+					class:bg-red-400={dayFlow(days, day) === 3}
+					class:border-red-400={dayFlow(days, day) === 3}
+				/>
+			</div>
 		{/if}
 
 		{#if dayHasTemperature(days, day)}
-			<span class="text-2xl text-primary">
-				<TempColdLine />
-			</span>
+			<div class="lg:tooltip tooltip-primary" data-tip={`${dayTemperature(days, day)} ºC`}>
+				<span class="text-2xl text-primary">
+					<TempColdLine />
+				</span>
+			</div>
 		{/if}
 	</div>
 </div>
