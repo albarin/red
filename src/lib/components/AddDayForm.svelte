@@ -1,5 +1,9 @@
 <script lang="ts">
+	import ContrastDropFill from 'svelte-remixicon/lib/icons/ContrastDropFill.svelte';
+	import ContrastDropLine from 'svelte-remixicon/lib/icons/ContrastDropLine.svelte';
+	import Edit2Line from 'svelte-remixicon/lib/icons/Edit2Line.svelte';
 	import MaskInput from 'svelte-input-mask/MaskInput.svelte';
+	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 
 	import { createEventDispatcher } from 'svelte';
 	import { DateTime, Interval } from 'luxon';
@@ -155,12 +159,16 @@
 </script>
 
 <div class="py-4 overflow-y-auto max-h-screen no-scrollbar">
-	<p class="text-primary text-2xl mb-4">
-		{#if date === format(DateTime.now())}Today,{/if}
-		{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
-	</p>
+	<div class="flex justify-between">
+		<p class="text-primary text-2xl mb-4">
+			{#if date === format(DateTime.now())}Today,{/if}
+			{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
+		</p>
+		<button class="btn btn-sm btn-secondary text-primary">Clear</button>
+	</div>
 
 	<AttributeBox title="Temperature" align="center">
+		<span class="mt-[3px]" slot="icon"><TempColdLine /></span>
 		<MaskInput
 			style="width:100px"
 			class="input input-ghost text-center text-3xl text-secondary focus:outline-none p-0"
@@ -190,6 +198,7 @@
 	</AttributeBox>
 
 	<AttributeBox title="Bleeding">
+		<span class="mt-[3px]" slot="icon"><ContrastDropLine /></span>
 		<div class="flex justify-between">
 			<input
 				class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mb-2"
@@ -246,6 +255,7 @@
 	</AttributeBox>
 
 	<AttributeBox title="Cervical fluid">
+		<span class="mt-[3px]" slot="icon"><ContrastDropFill /></span>
 		<input
 			name="cervical-fluid"
 			type="radio"
@@ -279,10 +289,7 @@
 	</AttributeBox>
 
 	<AttributeBox title="Notes">
-		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
-	</AttributeBox>
-
-	<AttributeBox title="Notes">
+		<span slot="icon"><Edit2Line /></span>
 		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
 	</AttributeBox>
 

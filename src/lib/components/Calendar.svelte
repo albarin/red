@@ -1,5 +1,4 @@
 <script lang="ts">
-	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 	import Download2Line from 'svelte-remixicon/lib/icons/Download2Line.svelte';
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';

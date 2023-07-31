@@ -6,9 +6,12 @@
 	$: alignClass = `text-${align}`;
 </script>
 
-<div class="bg-white rounded-xl p-5 mb-4">
+<div class="bg-white rounded-xl px-3 py-4 mb-4">
 	{#if title}
-		<p class="text-primary text-xl">{title}</p>
+		<div class="flex text-xl">
+			<slot class="mt-[3px]" name="icon" />
+			<p class="text-primary ml-1">{title}</p>
+		</div>
 	{/if}
 	<div class={`${alignClass} mt-4`}>
 		<slot />
