@@ -41,6 +41,14 @@
 
 		isAddDayModalOpen = true;
 	};
+
+	const handleBack = (event) => {
+		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
+	};
+
+	const handleForward = (event) => {
+		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
+	};
 </script>
 
 <svelte:window bind:innerWidth />
@@ -49,7 +57,14 @@
 	<div class="drawer lg:drawer-open md:w-3/4 w-full">
 		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
 		<div class="drawer-content p-4">
-			<Calendar {selectedDay} on:change-day={(event) => changeSelectedDay(event.detail.day)} />
+			<Calendar
+				{selectedDay}
+				{currentMonth}
+				days={$days}
+				on:change-day={(event) => changeSelectedDay(event.detail.day)}
+				on:back={handleBack}
+				on:forward={handleForward}
+			/>
 		</div>
 		<!-- <div class="drawer-side bg-red-200">
 			<label for="menu-sidebar" class="drawer-overlay" />

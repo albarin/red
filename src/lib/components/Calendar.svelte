@@ -1,31 +1,20 @@
 <script lang="ts">
-	import Download2Line from 'svelte-remixicon/lib/icons/Download2Line.svelte';
-	import { DateTime, Interval } from 'luxon';
-	import { liveQuery } from 'dexie';
-	import { format, getMonthCalendarByWeek } from '$lib/utils/date';
-	import { arrayToObject } from '$lib/utils/array';
+	import { DateTime } from 'luxon';
+	import { getMonthCalendarByWeek } from '$lib/utils/date';
 	import { db, type Day } from '../../stores/db';
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
 
 	const now = DateTime.now();
-	let currentMonth = DateTime.now();
 	let currentMonthIsNow = true;
 
 	$: calendar = getMonthCalendarByWeek(currentMonth);
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 
+	export let days;
+	export let currentMonth;
 	export let selectedDay: Day | null;
-
-	$: days = liveQuery(async () => {
-		const days = await db.getDaysBetween(
-			format(currentMonth.startOf('month')),
-			format(currentMonth.endOf('month'))
-		);
-
-		return arrayToObject(days, 'date');
-	});
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
@@ -48,14 +37,6 @@
 		document.body.appendChild(link); // Required for FF
 
 		link.click();
-	};
-
-	const handleBack = (event) => {
-		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
-	};
-
-	const handleForward = (event) => {
-		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
 
 	const goToToday = () => {
@@ -104,14 +85,14 @@
 </script>
 
 <div class="bg-base-100 p-4 rounded-xl">
-	<MonthHeader month={currentMonth} on:back={handleBack} on:forward={handleForward} />
+	<MonthHeader month={currentMonth} on:back on:forward />
 
 	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
 		<CalendarHeader week={calendar[0]} />
 		{#each calendar as week}
 			{#each week as day}
 				<DayButton
-					days={$days}
+					{days}
 					{day}
 					{now}
 					selectedDay={selectedDay?.date}
