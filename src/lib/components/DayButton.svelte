@@ -63,7 +63,8 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 	on:keydown={() => dispatch('change-day', { day })}
 	role="button"
 	tabindex="0"
-	class="bg-accent cursor-pointer rounded-lg py-[0.6em] px-3 h-[5.5em] flex flex-col justify-between"
+	class="bg-accent rounded-lg py-[0.6em] px-3 h-[5.5em] flex flex-col justify-between"
+	class:cursor-default={day.start && day.start > now}
 >
 	<div class="text-right text-lg">
 		<span
@@ -74,14 +75,14 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 			{day.start?.day}
 		</span>
 	</div>
-	<div class="text-left flex justify-between">
+	<div class="text-left flex">
 		{#if dayFlow(days, day)}
 			<div
 				class="lg:tooltip tooltip-primary"
 				data-tip={`Period day: ${dayFlowText(days, day)} flow`}
 			>
 				<div
-					class="badge badge-primary badge-lg align-text-bottom"
+					class="badge badge-primary badge-md align-text-bottom mr-1"
 					class:bg-red-200={dayFlow(days, day) === 1}
 					class:border-red-200={dayFlow(days, day) === 1}
 					class:bg-red-300={dayFlow(days, day) === 2}
@@ -94,7 +95,7 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 
 		{#if dayHasTemperature(days, day)}
 			<div class="lg:tooltip tooltip-primary" data-tip={`${dayTemperature(days, day)} ºC`}>
-				<span class="text-2xl text-primary">
+				<span class="text-2xl text-primary text-right">
 					<TempColdLine />
 				</span>
 			</div>

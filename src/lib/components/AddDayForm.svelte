@@ -159,13 +159,10 @@
 </script>
 
 <div class="py-4 overflow-y-auto max-h-screen no-scrollbar">
-	<div class="flex justify-between">
-		<p class="text-primary text-2xl mb-4">
-			{#if date === format(DateTime.now())}Today,{/if}
-			{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
-		</p>
-		<button class="btn btn-sm btn-secondary text-primary">Clear</button>
-	</div>
+	<p class="text-primary text-2xl mb-4">
+		{#if date === format(DateTime.now())}Today,{/if}
+		{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
+	</p>
 
 	<AttributeBox title="Temperature" align="center">
 		<span class="mt-[3px]" slot="icon"><TempColdLine /></span>
@@ -293,14 +290,21 @@
 		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
 	</AttributeBox>
 
+	<AttributeBox title="Notes">
+		<span slot="icon"><Edit2Line /></span>
+		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+	</AttributeBox>
+
 	<div class="flex">
 		{#if temperature || flow}
 			<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 		{/if}
 
 		<div class="w-full text-right">
-			<!-- <button class="btn btn-sm btn-link" on:click|preventDefault={handleClose}>Cancel</button> -->
-			<button class="btn btn-sm btn-primary" on:click|preventDefault={handleSubmit}>Save</button>
+			<button class="btn btn-sm btn-link text-secondary" on:click|preventDefault={handleClose}
+				>Cancel</button
+			>
+			<button class="btn btn-sm" on:click|preventDefault={handleSubmit}>Save</button>
 		</div>
 	</div>
 </div>

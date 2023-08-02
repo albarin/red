@@ -9,12 +9,12 @@
 	const now = DateTime.now();
 	let currentMonthIsNow = true;
 
+	export let days;
+	export let currentMonth: DateTime;
+	export let selectedDay: Day | null;
+
 	$: calendar = getMonthCalendarByWeek(currentMonth);
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
-
-	export let days;
-	export let currentMonth;
-	export let selectedDay: Day | null;
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
