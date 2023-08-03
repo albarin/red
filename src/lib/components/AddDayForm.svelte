@@ -1,9 +1,5 @@
 <script lang="ts">
-	import ContrastDropFill from 'svelte-remixicon/lib/icons/ContrastDropFill.svelte';
-	import ContrastDropLine from 'svelte-remixicon/lib/icons/ContrastDropLine.svelte';
-	import Edit2Line from 'svelte-remixicon/lib/icons/Edit2Line.svelte';
 	import MaskInput from 'svelte-input-mask/MaskInput.svelte';
-	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 
 	import { createEventDispatcher } from 'svelte';
 	import { DateTime, Interval } from 'luxon';
@@ -24,6 +20,9 @@
 	let temperatureError: string | undefined;
 
 	let shouldFillPeriodGaps: boolean = true;
+
+	let addDayDialog: HTMLDialogElement;
+	$: addDayDialog?.showModal();
 
 	$: temperature = updateTemperature(temperature);
 
@@ -158,153 +157,149 @@
 	};
 </script>
 
-<div class="py-4 overflow-y-auto max-h-screen no-scrollbar">
-	<p class="text-primary text-2xl mb-4">
-		{#if date === format(DateTime.now())}Today,{/if}
-		{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
-	</p>
-
-	<AttributeBox title="Temperature" align="center">
-		<span class="mt-[3px]" slot="icon"><TempColdLine /></span>
-		<MaskInput
-			style="width:100px"
-			class="input input-ghost text-center text-3xl text-secondary focus:outline-none p-0"
-			alwaysShowMask
-			maskChar="_"
-			mask="00.00"
-			value={temperature ? String(temperature) : ''}
-			on:change={handleTemperatureChange}
-			on:focus={handleTemperatureFocus}
-		/>
-
-		<span class="text-3xl text-secondary relative -left-3" class:text-error={temperatureError}>
-			ºC
-		</span>
-		<!-- 
-		<div
-			class="bg-white rounded-xl py-5 px-5"
-			class:text-error={temperatureError}
-			class:focus:text-error={temperatureError}
-		>
-			<p class="text-primary text-xl">Temperature</p>
-		</div> -->
-
-		{#if temperatureError}
-			<p class="text-sm text-error">{temperatureError}</p>
-		{/if}
-	</AttributeBox>
-
-	<AttributeBox title="Bleeding">
-		<span class="mt-[3px]" slot="icon"><ContrastDropLine /></span>
-		<div class="flex justify-between">
-			<input
-				class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mb-2"
-				type="checkbox"
-				aria-label={!flow ? 'Period?' : 'Flow'}
-				bind:checked={flow}
-			/>
-			<input
-				class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mb-2"
-				type="checkbox"
-				aria-label="Spotting"
-			/>
-		</div>
-
-		{#if flow}
-			<div class="form-control w-full">
-				<input
-					id="bleeding"
-					type="range"
-					min="1"
-					max="3"
-					class="range range-primary"
-					bind:value={flow}
+<dialog bind:this={addDayDialog} class="modal text-center" on:close|preventDefault={handleClose}>
+	<div
+		style="max-height: 100%;"
+		class="modal-box w-full max-w-[24rem] h-full sm:w-96 sm:h-[90%] !p-0 overflow-y-auto no-scrollbar rounded-xl"
+	>
+		<div class="bg-accent p-4">
+			<p class="text-primary text-2xl mb-4">
+				{#if date === format(DateTime.now())}Today,{/if}
+				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
+			</p>
+			<AttributeBox title="Temperature" align="center">
+				<MaskInput
+					style="width:100px"
+					class="input input-ghost text-center text-3xl text-secondary focus:outline-none p-0"
+					alwaysShowMask
+					maskChar="_"
+					mask="00.00"
+					value={temperature ? String(temperature) : ''}
+					on:change={handleTemperatureChange}
+					on:focus={handleTemperatureFocus}
 				/>
-				<div class="w-full flex justify-between text-xs px-2">
-					<span>Light</span>
-					<span>Medium</span>
-					<span>High</span>
-				</div>
-			</div>
-
-			{#await periodLastDay(date) then periodLastDay}
-				{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus({ days: 1 }))}
-					<div class="form-control">
-						<label class="label cursor-pointer justify-start gap-2">
-							<input
-								type="checkbox"
-								class="checkbox checkbox-primary"
-								bind:checked={shouldFillPeriodGaps}
-							/>
-							<span class="label-text">
-								Set days from <strong class="font-semibold text-primary">
-									{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
-										month: 'long',
-										day: 'numeric'
-									})}
-								</strong> as period days
-							</span>
-						</label>
-					</div>
-				{/if}
-			{/await}
-		{/if}
-	</AttributeBox>
-
-	<AttributeBox title="Cervical fluid">
-		<span class="mt-[3px]" slot="icon"><ContrastDropFill /></span>
-		<input
-			name="cervical-fluid"
-			type="radio"
-			aria-label="Dry"
-			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2 mb-3"
-		/>
-		<input
-			name="cervical-fluid"
-			type="radio"
-			aria-label="Sticky"
-			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-		/>
-		<input
-			name="cervical-fluid"
-			type="radio"
-			aria-label="Creamy"
-			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-		/>
-		<input
-			name="cervical-fluid"
-			type="radio"
-			aria-label="Watery"
-			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-		/>
-		<input
-			name="cervical-fluid"
-			type="radio"
-			aria-label="Egg white"
-			class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
-		/>
-	</AttributeBox>
-
-	<AttributeBox title="Notes">
-		<span slot="icon"><Edit2Line /></span>
-		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
-	</AttributeBox>
-
-	<AttributeBox title="Notes">
-		<span slot="icon"><Edit2Line /></span>
-		<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
-	</AttributeBox>
-
-	<div class="flex">
-		{#if temperature || flow}
-			<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
-		{/if}
-
-		<div class="w-full text-right">
-			<button class="btn btn-sm btn-link text-secondary" on:click|preventDefault={handleClose}
-				>Cancel</button
+				<span class="text-3xl text-secondary relative -left-3" class:text-error={temperatureError}>
+					ºC
+				</span>
+				<!--
+			<div
+				class="bg-white rounded-xl py-5 px-5"
+				class:text-error={temperatureError}
+				class:focus:text-error={temperatureError}
 			>
-			<button class="btn btn-sm" on:click|preventDefault={handleSubmit}>Save</button>
+				<p class="text-primary text-xl">Temperature</p>
+			</div> -->
+				{#if temperatureError}
+					<p class="text-sm text-error">{temperatureError}</p>
+				{/if}
+			</AttributeBox>
+			<AttributeBox title="Bleeding">
+				<div class="text-center">
+					<input
+						class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+						type="checkbox"
+						aria-label={!flow ? 'Period?' : 'Flow'}
+						bind:checked={flow}
+					/>
+					<input
+						class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
+						type="checkbox"
+						aria-label="Spotting"
+					/>
+				</div>
+				{#if flow}
+					<div class="form-control w-full mt-2">
+						<input
+							id="bleeding"
+							type="range"
+							min="1"
+							max="3"
+							class="range range-primary"
+							bind:value={flow}
+						/>
+						<div class="w-full flex justify-between text-xs px-2">
+							<span>Light</span>
+							<span>Medium</span>
+							<span>High</span>
+						</div>
+					</div>
+					{#await periodLastDay(date) then periodLastDay}
+						{#if periodLastDay && date !== format(DateTime.fromISO(periodLastDay).plus( { days: 1 } ))}
+							<div class="form-control">
+								<label class="label cursor-pointer justify-start gap-2">
+									<input
+										type="checkbox"
+										class="checkbox checkbox-primary"
+										bind:checked={shouldFillPeriodGaps}
+									/>
+									<span class="label-text">
+										Set days from <strong class="font-semibold text-primary">
+											{DateTime.fromISO(periodLastDay).plus({ days: 1 }).toLocaleString({
+												month: 'long',
+												day: 'numeric'
+											})}
+										</strong> as period days
+									</span>
+								</label>
+							</div>
+						{/if}
+					{/await}
+				{/if}
+			</AttributeBox>
+			<AttributeBox title="Cervical fluid" align="center">
+				<input
+					name="cervical-fluid"
+					type="radio"
+					aria-label="Dry"
+					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2 mb-2"
+				/>
+				<input
+					name="cervical-fluid"
+					type="radio"
+					aria-label="Sticky"
+					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+				/>
+				<input
+					name="cervical-fluid"
+					type="radio"
+					aria-label="Creamy"
+					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+				/>
+				<input
+					name="cervical-fluid"
+					type="radio"
+					aria-label="Watery"
+					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
+				/>
+				<input
+					name="cervical-fluid"
+					type="radio"
+					aria-label="Egg white"
+					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
+				/>
+			</AttributeBox>
+			<AttributeBox title="Notes">
+				<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+			</AttributeBox>
+			<AttributeBox title="Notes">
+				<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+			</AttributeBox>
+		</div>
+		<div class="flex bottom-0 sticky bg-secondary px-4 py-3">
+			{#if temperature || flow}
+				<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
+			{/if}
+
+			<div class="w-full text-right">
+				<button class="btn btn-sm btn-link text-secondary" on:click|preventDefault={handleClose}
+					>Cancel</button
+				>
+				<button class="btn btn-sm btn-primary" on:click|preventDefault={handleSubmit}>Save</button>
+			</div>
 		</div>
 	</div>
-</div>
+
+	<form method="dialog" class="modal-backdrop">
+		<button>close</button>
+	</form>
+</dialog>

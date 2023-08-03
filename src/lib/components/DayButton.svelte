@@ -61,8 +61,6 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 <div
 	on:click={() => dispatch('change-day', { day })}
 	on:keydown={() => dispatch('change-day', { day })}
-	role="button"
-	tabindex="0"
 	class="bg-accent rounded-lg py-[0.6em] px-3 h-[5.5em] flex flex-col justify-between"
 	class:cursor-default={day.start && day.start > now}
 >

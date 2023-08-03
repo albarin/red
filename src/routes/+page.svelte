@@ -71,7 +71,7 @@
 			<ul class="w-64 h-full text-base-content p-4" />
 		</div> -->
 	</div>
-
+	<!-- 
 	{#if !isSmallScreen(innerWidth)}
 		<div class="w-1/4 py-4 pr-4">
 			<AddDayForm
@@ -80,14 +80,14 @@
 				flow={selectedDay?.flow}
 			/>
 		</div>
-	{:else if isAddDayModalOpen}
-		<div class="bg-base-100 absolute top-0 left-0 h-full w-full p-10">
-			<AddDayForm
-				date={selectedDay?.date}
-				temperature={selectedDay?.temperature?.toString()}
-				flow={selectedDay?.flow}
-				on:close={() => (isAddDayModalOpen = false)}
-			/>
-		</div>
+	{:else if isAddDayModalOpen} -->
+
+	{#if isAddDayModalOpen}
+		<AddDayForm
+			date={selectedDay?.date}
+			temperature={selectedDay?.temperature?.toString()}
+			flow={selectedDay?.flow}
+			on:close={() => (isAddDayModalOpen = false)}
+		/>
 	{/if}
 </div>
