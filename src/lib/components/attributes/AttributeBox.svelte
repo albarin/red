@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let title: string = '';
-	export let align: string = 'left';
+	export let align: string = 'center';
 
 	let alignClass: string;
 	$: alignClass = `text-${align}`;

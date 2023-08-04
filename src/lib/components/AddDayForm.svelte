@@ -8,7 +8,8 @@
 	import { db, type Day } from '../../stores/db';
 	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import AttributeBox from './AttributeBox.svelte';
+	import AttributeBox from './attributes/AttributeBox.svelte';
+	import TemperatureInput from './attributes/TemperatureInput.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -167,6 +168,7 @@
 				{#if date === format(DateTime.now())}Today,{/if}
 				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
 			</p>
+			<TemperatureInput />
 			<AttributeBox title="Temperature" align="center">
 				<MaskInput
 					style="width:100px"
