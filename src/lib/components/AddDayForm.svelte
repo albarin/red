@@ -6,7 +6,7 @@
 	import { db, type Day } from '../../stores/db';
 	import { format } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import AttributeBox from './attributes/AttributeBox.svelte';
+	import AttributeWrapper from './attributes/AttributeWrapper.svelte';
 	import TemperatureInput from './attributes/TemperatureInput.svelte';
 
 	const dispatch = createEventDispatcher();
@@ -133,11 +133,11 @@
 				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
 			</p>
 
-			<AttributeBox title="Temperature" error={temperatureError}>
+			<AttributeWrapper title="Temperature" error={temperatureError}>
 				<TemperatureInput bind:temperature />
-			</AttributeBox>
+			</AttributeWrapper>
 
-			<AttributeBox title="Bleeding">
+			<AttributeWrapper title="Bleeding">
 				<div class="text-center">
 					<input
 						class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
@@ -189,8 +189,9 @@
 						{/if}
 					{/await}
 				{/if}
-			</AttributeBox>
-			<AttributeBox title="Cervical fluid" align="center">
+			</AttributeWrapper>
+
+			<AttributeWrapper title="Cervical fluid">
 				<input
 					name="cervical-fluid"
 					type="radio"
@@ -221,13 +222,11 @@
 					aria-label="Egg white"
 					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
 				/>
-			</AttributeBox>
-			<AttributeBox title="Notes">
+			</AttributeWrapper>
+
+			<AttributeWrapper title="Notes">
 				<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
-			</AttributeBox>
-			<AttributeBox title="Notes">
-				<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
-			</AttributeBox>
+			</AttributeWrapper>
 		</div>
 		<div class="flex bottom-0 sticky bg-secondary px-4 py-3">
 			{#if temperature || flow}
