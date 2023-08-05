@@ -15,10 +15,8 @@
 
 	export let date: string | undefined = undefined;
 	export let temperature: number | undefined = undefined;
-	//export let flow: number | undefined = undefined;
-
-	let bleeding: string | undefined = undefined;
-	let flow: number;
+	export let bleeding: string | undefined = undefined;
+	export let flow: number | undefined = undefined;
 
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
@@ -135,8 +133,8 @@
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Bleeding">
-				{bleeding}, {flow}
-				<BleedingInput bind:bleeding bind:flow {date} />
+				{flow}
+				<BleedingInput bind:flow {date} />
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Cervical fluid">

@@ -3,25 +3,33 @@
 	import { toISOformat, toDateTime } from '$lib/utils/date';
 	import type { DateTime } from 'luxon';
 
-	const LIGHT = 1;
-	const MEDIUM = 2;
-	const HEAVY = 3;
+	const SPOTTING = 0;
+	const FLOW_LIGHT = 1;
+	const FLOW_MEDIUM = 2;
+	const FLOW_HEAVY = 3;
 
 	export let date: string | undefined = undefined;
-	export let bleeding: string | undefined = undefined;
-	export let flow: number | undefined = bleeding ? MEDIUM : undefined;
+	export let flow: number | undefined = undefined;
 
-	$: console.log({ bleeding, bleedingFlow: flow });
+	$: console.log({ flow });
 
 	let shouldFillPeriodGaps: boolean = true;
 
-	$: if (bleeding === 'period' && !flow) {
-		flow = MEDIUM;
+	const isPeriod = (bleeding: number | undefined): boolean => {
+		if (bleeding === undefined) {
+			return false;
+		}
+
+		return bleeding !== SPOTTING;
+	};
+
+	/* 	$: if (isPeriod(flow) && !flow) {
+		flow = FLOW_MEDIUM;
 	}
 
-	$: if (bleeding === 'spotting') {
+	$: if (!isPeriod(flow)) {
 		flow = undefined;
-	}
+	} */
 
 	const periodLastDay = async (date: string | undefined): Promise<DateTime | undefined> => {
 		if (!date) {
@@ -40,20 +48,20 @@
 	<input
 		class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
 		type="radio"
-		aria-label={bleeding ? 'Period?' : 'Flow'}
-		bind:group={bleeding}
-		value="period"
+		aria-label="Period"
+		bind:group={flow}
+		value={FLOW_MEDIUM}
 	/>
 	<input
 		class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
 		type="radio"
 		aria-label="Spotting"
-		bind:group={bleeding}
-		value="spotting"
+		bind:group={flow}
+		value={SPOTTING}
 	/>
 </div>
 
-{#if bleeding === 'period'}
+{#if isPeriod(flow)}
 	<div class="form-control w-full mt-2">
 		<input
 			id="bleeding"
