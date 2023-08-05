@@ -1,16 +1,12 @@
 <script lang="ts">
 	export let temperature: number | undefined = undefined;
 
+	let changed: boolean = false;
 	let input0: HTMLInputElement;
 	let input1: HTMLInputElement;
 	let input2: HTMLInputElement;
 	let input3: HTMLInputElement;
 	let inputs: HTMLInputElement[];
-
-	$: inputs = [input0, input1, input2, input3];
-	$: temperature = Number(
-		`${temperatures?.[0]}${temperatures?.[1]}.${temperatures?.[2]}${temperatures?.[3]}`
-	);
 
 	let temperatures: string[] = temperature
 		? temperature
@@ -21,7 +17,17 @@
 				.flat()
 		: ['', '', '', ''];
 
+	$: inputs = [input0, input1, input2, input3];
+	$: if (changed) {
+		const number = `${temperatures?.[0] || 0}${temperatures?.[1] || 0}`;
+		const decimals = `${temperatures?.[2] || 0}${temperatures?.[3] || 0}`;
+
+		temperature = Number(`${number}.${decimals}`);
+	}
+
 	const onInput = (i: number) => () => {
+		changed = true;
+
 		if (i === 3) {
 			return;
 		}
@@ -34,9 +40,7 @@
 		inputs[i + 1].select();
 	};
 
-	const selectInputText = (i: number) => () => {
-		inputs[i].select();
-	};
+	const selectInputText = (i: number) => () => inputs[i].select();
 
 	const onKeypress = () => (e: KeyboardEvent) => {
 		const isNumber = /^[0-9]$/i.test(e.key);

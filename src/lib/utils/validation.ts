@@ -4,7 +4,7 @@ const countDecimals = (number: number): number => {
 }
 
 export const validateTemperature = (temperature: number | undefined): string | undefined => {
-  if (!temperature) {
+  if (temperature === undefined) {
     return;
   }
 
