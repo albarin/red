@@ -133,7 +133,7 @@
 				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
 			</p>
 
-			<AttributeBox title="Temperature" align="center" error={temperatureError}>
+			<AttributeBox title="Temperature" error={temperatureError}>
 				<TemperatureInput bind:temperature />
 			</AttributeBox>
 

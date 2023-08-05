@@ -3,8 +3,7 @@
 	export let align: string = 'center';
 	export let error: string = '';
 
-	let alignClass: string;
-	$: alignClass = `text-${align}`;
+	let alignClass: string = `text-${align}`;
 </script>
 
 <div class="bg-white rounded-xl text-center pt-2 pb-3 px-3 mb-4">
