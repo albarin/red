@@ -20,15 +20,11 @@
 	};
 
 	const flowToPeriod = (flow: number | undefined): string | undefined => {
-		if (!flow) {
+		if (flow === undefined) {
 			return undefined;
 		}
 
-		if (flow === FLOW_SPOTTING) {
-			return 'spotting';
-		}
-
-		return 'period';
+		return flow === FLOW_SPOTTING ? SPOTTING : PERIOD;
 	};
 
 	export let date: string | undefined = undefined;
@@ -36,6 +32,7 @@
 	export let fillGaps: boolean = false;
 
 	let bleeding: string | undefined = flowToPeriod(flow);
+
 	let prevFlow: number | undefined = FLOW_MEDIUM;
 
 	$: if (bleeding === PERIOD && !flow) {
@@ -44,7 +41,7 @@
 
 	$: if (bleeding === SPOTTING) {
 		prevFlow = flow;
-		flow = 0;
+		flow = FLOW_SPOTTING;
 	}
 
 	$: if (!bleeding) {
