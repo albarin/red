@@ -17,6 +17,10 @@
 	export let currentMonth: DateTime;
 	export let selectedDay: string | undefined = undefined;
 
+	const daySpotting = (days: Days, day: Interval): boolean => {
+		return days && days[toISOformat(day)]?.flow === 0;
+	};
+
 	const dayFlow = (days: Days, day: Interval): number => {
 		return (days && days[toISOformat(day)]?.flow) || 0;
 	};
@@ -74,6 +78,9 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 		</span>
 	</div>
 	<div class="text-left flex">
+		{#if daySpotting(days, day)}
+			<div class="lg:tooltip tooltip-primary" data-tip={`Spotting`}>s</div>
+		{/if}
 		{#if dayFlow(days, day)}
 			<div
 				class="lg:tooltip tooltip-primary"

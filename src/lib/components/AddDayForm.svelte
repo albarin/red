@@ -15,13 +15,12 @@
 
 	export let date: string | undefined = undefined;
 	export let temperature: number | undefined = undefined;
-	export let bleeding: string | undefined = undefined;
 	export let flow: number | undefined = undefined;
 
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
 
-	let shouldFillPeriodGaps: boolean = true;
+	let fillGaps: boolean = false;
 
 	let addDayDialog: HTMLDialogElement;
 	$: addDayDialog?.showModal();
@@ -46,22 +45,17 @@
 			return;
 		}
 
-		if (!temperature && !flow) {
-			dispatch('close');
-			return;
-		}
-
 		try {
 			await db.days.put({
 				date,
 				...(temperature && { temperature: Number(temperature) }),
-				...(flow && { flow: flow })
+				flow
 			});
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
 
-		if (shouldFillPeriodGaps) {
+		if (fillGaps) {
 			fillPeriodGaps(date);
 		}
 
@@ -133,8 +127,7 @@
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Bleeding">
-				{flow}
-				<BleedingInput bind:flow {date} />
+				<BleedingInput bind:flow bind:fillGaps {date} />
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Cervical fluid">
