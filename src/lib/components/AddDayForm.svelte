@@ -10,12 +10,15 @@
 	import { db, type Day } from '../../stores/db';
 	import { toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
+	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
+	import type { Fluid } from '$lib/utils/models';
 
 	const dispatch = createEventDispatcher();
 
 	export let date: string | undefined = undefined;
 	export let temperature: number | undefined = undefined;
 	export let flow: number | undefined = undefined;
+	export let fluid: Fluid | undefined = undefined;
 
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
@@ -49,7 +52,8 @@
 			await db.days.put({
 				date,
 				...(temperature && { temperature: Number(temperature) }),
-				flow
+				flow,
+				...(fluid && { fluid })
 			});
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
@@ -131,36 +135,7 @@
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Cervical fluid">
-				<input
-					name="cervical-fluid"
-					type="radio"
-					aria-label="Dry"
-					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2 mb-2"
-				/>
-				<input
-					name="cervical-fluid"
-					type="radio"
-					aria-label="Sticky"
-					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-				/>
-				<input
-					name="cervical-fluid"
-					type="radio"
-					aria-label="Creamy"
-					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-				/>
-				<input
-					name="cervical-fluid"
-					type="radio"
-					aria-label="Watery"
-					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral mr-2"
-				/>
-				<input
-					name="cervical-fluid"
-					type="radio"
-					aria-label="Egg white"
-					class="btn btn-sm border-none hover:bg-secondary bg-accent text-neutral"
-				/>
+				<CervicalFluidInput bind:fluid />
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Notes">
