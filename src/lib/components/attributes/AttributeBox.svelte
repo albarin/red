@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let title: string = '';
 	export let align: string = 'center';
+	export let error: string = '';
 
 	let alignClass: string;
 	$: alignClass = `text-${align}`;
@@ -12,7 +13,12 @@
 			<p class="text-primary ml-1">{title}</p>
 		</div>
 	{/if}
+
 	<div class={`${alignClass} mt-2`}>
 		<slot />
 	</div>
+
+	{#if error}
+		<p class="text-error text-sm mt-2">{error}</p>
+	{/if}
 </div>

@@ -85,7 +85,7 @@
 	{#if isAddDayModalOpen}
 		<AddDayForm
 			date={selectedDay?.date}
-			temperature={selectedDay?.temperature?.toString()}
+			temperature={selectedDay?.temperature}
 			flow={selectedDay?.flow}
 			on:close={() => (isAddDayModalOpen = false)}
 		/>

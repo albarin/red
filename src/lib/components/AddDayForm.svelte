@@ -1,6 +1,4 @@
 <script lang="ts">
-	import MaskInput from 'svelte-input-mask/MaskInput.svelte';
-
 	import { createEventDispatcher } from 'svelte';
 	import { DateTime, Interval } from 'luxon';
 
@@ -14,7 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let date: string | undefined = undefined;
-	export let temperature: string | undefined = undefined;
+	export let temperature: number | undefined = undefined;
 	export let flow: number | undefined = undefined;
 
 	let wasSubmitted: boolean = false;
@@ -24,8 +22,6 @@
 
 	let addDayDialog: HTMLDialogElement;
 	$: addDayDialog?.showModal();
-
-	$: temperature = updateTemperature(temperature);
 
 	$: if (wasSubmitted) {
 		temperatureError = validateTemperature(temperature);
@@ -53,11 +49,6 @@
 		}
 
 		try {
-			console.log('Adding day', {
-				date,
-				...(temperature && { temperature: Number(temperature) }),
-				flow
-			});
 			await db.days.put({
 				date,
 				...(temperature && { temperature: Number(temperature) }),
@@ -129,33 +120,6 @@
 
 		dispatch('close');
 	};
-
-	const updateTemperature = (t: string | undefined): string | undefined => {
-		if (t === '' || t === undefined) {
-			return undefined;
-		}
-
-		const value = parseFloat(t);
-
-		if (isNaN(value) || value === 0) {
-			return undefined;
-		}
-
-		if (value > 10) {
-			return value.toFixed(2);
-		}
-
-		return String(value);
-	};
-
-	const handleTemperatureChange = ({ detail }) => {
-		temperature = updateTemperature(detail.inputState.visibleValue);
-	};
-
-	const handleTemperatureFocus = (e) => {
-		const length = temperature ? String(temperature).length : 0;
-		e.detail.target.setSelectionRange(length, length);
-	};
 </script>
 
 <dialog bind:this={addDayDialog} class="modal text-center" on:close|preventDefault={handleClose}>
@@ -168,33 +132,11 @@
 				{#if date === format(DateTime.now())}Today,{/if}
 				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
 			</p>
-			<TemperatureInput />
-			<AttributeBox title="Temperature" align="center">
-				<MaskInput
-					style="width:100px"
-					class="input input-ghost text-center text-3xl text-secondary focus:outline-none p-0"
-					alwaysShowMask
-					maskChar="_"
-					mask="00.00"
-					value={temperature ? String(temperature) : ''}
-					on:change={handleTemperatureChange}
-					on:focus={handleTemperatureFocus}
-				/>
-				<span class="text-3xl text-secondary relative -left-3" class:text-error={temperatureError}>
-					ºC
-				</span>
-				<!--
-			<div
-				class="bg-white rounded-xl py-5 px-5"
-				class:text-error={temperatureError}
-				class:focus:text-error={temperatureError}
-			>
-				<p class="text-primary text-xl">Temperature</p>
-			</div> -->
-				{#if temperatureError}
-					<p class="text-sm text-error">{temperatureError}</p>
-				{/if}
+
+			<AttributeBox title="Temperature" align="center" error={temperatureError}>
+				<TemperatureInput bind:temperature />
 			</AttributeBox>
+
 			<AttributeBox title="Bleeding">
 				<div class="text-center">
 					<input
