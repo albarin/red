@@ -9,7 +9,7 @@ export const getMonthCalendarByWeek = (now: DateTime): Interval[][] => {
   return weeks.map((week) => week.splitBy({ days: 1 }));
 }
 
-export const format = (date: DateTime | Interval): string => {
+export const toISOformat = (date: DateTime | Interval): string => {
   if (date instanceof Interval) {
     if (date.start) {
       return date.start?.toFormat('yyyy-MM-dd');
@@ -18,4 +18,8 @@ export const format = (date: DateTime | Interval): string => {
   }
 
   return date.toFormat('yyyy-MM-dd');
+}
+
+export const toDateTime = (date: string): DateTime => {
+  return DateTime.fromISO(date);
 }

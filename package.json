@@ -43,6 +43,6 @@
 		"@fontsource/nunito": "^5.0.5",
 		"@fontsource/roboto": "^5.0.3",
 		"dexie": "^4.0.1-alpha.22",
-		"luxon": "^3.3.0",
+		"luxon": "^3.3.0"
 	}
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
 	import type { Day } from '../../stores/db';
-	import { format } from '$lib/utils/date';
+	import { toISOformat } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
 
@@ -18,11 +18,11 @@
 	export let selectedDay: string | undefined = undefined;
 
 	const dayFlow = (days: Days, day: Interval): number => {
-		return (days && days[format(day)]?.flow) || 0;
+		return (days && days[toISOformat(day)]?.flow) || 0;
 	};
 
 	const dayFlowText = (days: Days, day: Interval): string => {
-		const flow = days && days[format(day)]?.flow;
+		const flow = days && days[toISOformat(day)]?.flow;
 
 		switch (flow) {
 			case 1:
@@ -37,19 +37,19 @@
 	};
 
 	const dayHasPeriod = (days: Days, day: Interval): boolean => {
-		return !!days[format(day)]?.flow;
+		return !!days[toISOformat(day)]?.flow;
 	};
 
 	const dayHasTemperature = (days: Days, day: Interval): boolean => {
-		return !!(days && days[format(day)]?.temperature);
+		return !!(days && days[toISOformat(day)]?.temperature);
 	};
 
 	const dayTemperature = (days: Days, day: Interval): number | undefined => {
-		return days && days[format(day)]?.temperature;
+		return days && days[toISOformat(day)]?.temperature;
 	};
 
-	let isCurrentDay: boolean = format(day.start) === selectedDay;
-	$: isCurrentDay = format(day.start) === selectedDay;
+	let isCurrentDay: boolean = toISOformat(day.start) === selectedDay;
+	$: isCurrentDay = toISOformat(day.start) === selectedDay;
 </script>
 
 <!-- class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}

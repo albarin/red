@@ -1,4 +1,4 @@
-import { format } from '$lib/utils/date';
+import { toISOformat } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
 import { DateTime } from 'luxon';
 
@@ -31,7 +31,7 @@ export class RedDB extends Dexie {
 
   async getPreviousWeekDays(date: string): Promise<Day[]> {
     return await this.getDaysBetween(
-      format(DateTime.fromISO(date).minus({ days: 6 })),
+      toISOformat(DateTime.fromISO(date).minus({ days: 6 })),
       date
     );
   }
