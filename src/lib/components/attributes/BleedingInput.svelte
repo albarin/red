@@ -32,7 +32,6 @@
 	export let fillGaps: boolean = false;
 
 	let bleeding: string | undefined = flowToPeriod(flow);
-
 	let prevFlow: number | undefined = FLOW_MEDIUM;
 
 	$: if (bleeding === PERIOD && !flow) {
