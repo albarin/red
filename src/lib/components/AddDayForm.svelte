@@ -8,7 +8,7 @@
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db, type Day } from '../../stores/db';
-	import { toISOformat } from '$lib/utils/date';
+	import { toDateTime, toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
 	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
@@ -86,8 +86,8 @@
 		}
 
 		const prevWeek = Interval.fromDateTimes(
-			DateTime.fromISO(closestPeriodDay.date).plus({ days: 1 }),
-			DateTime.fromISO(date)
+			toDateTime(closestPeriodDay.date).plus({ days: 1 }),
+			toDateTime(date)
 		).splitBy({ days: 1 });
 
 		const prevWeekWithPeriod = prevWeek.map((day) => {
@@ -130,10 +130,12 @@
 		class="modal-box w-full max-w-[24rem] h-full sm:w-96 sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-xl"
 	>
 		<div class="bg-accent p-4">
-			<p class="text-primary text-2xl mb-4">
-				{#if date === toISOformat(DateTime.now())}Today,{/if}
-				{DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL)}
-			</p>
+			{#if date}
+				<p class="text-primary text-2xl mb-4">
+					{#if date === toISOformat(DateTime.now())}Today,{/if}
+					{toDateTime(date).toLocaleString(DateTime.DATE_FULL)}
+				</p>
+			{/if}
 
 			<AttributeWrapper title="Temperature" error={temperatureError}>
 				<TemperatureInput bind:temperature />
@@ -151,15 +153,16 @@
 				<NotesInput bind:notes />
 			</AttributeWrapper>
 		</div>
+
 		<div class="flex bottom-0 sticky bg-secondary px-4 py-3">
-			{#if temperature || flow}
+			{#if temperature || flow !== undefined || fluid || notes}
 				<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 			{/if}
 
 			<div class="w-full text-right">
-				<button class="btn btn-sm btn-link text-secondary" on:click|preventDefault={handleClose}
-					>Cancel</button
-				>
+				<button class="btn btn-sm btn-link text-primary" on:click|preventDefault={handleClose}>
+					Cancel
+				</button>
 				<button class="btn btn-sm btn-primary" on:click|preventDefault={handleSubmit}>Save</button>
 			</div>
 		</div>
