@@ -41,7 +41,7 @@
 	};
 
 	const dayHasPeriod = (days: Days, day: Interval): boolean => {
-		const flow = days[toISOformat(day)]?.flow;
+		const flow = days && days[toISOformat(day)]?.flow;
 		return flow ? flow > 0 : false;
 	};
 
