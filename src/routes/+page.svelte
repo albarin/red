@@ -58,7 +58,7 @@
 <svelte:window bind:innerWidth />
 
 <div class="flex bg-accent h-screen">
-	<div class="p-4">
+	<div class="sm:p-4 w-full md:w-3/4">
 		<Calendar
 			{selectedDay}
 			{currentMonth}
