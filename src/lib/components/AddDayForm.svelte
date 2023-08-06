@@ -42,7 +42,7 @@
 	const handleSubmit = async () => {
 		wasSubmitted = true;
 
-		notesError = notes?.length > 100 ? 'Notes must be less than 100 characters' : undefined;
+		notesError = notes && notes.length > 100 ? 'Notes must be less than 100 characters' : undefined;
 		if (notesError) {
 			return;
 		}
