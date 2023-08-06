@@ -41,7 +41,8 @@
 	};
 
 	const dayHasPeriod = (days: Days, day: Interval): boolean => {
-		return !!days[toISOformat(day)]?.flow;
+		const flow = days[toISOformat(day)]?.flow;
+		return flow ? flow > 0 : false;
 	};
 
 	const dayHasTemperature = (days: Days, day: Interval): boolean => {
@@ -56,16 +57,10 @@
 	$: isCurrentDay = toISOformat(day.start) === selectedDay;
 </script>
 
-<!-- class:bg-blue-200={dayHasTemperature(days, day) && !dayHasPeriod(days, day)}
-class:bg-red-200={dayFlow(days, day) === 1}
-class:bg-red-300={dayFlow(days, day) === 2}
-class:bg-red-400={dayFlow(days, day) === 3} -->
-<!-- class:px-4={day.start && day.start?.day < 10} -->
-<!-- style={isCurrentDay ? `box-shadow:0px 0px 0px 1px black inset` : ''} -->
 <div
 	on:click={() => dispatch('change-day', { day })}
 	on:keydown={() => dispatch('change-day', { day })}
-	class="bg-accent rounded-lg py-[0.6em] px-3 h-[5.5em] flex flex-col justify-between"
+	class="bg-accent rounded-lg py-[0.6em] px-3 pr-4 h-[5.5em] flex flex-col justify-between"
 	class:cursor-default={day.start && day.start > now}
 >
 	<div class="text-right text-lg">
@@ -81,7 +76,7 @@ class:bg-red-400={dayFlow(days, day) === 3} -->
 		{#if daySpotting(days, day)}
 			<div class="lg:tooltip tooltip-primary" data-tip={`Spotting`}>s</div>
 		{/if}
-		{#if dayFlow(days, day)}
+		{#if dayHasPeriod(days, day)}
 			<div
 				class="lg:tooltip tooltip-primary"
 				data-tip={`Period day: ${dayFlowText(days, day)} flow`}
