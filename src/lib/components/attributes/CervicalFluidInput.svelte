@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FluidKeys, type Fluid } from '$lib/utils/models';
+	import { FluidKeys, type Fluid } from '$lib/components/attributes/cervicalFluid';
 
 	export let fluid: Fluid | undefined = undefined;
 </script>

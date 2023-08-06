@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Fluid } from '$lib/utils/models.ts';
+	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
 	import { DateTime, Interval } from 'luxon';

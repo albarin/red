@@ -11,7 +11,7 @@
 	import { toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
-	import type { Fluid } from '$lib/utils/models';
+	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import NotesInput from './attributes/NotesInput.svelte';
 
 	const dispatch = createEventDispatcher();
