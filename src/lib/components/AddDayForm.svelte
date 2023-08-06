@@ -127,7 +127,7 @@
 <dialog bind:this={addDayDialog} class="modal text-center" on:close|preventDefault={handleClose}>
 	<div
 		style="max-height: 100%;"
-		class="modal-box w-full max-w-[24rem] h-full sm:w-96 sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-xl"
+		class="modal-box w-full sm:w-96 h-full sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-none sm:rounded-xl"
 	>
 		<div class="bg-accent p-4">
 			{#if date}
