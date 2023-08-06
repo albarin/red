@@ -6,6 +6,8 @@ export interface Day {
   date: string;
   temperature?: number;
   flow?: number;
+  fluid?: string;
+  notes?: string;
 }
 
 export class RedDB extends Dexie {

@@ -12,6 +12,7 @@
 	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
 	import type { Fluid } from '$lib/utils/models';
+	import NotesInput from './attributes/NotesInput.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -19,9 +20,11 @@
 	export let temperature: number | undefined = undefined;
 	export let flow: number | undefined = undefined;
 	export let fluid: Fluid | undefined = undefined;
+	export let notes: string | undefined = undefined;
 
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
+	let notesError: string | undefined;
 
 	let fillGaps: boolean = false;
 
@@ -39,6 +42,11 @@
 	const handleSubmit = async () => {
 		wasSubmitted = true;
 
+		notesError = notes?.length > 100 ? 'Notes must be less than 100 characters' : undefined;
+		if (notesError) {
+			return;
+		}
+
 		temperatureError = validateTemperature(temperature);
 		if (temperatureError) {
 			return;
@@ -53,7 +61,8 @@
 				date,
 				...(temperature && { temperature: Number(temperature) }),
 				flow,
-				...(fluid && { fluid })
+				...(fluid && { fluid }),
+				...(notes && { notes })
 			});
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
@@ -138,8 +147,8 @@
 				<CervicalFluidInput bind:fluid />
 			</AttributeWrapper>
 
-			<AttributeWrapper title="Notes">
-				<textarea name="notes" class="textarea textarea-secondary w-full h-full text-primary" />
+			<AttributeWrapper title="Notes" error={notesError}>
+				<NotesInput bind:notes />
 			</AttributeWrapper>
 		</div>
 		<div class="flex bottom-0 sticky bg-secondary px-4 py-3">

@@ -1,7 +1,6 @@
 <script lang="ts">
 	export let temperature: number | undefined = undefined;
 
-	let changed: boolean = false;
 	let input0: HTMLInputElement;
 	let input1: HTMLInputElement;
 	let input2: HTMLInputElement;
@@ -18,16 +17,19 @@
 		: ['', '', '', ''];
 
 	$: inputs = [input0, input1, input2, input3];
-	$: if (changed) {
-		const number = `${temperatures?.[0] || 0}${temperatures?.[1] || 0}`;
-		const decimals = `${temperatures?.[2] || 0}${temperatures?.[3] || 0}`;
 
-		temperature = Number(`${number}.${decimals}`);
+	$: {
+		if (!temperatures.join('').length) {
+			temperature = undefined;
+		} else {
+			const number = `${temperatures?.[0] || 0}${temperatures?.[1] || 0}`;
+			const decimals = `${temperatures?.[2] || 0}${temperatures?.[3] || 0}`;
+
+			temperature = Number(`${number}.${decimals}`);
+		}
 	}
 
 	const onInput = (i: number) => () => {
-		changed = true;
-
 		if (i === 3) {
 			return;
 		}

@@ -2,7 +2,6 @@
 	import { FluidKeys, type Fluid } from '$lib/utils/models';
 
 	export let fluid: Fluid | undefined = undefined;
-	$: console.log(fluid);
 </script>
 
 {#each FluidKeys as fluidKey}

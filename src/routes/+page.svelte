@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Fluid } from '$lib/utils/models.ts';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
 	import { DateTime, Interval } from 'luxon';
@@ -49,6 +50,9 @@
 	const handleForward = (event) => {
 		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
+
+	let selectedDayFluid: Fluid | undefined = undefined;
+	$: selectedDayFluid = selectedDay?.fluid as Fluid;
 </script>
 
 <svelte:window bind:innerWidth />
@@ -87,6 +91,8 @@
 			date={selectedDay?.date}
 			temperature={selectedDay?.temperature}
 			flow={selectedDay?.flow}
+			fluid={selectedDayFluid}
+			notes={selectedDay?.notes}
 			on:close={() => (isAddDayModalOpen = false)}
 		/>
 	{/if}
