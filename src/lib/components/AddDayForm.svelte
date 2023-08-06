@@ -126,10 +126,9 @@
 
 <dialog bind:this={addDayDialog} class="modal text-center" on:close|preventDefault={handleClose}>
 	<div
-		style="max-height: 100%;"
-		class="modal-box w-full sm:w-96 h-full sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-none sm:rounded-xl"
+		class="modal-box w-full max-h-full sm:w-96 h-full sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-none sm:rounded-xl"
 	>
-		<div class="bg-accent p-4">
+		<div class="bg-accent h-full sm:bg-red-300 p-4">
 			{#if date}
 				<p class="text-primary text-2xl mb-4">
 					{#if date === toISOformat(DateTime.now())}Today,{/if}
@@ -146,7 +145,9 @@
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Cervical fluid">
-				<CervicalFluidInput bind:fluid />
+				<div class="mx-5">
+					<CervicalFluidInput bind:fluid />
+				</div>
 			</AttributeWrapper>
 
 			<AttributeWrapper title="Notes" error={notesError}>
@@ -154,7 +155,7 @@
 			</AttributeWrapper>
 		</div>
 
-		<div class="flex bottom-0 sticky bg-secondary px-4 py-3">
+		<div class="flex sticky bottom-0 bg-secondary px-4 py-3">
 			{#if temperature || flow !== undefined || fluid || notes}
 				<button class="btn btn-sm btn-error" on:click|preventDefault={handleDelete}>Delete</button>
 			{/if}

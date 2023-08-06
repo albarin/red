@@ -4,11 +4,7 @@ import plugin from '@sveltejs/adapter-auto';
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    extend: {
-      screens: {
-        'sm': '400px',
-      },
-    },
+
     fontFamily: {
       sans: ['Nunito', 'sans-serif'],
     }

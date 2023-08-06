@@ -58,23 +58,17 @@
 <svelte:window bind:innerWidth />
 
 <div class="flex bg-accent h-screen">
-	<div class="drawer lg:drawer-open md:w-3/4 w-full">
-		<input id="menu-sidebar" type="checkbox" class="drawer-toggle" />
-		<div class="drawer-content p-4">
-			<Calendar
-				{selectedDay}
-				{currentMonth}
-				days={$days}
-				on:change-day={(event) => changeSelectedDay(event.detail.day)}
-				on:back={handleBack}
-				on:forward={handleForward}
-			/>
-		</div>
-		<!-- <div class="drawer-side bg-red-200">
-			<label for="menu-sidebar" class="drawer-overlay" />
-			<ul class="w-64 h-full text-base-content p-4" />
-		</div> -->
+	<div class="p-4">
+		<Calendar
+			{selectedDay}
+			{currentMonth}
+			days={$days}
+			on:change-day={(event) => changeSelectedDay(event.detail.day)}
+			on:back={handleBack}
+			on:forward={handleForward}
+		/>
 	</div>
+
 	<!-- 
 	{#if !isSmallScreen(innerWidth)}
 		<div class="w-1/4 py-4 pr-4">
