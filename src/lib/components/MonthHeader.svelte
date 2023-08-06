@@ -11,7 +11,7 @@
 	export let month: DateTime;
 </script>
 
-<div class="bg-primary p-2 mb-2 text-white rounded-lg flex justify-between align-middle">
+<div class="bg-primary p-1 mb-2 text-white rounded-lg flex justify-between align-middle">
 	<ArrowLeftDoubleLine
 		class="text-3xl hover:cursor-pointer"
 		on:click={() => dispatch('back', { interval: 'year' })}
@@ -21,7 +21,7 @@
 		on:click={() => dispatch('back', { interval: 'month' })}
 	/>
 
-	<h1 class="text-center text-2xl">{month.toFormat('MMMM')} {month.year}</h1>
+	<h1 class="text-center text-xl">{month.toFormat('MMMM')} {month.year}</h1>
 
 	<ArrowRightSLine
 		class="text-3xl hover:cursor-pointer"
