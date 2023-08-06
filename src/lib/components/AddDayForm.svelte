@@ -128,7 +128,7 @@
 	<div
 		class="modal-box w-full max-h-full sm:w-96 h-full sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-none sm:rounded-xl"
 	>
-		<div class="bg-accent h-full sm:bg-red-300 p-4">
+		<div class="bg-accent h-full p-4">
 			{#if date}
 				<p class="text-primary text-2xl mb-4">
 					{#if date === toISOformat(DateTime.now())}Today,{/if}
