@@ -124,11 +124,13 @@
 	};
 </script>
 
-<dialog bind:this={addDayDialog} class="modal text-center" on:close|preventDefault={handleClose}>
-	<div
-		class="modal-box w-full max-h-full sm:w-96 h-full sm:h-[85%] !p-0 overflow-y-auto no-scrollbar rounded-none sm:rounded-xl"
-	>
-		<div class="bg-accent h-full p-4">
+<dialog
+	bind:this={addDayDialog}
+	class="modal modal-bottom sm:modal-middle text-center"
+	on:close|preventDefault={handleClose}
+>
+	<div class="modal-box w-full sm:w-96 !p-0">
+		<div class="bg-accent p-4">
 			{#if date}
 				<p class="text-primary text-2xl mb-4">
 					{#if date === toISOformat(DateTime.now())}Today,{/if}
