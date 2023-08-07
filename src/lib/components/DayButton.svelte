@@ -65,6 +65,7 @@
 >
 	<div class="text-right text-lg">
 		<span
+			class={isCurrentDay ? `badge badge-primary px-2 py-3` : ''}
 			class:text-secondary={day.start && day.start > now}
 			class:cursor-default={day.start && day.start > now}
 			class:invisible={day.start?.month !== currentMonth.month}
