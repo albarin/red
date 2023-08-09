@@ -53,19 +53,39 @@
 		return days && days[toISOformat(day)]?.temperature;
 	};
 
-	let isCurrentDay: boolean = toISOformat(day.start) === selectedDay;
-	$: isCurrentDay = toISOformat(day.start) === selectedDay;
+	const isCurrentDay = (day: Interval): boolean => {
+		return toISOformat(day.start) === selectedDay;
+	};
+
+	const dayFlowColor = (days, day) => {
+		const flow = dayFlow(days, day);
+		switch (flow) {
+			case 1:
+				return 'bg-red-200 text-primary';
+			case 2:
+				return 'bg-red-300 text-primary';
+			case 3:
+				return 'bg-red-400 text-primary';
+			default:
+				return '';
+		}
+	};
 </script>
+
+<!-- <svelte:window bind:innerWidth /> -->
 
 <div
 	on:click={() => dispatch('change-day', { day })}
 	on:keydown={() => dispatch('change-day', { day })}
-	class="bg-accent rounded-lg py-[0.6em] px-3 pr-4 h-[5.5em] flex flex-col justify-between"
+	class={`sm:bg-accent bg-accent rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${''} ${dayFlowColor(
+		days,
+		day
+	)}`}
 	class:cursor-default={day.start && day.start > now}
 >
-	<div class="text-right text-lg">
+	<div class="sm:text-right text-center text-lg">
 		<span
-			class={isCurrentDay ? `badge badge-primary px-2 py-3` : ''}
+			class={isCurrentDay(day) ? `sm:badge sm:badge-primary sm:px-2 sm:py-3` : ''}
 			class:text-secondary={day.start && day.start > now}
 			class:cursor-default={day.start && day.start > now}
 			class:invisible={day.start?.month !== currentMonth.month}
@@ -75,11 +95,11 @@
 	</div>
 	<div class="text-left flex">
 		{#if daySpotting(days, day)}
-			<div class="lg:tooltip tooltip-primary" data-tip={`Spotting`}>s</div>
+			<div class="lg:tooltip tooltip-primary hidden sm:inline" data-tip="Spotting">s</div>
 		{/if}
 		{#if dayHasPeriod(days, day)}
 			<div
-				class="lg:tooltip tooltip-primary"
+				class="lg:tooltip tooltip-primary hidden sm:inline"
 				data-tip={`Period day: ${dayFlowText(days, day)} flow`}
 			>
 				<div
@@ -95,7 +115,10 @@
 		{/if}
 
 		{#if dayHasTemperature(days, day)}
-			<div class="lg:tooltip tooltip-primary" data-tip={`${dayTemperature(days, day)} ºC`}>
+			<div
+				class="lg:tooltip tooltip-primary hidden sm:inline"
+				data-tip={`${dayTemperature(days, day)} ºC`}
+			>
 				<span class="text-2xl text-primary text-right">
 					<TempColdLine />
 				</span>

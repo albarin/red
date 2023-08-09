@@ -8,10 +8,6 @@
 	import { toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 
-	const isSmallScreen = (width: number) => width < 768;
-	let innerWidth: number;
-	$: innerWidth > 768 && (isAddDayModalOpen = false);
-
 	const now = DateTime.now();
 	let currentMonth = DateTime.now();
 
@@ -54,8 +50,6 @@
 	let selectedDayFluid: Fluid | undefined = undefined;
 	$: selectedDayFluid = selectedDay?.fluid as Fluid;
 </script>
-
-<svelte:window bind:innerWidth />
 
 <div class="flex bg-accent h-screen">
 	<div class="sm:p-4 w-full md:w-3/4">
