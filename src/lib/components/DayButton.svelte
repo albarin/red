@@ -77,7 +77,7 @@
 <div
 	on:click={() => dispatch('change-day', { day })}
 	on:keydown={() => dispatch('change-day', { day })}
-	class={`sm:bg-accent bg-accent rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${''} ${dayFlowColor(
+	class={`bg-accent rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${dayFlowColor(
 		days,
 		day
 	)}`}
@@ -97,7 +97,7 @@
 		{#if daySpotting(days, day)}
 			<div class="lg:tooltip tooltip-primary hidden sm:inline" data-tip="Spotting">s</div>
 		{/if}
-		{#if dayHasPeriod(days, day)}
+		<!-- 		{#if dayHasPeriod(days, day)}
 			<div
 				class="lg:tooltip tooltip-primary hidden sm:inline"
 				data-tip={`Period day: ${dayFlowText(days, day)} flow`}
@@ -112,7 +112,7 @@
 					class:border-red-400={dayFlow(days, day) === 3}
 				/>
 			</div>
-		{/if}
+		{/if} -->
 
 		{#if dayHasTemperature(days, day)}
 			<div
