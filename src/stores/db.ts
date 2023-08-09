@@ -27,7 +27,7 @@ export class RedDB extends Dexie {
   async getDaysBetween(start: string, end: string): Promise<Day[]> {
     return await this.days
       .where('date')
-      .between(start, end)
+      .between(start, end, true, true)
       .toArray();
   }
 
