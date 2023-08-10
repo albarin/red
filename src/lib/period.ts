@@ -1,5 +1,7 @@
+import type { D } from "vitest/dist/types-2b1c412e";
 import { arrayToObject } from "./utils/array";
 import { toDateTime, toISOformat } from "./utils/date";
+import { Interval } from "luxon";
 
 interface Cycle {
   start: string
@@ -19,18 +21,23 @@ const dayHasFlow = (day: Day) => {
   return day.flow !== undefined && day.flow > 0
 };
 
-const dayIsStartOfPeriod = (day: Day, prevDay: Day) => dayHasFlow(day) && !dayHasFlow(prevDay);
+const dayIsStartOfPeriod = (day: Day, prevDay: Day | undefined) => dayHasFlow(day) && !dayHasFlow(prevDay);
 
-const getEndOfPeriod = (cycle: Cycle, days: Day[]): string | undefined => {
-  const startIndex = days.findIndex((day) => day.date === cycle.start);
+const getEndOfPeriod = (cycle: Cycle, days: { [key: string]: Day }): string | undefined => {
+  if (!cycle.end) {
+    return undefined
+  };
 
-  for (let i = startIndex + 1; i < days.length; i++) {
-    const prevDay = toDateTime(days[i - 1].date);
-    if (dayHasFlow(days[i]) && prevDay.plus({ days: 1 }).equals(toDateTime(days[i].date))) {
-      continue;
-    }
-    else {
-      return days[i - 1].date;
+  const cycleDays = Interval.fromDateTimes(
+    toDateTime(cycle.start),
+    toDateTime(cycle.end)
+  ).splitBy({ days: 1 });
+
+  for (let i = 1; i < cycleDays.length; i++) {
+    const date = toISOformat(cycleDays[i]);
+
+    if (!dayHasFlow(days[date])) {
+      return toISOformat(cycleDays[i - 1]);
     }
   }
 
@@ -42,26 +49,38 @@ export const calculateCycles = (days: Day[]) => {
 
   let cycles: Cycle[] = [];
 
-  Object.keys(daysByDate).forEach((date, i) => {
-    const prevDay = i === 0 ? null : days[i - 1];
+  const firstDay = days[0];
+  const lastDay = days[days.length - 1];
 
-    if (dayIsStartOfPeriod(days[i], prevDay)) {
-      const cycle = {
-        start: date,
-      } as Cycle;
+  const allDays = Interval.fromDateTimes(
+    toDateTime(firstDay.date),
+    toDateTime(lastDay.date)
+  ).splitBy({ days: 1 });
 
-      cycles.push(cycle);
+  for (let i = 0; i < allDays.length; i++) {
+    const day = toISOformat(allDays[i]);
+    const prevDay = i === 0 ? undefined : toISOformat(allDays[i - 1]);
+
+    if (!prevDay && dayHasFlow(daysByDate[day])) {
+      cycles.push({
+        start: day,
+      } as Cycle);
     }
-  });
+
+    if (prevDay && dayIsStartOfPeriod(daysByDate[day], daysByDate[prevDay])) {
+      cycles.push({
+        start: day,
+      } as Cycle);
+    }
+  }
 
   cycles.forEach((cycle, i) => {
     cycles[i].end = cycles[i + 1] ? toISOformat(toDateTime(cycles[i + 1].start).minus({ day: 1 })) : undefined;
-    cycles[i].endOfPeriod = getEndOfPeriod(cycle, days);
 
     if (cycle.end) {
       cycles[i].duration = toDateTime(cycle.end).diff(toDateTime(cycle.start), 'days').days + 1;
     }
-  });
 
-  console.log(cycles);
+    cycles[i].endOfPeriod = getEndOfPeriod(cycle, daysByDate);
+  });
 }
