@@ -82,6 +82,7 @@
 		day
 	)}`}
 	class:cursor-default={day.start && day.start > now}
+	class:bg-accent={day.start?.month === currentMonth.month}
 >
 	<div class="sm:text-right text-center text-lg">
 		<span

@@ -5,6 +5,7 @@
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
+	import { calculateCycles } from '$lib/period';
 
 	const now = DateTime.now();
 	let currentMonthIsNow = true;
@@ -82,6 +83,8 @@
 			console.error(`Failed to import ${file.name}: ${error}`);
 		}
 	};
+
+	const allDays = db.getAllDays();
 </script>
 
 <div class="bg-base-100 p-4 rounded-xl">
@@ -107,6 +110,10 @@
 		<button class="btn absolute right-4" on:click={goToToday}>Today</button>
 	{/if}
 </div>
+
+{#await allDays then allDays}
+	<button class="btn btn-primary mt-2" on:click={() => calculateCycles(allDays)}>Calculate</button>
+{/await}
 <!-- <div class="absolute bottom-4"> -->
 <!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />
