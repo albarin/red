@@ -112,7 +112,27 @@
 </div>
 
 {#await allDays then allDays}
-	<button class="btn btn-primary mt-2" on:click={() => calculateCycles(allDays)}>Calculate</button>
+	<button
+		class="btn btn-primary mt-2"
+		on:click={async () => {
+			db.cycles.clear();
+
+			const cycles = calculateCycles(allDays);
+
+			if (!cycles) {
+				return;
+			}
+
+			try {
+				console.log('Storing cycles');
+				await db.cycles.bulkPut(cycles);
+			} catch (error) {
+				console.error(`Failed to store cycles: ${error}`);
+			}
+		}}
+	>
+		Re-calculate
+	</button>
 {/await}
 <!-- <div class="absolute bottom-4"> -->
 <!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
@@ -123,9 +143,9 @@
 	</button> -->
 <!-- </div> -->
 
-<!-- <input
+<input
 	type="file"
 	class="file-input file-input-bordered file-input-primary w-full max-w-xs"
 	bind:this={uploader}
 	on:change|preventDefault={upload}
-/> -->
+/>

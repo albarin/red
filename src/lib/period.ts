@@ -44,7 +44,7 @@ const getEndOfPeriod = (cycle: Cycle, days: { [key: string]: Day }): string | un
   return undefined;
 }
 
-export const calculateCycles = (days: Day[]) => {
+export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
   const daysByDate = arrayToObject(days, 'date');
 
   let cycles: Cycle[] = [];
@@ -65,6 +65,7 @@ export const calculateCycles = (days: Day[]) => {
       cycles.push({
         start: day,
       } as Cycle);
+      continue;
     }
 
     if (prevDay && dayIsStartOfPeriod(daysByDate[day], daysByDate[prevDay])) {
@@ -83,4 +84,6 @@ export const calculateCycles = (days: Day[]) => {
 
     cycles[i].endOfPeriod = getEndOfPeriod(cycle, daysByDate);
   });
+
+  return cycles;
 }
