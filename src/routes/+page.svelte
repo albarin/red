@@ -7,6 +7,7 @@
 	import { db, type Day } from '../stores/db';
 	import { toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
+	import { getStats, type Stats } from '$lib/period';
 
 	const now = DateTime.now();
 	let currentMonth = DateTime.now();
@@ -19,6 +20,10 @@
 		);
 
 		return arrayToObject(days, 'date');
+	});
+	$: cycles = liveQuery(async () => {
+		const c = await db.cycles.toArray();
+		return c;
 	});
 
 	let isAddDayModalOpen = false;
@@ -49,6 +54,11 @@
 
 	let selectedDayFluid: Fluid | undefined = undefined;
 	$: selectedDayFluid = selectedDay?.fluid as Fluid;
+
+	let stats: Stats;
+	$: if ($cycles) {
+		stats = getStats($cycles);
+	}
 </script>
 
 <div class="flex bg-accent h-screen">
@@ -62,17 +72,23 @@
 			on:forward={handleForward}
 		/>
 	</div>
-
-	<!-- 
-	{#if !isSmallScreen(innerWidth)}
-		<div class="w-1/4 py-4 pr-4">
-			<AddDayForm
-				date={selectedDay?.date}
-				temperature={selectedDay?.temperature?.toString()}
-				flow={selectedDay?.flow}
-			/>
+	<div class="py-4 pr-4 md:w-1/4">
+		<div class="bg-white rounded-lg p-4 mb-4">
+			Current cycle stats: started, current, duration, period days, spotting days Add arrows to move
+			between cycles
 		</div>
-	{:else if isAddDayModalOpen} -->
+
+		<div class="bg-white rounded-lg p-4">
+			{#if stats}
+				<p>Cycles: {stats.cyclesLength}</p>
+				<p>Average length: {stats.averageCycleLength}±{stats.standardDeviationCycleLength} days</p>
+
+				<p>{stats.shortesCycleLength}</p>
+				<p>{stats.longestCycleLength}</p>
+				Global stats: avg/variation cycle length, amount of cycles registered shortest/longest
+			{/if}
+		</div>
+	</div>
 
 	{#if isAddDayModalOpen}
 		<AddDayForm

@@ -1,4 +1,3 @@
-import type { D } from "vitest/dist/types-2b1c412e";
 import { arrayToObject } from "./utils/array";
 import { toDateTime, toISOformat } from "./utils/date";
 import { Interval } from "luxon";
@@ -14,6 +13,14 @@ interface Day {
   date: string;
   temperature?: number;
   flow?: number;
+}
+
+export interface Stats {
+  cyclesLength: number;
+  shortesCycleLength: number;
+  longestCycleLength: number;
+  averageCycleLength: number;
+  standardDeviationCycleLength: number;
 }
 
 const dayHasFlow = (day: Day) => {
@@ -86,4 +93,37 @@ export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
   });
 
   return cycles;
+}
+
+const getMean = (data) => {
+  return data.reduce(function (a, b) {
+    return Number(a) + Number(b);
+  }) / data.length;
+};
+
+const getSD = (data) => {
+  let m = getMean(data);
+  return Math.sqrt(data.reduce(function (sq, n) {
+    return sq + Math.pow(n - m, 2);
+  }, 0) / (data.length - 1));
+};
+
+export const getStats = (cycles: Cycle[]): Stats => {
+  if (cycles[cycles.length - 1].end === undefined) {
+    cycles.pop();
+  }
+
+  const durations = cycles.map(cycle => cycle.duration);
+
+  const shortestCycle = 
+
+  console.log(getSD(durations));
+
+  return {
+    cyclesLength: Math.round(cycles.length),
+    shortesCycleLength: Math.min(...durations),
+    longestCycleLength: Math.max(...durations),
+    averageCycleLength: Math.round(getMean(durations)),
+    standardDeviationCycleLength: Math.round(getSD(durations)),
+  }
 }
