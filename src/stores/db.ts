@@ -24,7 +24,7 @@ export class RedDB extends Dexie {
     super('reddb');
     this.version(1).stores({
       days: 'date, temperature',
-      cycles: 'start, end, endOfPeriod, duration',
+      cycles: '++start, end, endOfPeriod, duration',
     });
   }
 

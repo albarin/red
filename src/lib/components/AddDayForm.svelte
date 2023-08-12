@@ -13,6 +13,7 @@
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
 	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import NotesInput from './attributes/NotesInput.svelte';
+	import { calculateCycles } from '$lib/period';
 
 	const dispatch = createEventDispatcher();
 

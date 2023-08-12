@@ -118,13 +118,13 @@
 			db.cycles.clear();
 
 			const cycles = calculateCycles(allDays);
+			console.log({ cycles })
 
 			if (!cycles) {
 				return;
 			}
 
 			try {
-				console.log('Storing cycles');
 				await db.cycles.bulkPut(cycles);
 			} catch (error) {
 				console.error(`Failed to store cycles: ${error}`);

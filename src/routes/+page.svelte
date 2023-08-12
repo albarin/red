@@ -5,11 +5,11 @@
 	import { DateTime, Interval } from 'luxon';
 	import { liveQuery } from 'dexie';
 	import { db, type Day } from '../stores/db';
-	import { toISOformat } from '$lib/utils/date';
+	import { toDateTime, toHumanFormat, toISOformat } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
-	import { getStats, type Stats } from '$lib/period';
+	import { getStats, type CyclesStats, type Cycle } from '$lib/period';
 
-	const now = DateTime.now();
+	const now = DateTime.now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
 	let currentMonth = DateTime.now();
 
 	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
@@ -21,10 +21,31 @@
 
 		return arrayToObject(days, 'date');
 	});
-	$: cycles = liveQuery(async () => {
-		const c = await db.cycles.toArray();
-		return c;
+	
+	$: cycles = liveQuery(async ()=>{
+			return await db.cycles.toArray();
 	});
+
+
+	$: currentCycleDays = liveQuery(async () => {
+		if (!currentCycle) return null;
+
+		const days = await db.getDaysBetween(
+			toISOformat(currentCycle.start),
+			toISOformat(now)
+		);
+
+		return arrayToObject(days, 'date');
+	});
+	
+	let currentCyclePeriodDays: Day[] = [];
+	let currentCycleSpottingDays: Day[] = [];
+	let currentCycleTemperatureDays: Day[] = [];
+	$: if ($currentCycleDays) {
+		currentCyclePeriodDays = Object.values($currentCycleDays).filter((day) => day.flow && day.flow > 0);
+		currentCycleSpottingDays = Object.values($currentCycleDays).filter((day) => day.flow !== undefined && day.flow == 0);
+		currentCycleTemperatureDays = Object.values($currentCycleDays).filter((day) => day.temperature);
+	}
 
 	let isAddDayModalOpen = false;
 
@@ -55,9 +76,16 @@
 	let selectedDayFluid: Fluid | undefined = undefined;
 	$: selectedDayFluid = selectedDay?.fluid as Fluid;
 
-	let stats: Stats;
-	$: if ($cycles) {
-		stats = getStats($cycles);
+	let stats: CyclesStats;
+	$: if ($cycles?.length) {
+		const lastFullCycleIndex = $cycles[$cycles.length - 1]?.end === undefined ? $cycles.length - 1 : $cycles.length;
+
+		stats = getStats($cycles.slice(0, lastFullCycleIndex));
+	}
+
+	let currentCycle: Cycle;
+	$: if ($cycles?.length) {
+		currentCycle = $cycles[$cycles.length - 1];
 	}
 </script>
 
@@ -74,8 +102,13 @@
 	</div>
 	<div class="py-4 pr-4 md:w-1/4">
 		<div class="bg-white rounded-lg p-4 mb-4">
-			Current cycle stats: started, current, duration, period days, spotting days Add arrows to move
-			between cycles
+			{#if currentCycle}
+				<p>Current cycle: {toHumanFormat(currentCycle.start)}</p>
+				<p>Current cycle length: {now.diff(toDateTime(currentCycle.start), 'days').days + 1} days</p>
+				<p>Period days: {currentCyclePeriodDays.length}</p>
+				<p>Spotting days: {currentCycleSpottingDays.length}</p>
+				<p>Temperature days: {currentCycleTemperatureDays.length}</p>
+			{/if}
 		</div>
 
 		<div class="bg-white rounded-lg p-4">
@@ -83,9 +116,8 @@
 				<p>Cycles: {stats.cyclesLength}</p>
 				<p>Average length: {stats.averageCycleLength}±{stats.standardDeviationCycleLength} days</p>
 
-				<p>{stats.shortesCycleLength}</p>
-				<p>{stats.longestCycleLength}</p>
-				Global stats: avg/variation cycle length, amount of cycles registered shortest/longest
+				<p>{stats.shortesCycle.duration} days - from {toHumanFormat(stats.shortesCycle.start)} to {toHumanFormat(stats.shortesCycle.end)}</p>
+				<p>{stats.longestCycle.duration} days - from {toHumanFormat(stats.longestCycle.start)} to {toHumanFormat(stats.longestCycle.end)} </p>
 			{/if}
 		</div>
 	</div>

@@ -1,8 +1,9 @@
+import { get } from "svelte/store";
 import { arrayToObject } from "./utils/array";
 import { toDateTime, toISOformat } from "./utils/date";
 import { Interval } from "luxon";
 
-interface Cycle {
+export interface Cycle {
   start: string
   end?: string
   endOfPeriod?: string
@@ -15,12 +16,12 @@ interface Day {
   flow?: number;
 }
 
-export interface Stats {
+export interface CyclesStats {
   cyclesLength: number;
-  shortesCycleLength: number;
-  longestCycleLength: number;
   averageCycleLength: number;
   standardDeviationCycleLength: number;
+  shortesCycle: Cycle;
+  longestCycle: Cycle;
 }
 
 const dayHasFlow = (day: Day) => {
@@ -54,14 +55,14 @@ const getEndOfPeriod = (cycle: Cycle, days: { [key: string]: Day }): string | un
 export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
   const daysByDate = arrayToObject(days, 'date');
 
-  let cycles: Cycle[] = [];
+  const cycles: Cycle[] = [];
 
   const firstDay = days[0];
   const lastDay = days[days.length - 1];
 
   const allDays = Interval.fromDateTimes(
     toDateTime(firstDay.date),
-    toDateTime(lastDay.date)
+    toDateTime(lastDay.date).plus({ day: 1 })
   ).splitBy({ days: 1 });
 
   for (let i = 0; i < allDays.length; i++) {
@@ -108,22 +109,30 @@ const getSD = (data) => {
   }, 0) / (data.length - 1));
 };
 
-export const getStats = (cycles: Cycle[]): Stats => {
-  if (cycles[cycles.length - 1].end === undefined) {
-    cycles.pop();
-  }
+const getShortestCycle = (cycles: Cycle[]): Cycle => {
+  return cycles.reduce((prev, current) => {
+    return (prev.duration < current.duration) ? prev : current
+  });
+}
 
+const getLongestCycle = (cycles: Cycle[]): Cycle => {
+  return cycles.reduce((prev, current) => {
+    return (prev.duration > current.duration) ? prev : current
+  });
+}
+
+export const getStats = (cycles: Cycle[]): CyclesStats => {
   const durations = cycles.map(cycle => cycle.duration);
-
-  const shortestCycle = 
-
-  console.log(getSD(durations));
+  if (!durations.length) {
+    return {} as CyclesStats
+  }
 
   return {
     cyclesLength: Math.round(cycles.length),
-    shortesCycleLength: Math.min(...durations),
-    longestCycleLength: Math.max(...durations),
     averageCycleLength: Math.round(getMean(durations)),
     standardDeviationCycleLength: Math.round(getSD(durations)),
-  }
+    shortesCycle: getShortestCycle(cycles),
+    longestCycle: getLongestCycle(cycles),
+  } as CyclesStats
 }
+
