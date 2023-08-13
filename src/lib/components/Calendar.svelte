@@ -1,21 +1,29 @@
 <script lang="ts">
-	import { DateTime } from 'luxon';
-	import { getMonthCalendarByWeek } from '$lib/utils/date';
-	import { db, type Day } from '../../stores/db';
+	import type { DateTime, Interval } from 'luxon';
+	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
+	import { db } from '../../stores/db';
+	import type { Optional } from '$lib/models/models';
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
 	import { calculateCycles } from '$lib/period';
+	import type { Day } from '../../stores/day';
 
-	const now = DateTime.now();
-	let currentMonthIsNow = true;
+	const today = now();
 
-	export let days;
-	export let currentMonth: DateTime;
-	export let selectedDay: Day | null;
+	let currentMonthIsNow: boolean;
+	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
 
+	interface Days {
+		[key: string]: Day;
+	}
+
+	export let days: Days;
+	export let selectedDay: Optional<Day>;
+	export let currentMonth: DateTime = now();
+
+	let calendar: Interval[][];
 	$: calendar = getMonthCalendarByWeek(currentMonth);
-	$: currentMonthIsNow = currentMonth.year == now.year && currentMonth.month == now.month;
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
@@ -41,7 +49,7 @@
 	};
 
 	const goToToday = () => {
-		currentMonth = now;
+		currentMonth = today;
 	};
 
 	let uploader: HTMLInputElement;
@@ -93,13 +101,11 @@
 	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
 		<CalendarHeader week={calendar[0]} />
 		{#each calendar as week}
-			{#each week as day}
+			{#each week as date}
 				<DayButton
-					{days}
-					{day}
-					{now}
-					selectedDay={selectedDay?.date}
-					{currentMonth}
+					day={days && days[iso(date)] ? days[iso(date)] : undefined}
+					{date}
+					month={currentMonth}
 					on:change-day
 				/>
 			{/each}
@@ -118,7 +124,6 @@
 			db.cycles.clear();
 
 			const cycles = calculateCycles(allDays);
-			console.log({ cycles })
 
 			if (!cycles) {
 				return;
@@ -143,9 +148,10 @@
 	</button> -->
 <!-- </div> -->
 
-<input
+<!-- <input
 	type="file"
 	class="file-input file-input-bordered file-input-primary w-full max-w-xs"
 	bind:this={uploader}
 	on:change|preventDefault={upload}
 />
+ -->

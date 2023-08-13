@@ -1,5 +1,5 @@
 import { arrayToObject } from "./utils/array";
-import { toDateTime, toISOformat } from "./utils/date";
+import { toDateTime, iso } from "./utils/date";
 import { Interval } from "luxon";
 
 export interface Cycle {
@@ -41,10 +41,10 @@ const getEndOfPeriod = (cycle: Cycle, days: { [key: string]: Day }): string | un
   ).splitBy({ days: 1 });
 
   for (let i = 1; i < cycleDays.length; i++) {
-    const date = toISOformat(cycleDays[i]);
+    const date = iso(cycleDays[i]);
 
     if (!dayHasFlow(days[date])) {
-      return toISOformat(cycleDays[i - 1]);
+      return iso(cycleDays[i - 1]);
     }
   }
 
@@ -65,8 +65,8 @@ export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
   ).splitBy({ days: 1 });
 
   for (let i = 0; i < allDays.length; i++) {
-    const day = toISOformat(allDays[i]);
-    const prevDay = i === 0 ? undefined : toISOformat(allDays[i - 1]);
+    const day = iso(allDays[i]);
+    const prevDay = i === 0 ? undefined : iso(allDays[i - 1]);
 
     if (!prevDay && dayHasFlow(daysByDate[day])) {
       cycles.push({
@@ -83,7 +83,7 @@ export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
   }
 
   cycles.forEach((cycle, i) => {
-    cycles[i].end = cycles[i + 1] ? toISOformat(toDateTime(cycles[i + 1].start).minus({ day: 1 })) : undefined;
+    cycles[i].end = cycles[i + 1] ? iso(toDateTime(cycles[i + 1].start).minus({ day: 1 })) : undefined;
 
     if (cycle.end) {
       cycles[i].duration = toDateTime(cycle.end).diff(toDateTime(cycle.start), 'days').days + 1;

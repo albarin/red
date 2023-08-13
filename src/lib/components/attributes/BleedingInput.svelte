@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { db } from '../../../stores/db';
-	import { toISOformat, toDateTime } from '$lib/utils/date';
+	import { iso, toDateTime } from '$lib/utils/date';
 	import type { DateTime } from 'luxon';
 
 	const PERIOD = 'period';
@@ -104,7 +104,7 @@
 	</div>
 
 	{#await periodLastDay(date) then periodLastDay}
-		{#if periodLastDay && date !== toISOformat(periodLastDay.plus({ days: 1 }))}
+		{#if periodLastDay && date !== iso(periodLastDay.plus({ days: 1 }))}
 			<div class="form-control">
 				<label class="label cursor-pointer justify-start gap-2">
 					<input type="checkbox" class="checkbox checkbox-primary" bind:checked={fillGaps} />

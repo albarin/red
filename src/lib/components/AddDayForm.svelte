@@ -8,12 +8,11 @@
 
 	import { validateTemperature } from '$lib/utils/validation';
 	import { db, type Day } from '../../stores/db';
-	import { toDateTime, toISOformat } from '$lib/utils/date';
+	import { toDateTime, iso } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
 	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import NotesInput from './attributes/NotesInput.svelte';
-	import { calculateCycles } from '$lib/period';
 
 	const dispatch = createEventDispatcher();
 
@@ -92,11 +91,11 @@
 		).splitBy({ days: 1 });
 
 		const prevWeekWithPeriod = prevWeek.map((day) => {
-			if (prevWeekDaysByDate[toISOformat(day)]) {
-				prevWeekDaysByDate[toISOformat(day)].flow = flow;
-				return prevWeekDaysByDate[toISOformat(day)];
+			if (prevWeekDaysByDate[iso(day)]) {
+				prevWeekDaysByDate[iso(day)].flow = flow;
+				return prevWeekDaysByDate[iso(day)];
 			}
-			return { date: toISOformat(day), flow } as Day;
+			return { date: iso(day), flow } as Day;
 		});
 
 		try {
@@ -134,7 +133,7 @@
 		<div class="bg-accent p-4">
 			{#if date}
 				<p class="text-primary text-2xl mb-4">
-					{#if date === toISOformat(DateTime.now())}Today,{/if}
+					{#if date === iso(DateTime.now())}Today,{/if}
 					{toDateTime(date).toLocaleString(DateTime.DATE_FULL)}
 				</p>
 			{/if}
