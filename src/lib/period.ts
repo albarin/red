@@ -1,4 +1,3 @@
-import { get } from "svelte/store";
 import { arrayToObject } from "./utils/array";
 import { toDateTime, toISOformat } from "./utils/date";
 import { Interval } from "luxon";

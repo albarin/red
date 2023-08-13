@@ -1,20 +1,7 @@
 import { toDateTime, toISOformat } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
-
-export interface Day {
-  date: string;
-  temperature?: number;
-  flow?: number;
-  fluid?: string;
-  notes?: string;
-}
-
-interface Cycle {
-  start: string;
-  end?: string;
-  endOfPeriod?: string;
-  duration?: number;
-}
+import type { Day } from './day';
+import type { Cycle } from './cycle';
 
 export class RedDB extends Dexie {
   days!: Table<Day>;
@@ -24,7 +11,7 @@ export class RedDB extends Dexie {
     super('reddb');
     this.version(1).stores({
       days: 'date, temperature',
-      cycles: '++start, end, endOfPeriod, duration',
+      cycles: 'start, end, endOfPeriod, duration',
     });
   }
 
