@@ -1,14 +1,14 @@
 <script lang="ts">
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import Calendar from '$lib/components/Calendar.svelte';
-	import { DateTime, Interval } from 'luxon';
-	import { liveQuery } from 'dexie';
-	import { db } from '../stores/db';
-	import { now, toDateTime, toHumanFormat, iso } from '$lib/utils/date';
-	import { arrayToObject } from '$lib/utils/array';
-	import { getStats, type CyclesStats } from '$lib/period';
-	import type { Cycle } from '../lib/models/cycle';
 	import { Day } from '$lib/models/day';
+	import { getStats, type CyclesStats } from '$lib/period';
+	import { arrayToObject } from '$lib/utils/array';
+	import { iso, now, toDateTime, toHumanFormat } from '$lib/utils/date';
+	import { liveQuery } from 'dexie';
+	import { DateTime, Interval } from 'luxon';
+	import type { Cycle } from '../lib/models/cycle';
+	import { db } from '../stores/db';
 
 	const today = now();
 	let currentMonth = now();

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import ArrowLeftSLine from 'svelte-remixicon/lib/icons/ArrowLeftSLine.svelte';
-	import ArrowRightSLine from 'svelte-remixicon/lib/icons/ArrowRightSLine.svelte';
-	import ArrowLeftDoubleLine from 'svelte-remixicon/lib/icons/ArrowLeftDoubleLine.svelte';
-	import ArrowRightDoubleLine from 'svelte-remixicon/lib/icons/ArrowRightDoubleLine.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import type { DateTime } from 'luxon';
+	import { createEventDispatcher } from 'svelte';
+	import ArrowLeftDoubleLine from 'svelte-remixicon/lib/icons/ArrowLeftDoubleLine.svelte';
+	import ArrowLeftSLine from 'svelte-remixicon/lib/icons/ArrowLeftSLine.svelte';
+	import ArrowRightDoubleLine from 'svelte-remixicon/lib/icons/ArrowRightDoubleLine.svelte';
+	import ArrowRightSLine from 'svelte-remixicon/lib/icons/ArrowRightSLine.svelte';
 
 	const dispatch = createEventDispatcher();
 

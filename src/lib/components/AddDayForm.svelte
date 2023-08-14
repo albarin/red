@@ -1,26 +1,23 @@
 <script lang="ts">
+	import type { Day } from '$lib/models/day';
+	import { arrayToObject } from '$lib/utils/array';
+	import { iso, toDateTime } from '$lib/utils/date';
+	import { validateTemperature } from '$lib/utils/validation';
+	import { DateTime, Interval } from 'luxon';
+	import { createEventDispatcher } from 'svelte';
+	import { db } from '../../stores/db';
 	import AttributeWrapper from './attributes/AttributeWrapper.svelte';
 	import BleedingInput from './attributes/BleedingInput.svelte';
-	import TemperatureInput from './attributes/TemperatureInput.svelte';
-
-	import { createEventDispatcher } from 'svelte';
-	import { DateTime, Interval } from 'luxon';
-
-	import { validateTemperature } from '$lib/utils/validation';
-	import { db } from '../../stores/db';
-	import { toDateTime, iso } from '$lib/utils/date';
-	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
-	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import NotesInput from './attributes/NotesInput.svelte';
-	import type { Day } from '$lib/models/day';
+	import TemperatureInput from './attributes/TemperatureInput.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let date: string | undefined = undefined;
 	export let temperature: number | undefined = undefined;
 	export let flow: number | undefined = undefined;
-	export let fluid: Fluid | undefined = undefined;
+	export let fluid: string | undefined = undefined;
 	export let notes: string | undefined = undefined;
 
 	let wasSubmitted: boolean = false;

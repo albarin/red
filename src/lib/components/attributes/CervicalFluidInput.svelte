@@ -1,10 +1,8 @@
 <script lang="ts">
-	import { FluidKeys, type Fluid } from '$lib/components/attributes/cervicalFluid';
-
-	export let fluid: Fluid | undefined = undefined;
+	export let fluid: string | undefined = undefined;
 </script>
 
-{#each FluidKeys as fluidKey}
+{#each ['dry', 'sticky', 'creamy', 'watery', 'egg white'] as fluidKey}
 	<input
 		name="cervical-fluid"
 		type="radio"

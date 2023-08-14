@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { db } from '../../../stores/db';
 	import { iso, toDateTime } from '$lib/utils/date';
 	import type { DateTime } from 'luxon';
+	import { db } from '../../../stores/db';
 
 	const PERIOD = 'period';
 	const SPOTTING = 'spotting';

@@ -1,6 +1,6 @@
-import { arrayToObject } from "./utils/array";
-import { toDateTime, iso } from "./utils/date";
 import { Interval } from "luxon";
+import { arrayToObject } from "./utils/array";
+import { iso, toDateTime } from "./utils/date";
 
 export interface Cycle {
   start: string
