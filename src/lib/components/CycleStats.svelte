@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
-	import { Day } from '$lib/models/day';
+	import type { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/models';
 	import { iso, now, toDateTime, toShortHumanFormat } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
@@ -10,12 +10,7 @@
 
 	$: cycleDays = liveQuery(async () => {
 		if (!cycle) return null;
-		const days = await db.getDaysBetween(iso(cycle.start), iso(now()));
-
-		return days.reduce((days: Day[], item: Day) => {
-			days[item.date] = new Day(item.date, item.temperature, item.flow, item.fluid, item.notes);
-			return days;
-		}, []);
+		return await db.getDaysBetween(iso(cycle.start), iso(now()));
 	});
 
 	let periodDays: Day[] = [];

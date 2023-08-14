@@ -129,7 +129,7 @@ export const getStats = (cycles: Cycle[]): CyclesStats => {
   }
 
   return {
-    cyclesLength: Math.round(cycles.length),
+    cyclesLength: cycles.length,
     averageCycleLength: Math.round(getMean(durations)),
     standardDeviationCycleLength: Math.round(getSD(durations)),
     shortesCycle: getShortestCycle(cycles),

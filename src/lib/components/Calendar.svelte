@@ -129,10 +129,9 @@
 	</button> -->
 <!-- </div> -->
 
-<!-- <input
+<input
 	type="file"
 	class="file-input file-input-bordered file-input-primary w-full max-w-xs"
 	bind:this={uploader}
 	on:change|preventDefault={upload}
 />
- -->

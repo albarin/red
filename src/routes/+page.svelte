@@ -17,15 +17,10 @@
 	let isAddDayModalOpen = false;
 
 	$: days = liveQuery(async () => {
-		const days = await db.getDaysBetween(
+		return await db.getDaysBetween(
 			iso(currentMonth.startOf('month')),
 			iso(currentMonth.endOf('month'))
 		);
-
-		return days.reduce((days, item: Day) => {
-			days[item.date] = new Day(item.date, item.temperature, item.flow, item.fluid, item.notes);
-			return days;
-		}, []);
 	});
 
 	let selectedDay: Day = $days && $days[iso(today)] ? $days[iso(today)] : new Day(iso(today));
