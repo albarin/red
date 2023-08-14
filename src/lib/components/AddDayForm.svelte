@@ -75,7 +75,7 @@
 	};
 
 	const fillPeriodGaps = async (date: string) => {
-		const prevWeekDays = await db.getPreviousWeekDays(date);
+		const prevWeekDays = await db.getPreviousWeekDays(iso(toDateTime(date).minus({ days: 1 })));
 		const prevWeekDaysByDate = arrayToObject(prevWeekDays, 'date');
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
