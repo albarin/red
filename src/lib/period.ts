@@ -70,6 +70,7 @@ export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
 
     if (!prevDay && dayHasFlow(daysByDate[day])) {
       cycles.push({
+        number: cycles.length + 1,
         start: day,
       } as Cycle);
       continue;
@@ -77,6 +78,7 @@ export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
 
     if (prevDay && dayIsStartOfPeriod(daysByDate[day], daysByDate[prevDay])) {
       cycles.push({
+        number: cycles.length + 1,
         start: day,
       } as Cycle);
     }

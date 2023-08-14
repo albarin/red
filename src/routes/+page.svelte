@@ -9,6 +9,7 @@
 	import { DateTime, Interval } from 'luxon';
 	import type { Cycle } from '../lib/models/cycle';
 	import { db } from '../stores/db';
+	import CycleStats from '$lib/components/CycleStats.svelte';
 
 	const today = now();
 	let currentMonth = now();
@@ -43,25 +44,8 @@
 		return await db.cycles.toArray();
 	});
 
-	$: currentCycleDays = liveQuery(async () => {
-		if (!currentCycle) return null;
-		const days = await db.getDaysBetween(iso(currentCycle.start), iso(today));
-		return arrayToObject(days, 'date');
-	});
 
-	let currentCyclePeriodDays: Day[] = [];
-	let currentCycleSpottingDays: Day[] = [];
-	let currentCycleTemperatureDays: Day[] = [];
-	$: if ($currentCycleDays) {
-		currentCyclePeriodDays = Object.values($currentCycleDays).filter(
-			(day) => day.flow && day.flow > 0
-		);
-		currentCycleSpottingDays = Object.values($currentCycleDays).filter(
-			(day) => day.flow !== undefined && day.flow == 0
-		);
-		currentCycleTemperatureDays = Object.values($currentCycleDays).filter((day) => day.temperature);
-	}
-
+	
 	const handleBack = (event) => {
 		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
@@ -105,17 +89,9 @@
 		{/if}
 	</div>
 	<div class="py-4 pr-4 md:w-1/4">
-		<div class="bg-white rounded-lg p-4 mb-4">
-			{#if currentCycle}
-				<p>Current cycle: {toHumanFormat(currentCycle.start)}</p>
-				<p>
-					Current cycle length: {today.diff(toDateTime(currentCycle.start), 'days').days + 1} days
-				</p>
-				<p>Period days: {currentCyclePeriodDays.length}</p>
-				<p>Spotting days: {currentCycleSpottingDays.length}</p>
-				<p>Temperature days: {currentCycleTemperatureDays.length}</p>
-			{/if}
-		</div>
+		{#if currentCycle}
+			<CycleStats cycle={currentCycle} />
+		{/if}
 
 		<div class="bg-white rounded-lg p-4">
 			{#if stats}

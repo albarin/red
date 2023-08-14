@@ -28,6 +28,21 @@ export const iso = (date: DateTime | Interval | string): string => {
   return date.toFormat('yyyy-MM-dd');
 }
 
+export const toShortHumanFormat = (date: DateTime | Interval | string): string => {
+  if (typeof date === 'string') {
+    return toShortHumanFormat(toDateTime(date));
+  }
+
+  if (date instanceof Interval) {
+    if (date.start) {
+      return date.start?.toFormat('dd MMM yyyy');
+    }
+    return '';
+  }
+
+  return date.toFormat('dd MMM yyyy');
+}
+
 export const toHumanFormat = (date: DateTime | Interval | string): string => {
   if (typeof date === 'string') {
     return toHumanFormat(toDateTime(date));
