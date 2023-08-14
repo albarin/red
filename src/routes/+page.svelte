@@ -44,8 +44,6 @@
 		return await db.cycles.toArray();
 	});
 
-
-	
 	const handleBack = (event) => {
 		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
@@ -89,9 +87,7 @@
 		{/if}
 	</div>
 	<div class="py-4 pr-4 md:w-1/4">
-		{#if currentCycle}
-			<CycleStats cycle={currentCycle} />
-		{/if}
+		<CycleStats cycle={currentCycle} />
 
 		<div class="bg-white rounded-lg p-4">
 			{#if stats}
