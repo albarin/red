@@ -24,17 +24,4 @@ export class Day {
   hasTemperature(): boolean {
     return this.temperature !== undefined;
   }
-
-  flowLabel(): string {
-    switch (this.flow) {
-      case 1:
-        return 'light';
-      case 2:
-        return 'medium';
-      case 3:
-        return 'heavy';
-      default:
-        throw new Error('Invalid flow value');
-    }
-  }
 }

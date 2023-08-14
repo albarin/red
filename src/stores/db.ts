@@ -1,6 +1,6 @@
-import { toDateTime, iso } from '$lib/utils/date';
+import type { Day } from '$lib/models/day';
+import { iso, toDateTime } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
-import type { Day } from './day';
 import type { Cycle } from '../lib/models/cycle';
 
 export class RedDB extends Dexie {

@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { Day } from '$lib/models/day';
+	import type { Optional } from '$lib/models/models';
+	import { Day } from '$lib/models/day';
 	import { arrayToObject } from '$lib/utils/array';
 	import { iso, toDateTime } from '$lib/utils/date';
 	import { validateTemperature } from '$lib/utils/validation';
@@ -14,11 +15,11 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let date: string | undefined = undefined;
-	export let temperature: number | undefined = undefined;
-	export let flow: number | undefined = undefined;
-	export let fluid: string | undefined = undefined;
-	export let notes: string | undefined = undefined;
+	export let date: Optional<string> = undefined;
+	export let temperature: Optional<number> = undefined;
+	export let flow: Optional<number> = undefined;
+	export let fluid: Optional<string> = undefined;
+	export let notes: Optional<string> = undefined;
 
 	let wasSubmitted: boolean = false;
 	let temperatureError: string | undefined;
@@ -54,14 +55,16 @@
 			return;
 		}
 
+		if (!temperature && flow === undefined && !fluid && !notes) {
+			wasSubmitted = false;
+			dispatch('close');
+			return;
+		}
+
+		const day = new Day(date, temperature, flow, fluid, notes);
+
 		try {
-			await db.days.put({
-				date,
-				...(temperature && { temperature: Number(temperature) }),
-				flow,
-				...(fluid && { fluid }),
-				...(notes && { notes })
-			});
+			await db.days.put(day);
 		} catch (error) {
 			console.error(`Failed to add ${date}-${temperature}: ${error}`);
 		}
