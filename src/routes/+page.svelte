@@ -87,7 +87,6 @@
 <div class="flex bg-accent h-screen">
 	<div class="sm:p-4 w-full md:w-3/4">
 		<Calendar
-			{selectedDay}
 			{currentMonth}
 			days={$days}
 			on:change-day={(event) => changeSelectedDay(event.detail.day)}

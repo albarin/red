@@ -2,7 +2,6 @@
 	import type { DateTime, Interval } from 'luxon';
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
 	import { db } from '../../stores/db';
-	import type { Optional } from '$lib/models/models';
 	import CalendarHeader from './CalendarHeader.svelte';
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
@@ -19,7 +18,6 @@
 	}
 
 	export let days: Days;
-	export let selectedDay: Optional<Day>;
 	export let currentMonth: DateTime = now();
 
 	let calendar: Interval[][];

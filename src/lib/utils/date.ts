@@ -79,3 +79,14 @@ export const isFuture = (date: DateTime | Interval): boolean => {
 
   return date > now();
 }
+
+export const isCurrentMonth = (day: DateTime | Interval, month: DateTime): boolean => {
+  if (day instanceof Interval) {
+    if (day.start) {
+      return isCurrentMonth(day.start, month);
+    }
+    return false;
+  }
+
+  return day.month === month.month;
+};

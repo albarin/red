@@ -3,7 +3,7 @@
 	import type { Day } from '../../stores/day';
 	import type { Optional } from '$lib/models/models';
 	import type { DateTime, Interval } from 'luxon';
-	import { isFuture, isPast, isToday } from '$lib/utils/date';
+	import { isCurrentMonth, isFuture, isPast, isToday, toDateTime } from '$lib/utils/date';
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
@@ -12,17 +12,21 @@
 	export let date: Interval;
 	export let month: DateTime;
 
-	const isCurrentMonth = (day: Interval): boolean => {
-		return day.start?.month === month.month;
-	};
+	const dayColor = (day: Optional<Day>): string => {
+		if (day?.flow) {
+			const colors = ['bg-red-200 ', 'bg-red-300 ', 'bg-red-400 '];
+			return colors[day.flow - 1] + ' text-primary';
+		}
 
-	const flowColor = (day: Optional<Day>): string => {
-		// include bg-red-200, bg-red-300, and bg-red-400
-		return day && day.flow ? `bg-red-${day.flow + 1}00 text-primary` : '';
+		if (day && isCurrentMonth(toDateTime(day.date), month)) {
+			return 'bg-accent';
+		}
+
+		return '';
 	};
 
 	const handleClick = () => {
-		if (!isCurrentMonth(date)) {
+		if (!isCurrentMonth(date, month)) {
 			return;
 		}
 		dispatch('change-day', { day: date });
@@ -33,11 +37,11 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
 	on:click={handleClick}
-	class={`rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${flowColor(
+	class={`rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${dayColor(
 		day
 	)}`}
-	class:cursor-pointer={isPast(date) && isCurrentMonth(date)}
-	class:bg-accent={!day?.flow && isCurrentMonth(date)}
+	class:cursor-pointer={isPast(date) && isCurrentMonth(date, month)}
+	class:bg-accent={!day?.flow && isCurrentMonth(date, month)}
 >
 	<div class="sm:text-right text-center text-lg">
 		<span
