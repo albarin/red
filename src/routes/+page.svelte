@@ -82,6 +82,12 @@
 	$: if ($cycles?.length) {
 		currentCycle = $cycles[$cycles.length - 1];
 	}
+
+	let currentMonthIsNow: boolean;
+	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
+	const goToToday = () => {
+		currentMonth = today;
+	};
 </script>
 
 <div class="flex bg-accent h-screen">
@@ -93,6 +99,10 @@
 			on:back={handleBack}
 			on:forward={handleForward}
 		/>
+
+		{#if !currentMonthIsNow}
+			<button class="btn absolute right-4" on:click={goToToday}>Today</button>
+		{/if}
 	</div>
 	<div class="py-4 pr-4 md:w-1/4">
 		<div class="bg-white rounded-lg p-4 mb-4">

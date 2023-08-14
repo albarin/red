@@ -10,9 +10,6 @@
 
 	const today = now();
 
-	let currentMonthIsNow: boolean;
-	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
-
 	interface Days {
 		[key: string]: Day;
 	}
@@ -44,10 +41,6 @@
 		document.body.appendChild(link); // Required for FF
 
 		link.click();
-	};
-
-	const goToToday = () => {
-		currentMonth = today;
 	};
 
 	let uploader: HTMLInputElement;
@@ -109,10 +102,6 @@
 			{/each}
 		{/each}
 	</div>
-
-	{#if !currentMonthIsNow}
-		<button class="btn absolute right-4" on:click={goToToday}>Today</button>
-	{/if}
 </div>
 
 {#await allDays then allDays}
