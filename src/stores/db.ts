@@ -1,7 +1,7 @@
 import { toDateTime, iso } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
 import type { Day } from './day';
-import type { Cycle } from './cycle';
+import type { Cycle } from '../lib/models/cycle';
 
 export class RedDB extends Dexie {
   days!: Table<Day>;

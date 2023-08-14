@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Days } from '$lib/models/models';
 	import type { DateTime, Interval } from 'luxon';
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
 	import { db } from '../../stores/db';
@@ -6,13 +7,6 @@
 	import MonthHeader from './MonthHeader.svelte';
 	import DayButton from './DayButton.svelte';
 	import { calculateCycles } from '$lib/period';
-	import type { Day } from '../../stores/day';
-
-	const today = now();
-
-	interface Days {
-		[key: string]: Day;
-	}
 
 	export let days: Days;
 	export let currentMonth: DateTime = now();

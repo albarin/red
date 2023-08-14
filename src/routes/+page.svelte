@@ -7,8 +7,8 @@
 	import { now, toDateTime, toHumanFormat, iso } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import { getStats, type CyclesStats } from '$lib/period';
-	import { Day } from '../stores/day';
-	import type { Cycle } from '../stores/cycle';
+	import type { Cycle } from '../lib/models/cycle';
+	import { Day } from '$lib/models/day';
 
 	const today = now();
 	let currentMonth = now();

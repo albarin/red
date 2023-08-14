@@ -7,12 +7,13 @@
 	import { DateTime, Interval } from 'luxon';
 
 	import { validateTemperature } from '$lib/utils/validation';
-	import { db, type Day } from '../../stores/db';
+	import { db } from '../../stores/db';
 	import { toDateTime, iso } from '$lib/utils/date';
 	import { arrayToObject } from '$lib/utils/array';
 	import CervicalFluidInput from './attributes/CervicalFluidInput.svelte';
 	import type { Fluid } from '$lib/components/attributes/cervicalFluid';
 	import NotesInput from './attributes/NotesInput.svelte';
+	import type { Day } from '$lib/models/day';
 
 	const dispatch = createEventDispatcher();
 
