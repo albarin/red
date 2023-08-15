@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { byDate, type Optional } from '$lib/models/models';
-	import { Day } from '$lib/models/day';
+	import { Day, byDate } from '$lib/models/day';
+	import type { Optional } from '$lib/models/optional';
 	import { iso, toDateTime } from '$lib/utils/date';
 	import { validateTemperature } from '$lib/utils/validation';
 	import { DateTime, Interval } from 'luxon';

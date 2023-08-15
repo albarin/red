@@ -1,6 +1,6 @@
 import { Cycle } from "./models/cycle";
-import type { Day } from "./models/day";
-import { byDate, type Days, type Optional } from "./models/models";
+import type { Day, Days } from "./models/day";
+import type { Optional } from "./models/optional";
 import { datesBetween, diffDays, minusDays } from "./utils/date";
 
 const dayIsStartOfPeriod = (day: Optional<Day>, prevDay: Optional<Day>): boolean => {

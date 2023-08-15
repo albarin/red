@@ -1,4 +1,4 @@
-import type { Optional } from '$lib/models/models';
+import type { Optional } from '$lib/models/optional';
 import { DateTime, Interval } from 'luxon';
 
 export const now = (): DateTime => {

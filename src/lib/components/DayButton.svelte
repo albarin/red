@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Optional } from '$lib/models/models';
+	import type { Day } from '$lib/models/day';
+	import type { Optional } from '$lib/models/optional';
 	import { isCurrentMonth, isFuture, isPast, isToday, toDateTime } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
-	import type { Day } from '../../stores/day';
 
 	const dispatch = createEventDispatcher();
 

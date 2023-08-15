@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Days } from '$lib/models/models';
 	import { calculateCycles } from '$lib/cycles';
+	import type { Days } from '$lib/models/day';
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db';

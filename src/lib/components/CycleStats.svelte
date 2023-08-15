@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
 	import type { Day } from '$lib/models/day';
-	import type { Optional } from '$lib/models/models';
+	import type { Optional } from '$lib/models/optional';
 	import { iso, now, toDateTime, toShortHumanFormat } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { db } from '../../stores/db';
