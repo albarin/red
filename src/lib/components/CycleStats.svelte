@@ -59,7 +59,7 @@
 				</div>
 			</div>
 		{:else}
-			No data available, start filling some days to see cycle stats.
+			No data available, start filling some days to see the current cycle stats.
 		{/if}
 	</div>
 </div>

@@ -1,3 +1,4 @@
+import type { Optional } from '$lib/models/models';
 import { DateTime, Interval } from 'luxon';
 
 export const now = (): DateTime => {
@@ -62,9 +63,13 @@ export const toShortHumanFormat = (date: DateTime | Interval | string): string =
   return date.toFormat('dd MMM yyyy');
 }
 
-export const toHumanFormat = (date: DateTime | Interval | string): string => {
+export const toHuman = (date: DateTime | Interval | Optional<string>): string => {
+  if (!date) {
+    return '';
+  }
+
   if (typeof date === 'string') {
-    return toHumanFormat(toDateTime(date));
+    return toHuman(toDateTime(date));
   }
 
   if (date instanceof Interval) {

@@ -3,14 +3,6 @@ import type { Day } from "./models/day";
 import { byDate, type Days, type Optional } from "./models/models";
 import { datesBetween, diffDays, minusDays } from "./utils/date";
 
-export interface CyclesStats {
-  cyclesLength: number;
-  averageCycleLength: number;
-  standardDeviationCycleLength: number;
-  shortesCycle: Cycle;
-  longestCycle: Cycle;
-}
-
 const dayIsStartOfPeriod = (day: Optional<Day>, prevDay: Optional<Day>): boolean => {
   if (!day) {
     return false
@@ -66,45 +58,5 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
 
     return new Cycle(cycle.number, cycle.start, end, endOfPeriod, duration);
   });
-}
-
-const getMean = (data) => {
-  return data.reduce(function (a, b) {
-    return Number(a) + Number(b);
-  }) / data.length;
-};
-
-const getSD = (data) => {
-  let m = getMean(data);
-  return Math.sqrt(data.reduce(function (sq, n) {
-    return sq + Math.pow(n - m, 2);
-  }, 0) / (data.length - 1));
-};
-
-const getShortestCycle = (cycles: Cycle[]): Cycle => {
-  return cycles.reduce((prev, current) => {
-    return (prev.duration < current.duration) ? prev : current
-  });
-}
-
-const getLongestCycle = (cycles: Cycle[]): Cycle => {
-  return cycles.reduce((prev, current) => {
-    return (prev.duration > current.duration) ? prev : current
-  });
-}
-
-export const getStats = (cycles: Cycle[]): CyclesStats => {
-  const durations = cycles.map(cycle => cycle.duration);
-  if (!durations.length) {
-    return {} as CyclesStats
-  }
-
-  return {
-    cyclesLength: cycles.length,
-    averageCycleLength: Math.round(getMean(durations)),
-    standardDeviationCycleLength: Math.round(getSD(durations)),
-    shortesCycle: getShortestCycle(cycles),
-    longestCycle: getLongestCycle(cycles),
-  } as CyclesStats
 }
 

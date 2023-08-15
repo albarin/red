@@ -3,12 +3,12 @@
 	import Calendar from '$lib/components/Calendar.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import { Day } from '$lib/models/day';
-	import { getStats, type CyclesStats } from '$lib/period';
-	import { iso, now, toHumanFormat } from '$lib/utils/date';
+	import { iso, now } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import type { Cycle } from '../lib/models/cycle';
 	import { db } from '../stores/db';
+	import GlobalStats from '$lib/components/GlobalStats.svelte';
 
 	const today = now();
 	let currentMonth = now();
@@ -46,14 +46,6 @@
 		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
 
-	let stats: CyclesStats;
-	$: if ($cycles?.length) {
-		const lastFullCycleIndex =
-			$cycles[$cycles.length - 1]?.end === undefined ? $cycles.length - 1 : $cycles.length;
-
-		stats = getStats($cycles.slice(0, lastFullCycleIndex));
-	}
-
 	let currentCycle: Cycle;
 	$: if ($cycles?.length) {
 		currentCycle = $cycles[$cycles.length - 1];
@@ -82,24 +74,7 @@
 	</div>
 	<div class="py-4 pr-4 md:w-1/4">
 		<CycleStats cycle={currentCycle} />
-
-		<div class="bg-white rounded-lg p-4">
-			{#if stats}
-				<p>Cycles: {stats.cyclesLength}</p>
-				<p>Average length: {stats.averageCycleLength}±{stats.standardDeviationCycleLength} days</p>
-
-				<p>
-					{stats.shortesCycle.duration} days - from {toHumanFormat(stats.shortesCycle.start)} to {toHumanFormat(
-						stats.shortesCycle.end
-					)}
-				</p>
-				<p>
-					{stats.longestCycle.duration} days - from {toHumanFormat(stats.longestCycle.start)} to {toHumanFormat(
-						stats.longestCycle.end
-					)}
-				</p>
-			{/if}
-		</div>
+		<GlobalStats cycles={$cycles} />
 	</div>
 
 	{#if isAddDayModalOpen}
