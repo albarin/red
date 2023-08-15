@@ -1,7 +1,6 @@
 <script lang="ts">
-	import type { Optional } from '$lib/models/models';
+	import { byDate, type Optional } from '$lib/models/models';
 	import { Day } from '$lib/models/day';
-	import { arrayToObject } from '$lib/utils/array';
 	import { iso, toDateTime } from '$lib/utils/date';
 	import { validateTemperature } from '$lib/utils/validation';
 	import { DateTime, Interval } from 'luxon';
@@ -79,7 +78,7 @@
 
 	const fillPeriodGaps = async (date: string) => {
 		const prevWeekDays = await db.getPreviousWeekDays(iso(toDateTime(date).minus({ days: 1 })));
-		const prevWeekDaysByDate = arrayToObject(prevWeekDays, 'date');
+		const prevWeekDaysByDate = byDate(prevWeekDays);
 		const prevWeekPeriodDays = prevWeekDays.filter((day) => day.flow);
 		const closestPeriodDay = prevWeekPeriodDays[prevWeekPeriodDays.length - 1];
 		if (!closestPeriodDay) {

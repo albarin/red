@@ -2,6 +2,7 @@ import { Day } from '$lib/models/day';
 import { iso, toDateTime } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
 import type { Cycle } from '../lib/models/cycle';
+import type { Days } from '$lib/models/models';
 
 export class RedDB extends Dexie {
   days!: Table<Day>;
@@ -16,10 +17,14 @@ export class RedDB extends Dexie {
   }
 
   async getAllDays(): Promise<Day[]> {
-    return await this.days.toArray();
+    const days = await this.days.toArray();
+
+    return days.map((day: Day) => {
+      return new Day(day.date, day.temperature, day.flow, day.fluid, day.notes)
+    });
   }
 
-  async getDaysBetween(start: string, end: string): Promise<Day[]> {
+  async getDaysBetween(start: string, end: string): Promise<Days> {
     const days = await this.days
       .where('date')
       .between(start, end, true, true)
@@ -32,10 +37,10 @@ export class RedDB extends Dexie {
   }
 
   async getPreviousWeekDays(date: string): Promise<Day[]> {
-    return await this.getDaysBetween(
-      iso(toDateTime(date).minus({ days: 6 })),
-      date
-    );
+    return await this.days
+      .where('date')
+      .between(iso(toDateTime(date).minus({ days: 6 })), date, true, true)
+      .toArray();
   }
 }
 

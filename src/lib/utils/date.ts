@@ -4,6 +4,25 @@ export const now = (): DateTime => {
   return DateTime.now().set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
 }
 
+export const datesBetween = (isoDateStart: string, isoDateEnd: string): string[] => {
+  return Interval.fromDateTimes(
+    toDateTime(isoDateStart),
+    toDateTime(isoDateEnd).plus({ day: 1 })
+  ).splitBy({ days: 1 }).map(interval => iso(interval));
+}
+
+export const diffDays = (isoDateStart: string, isoDateEnd: string): number => {
+  return toDateTime(isoDateEnd).diff(toDateTime(isoDateStart), 'days').days + 1;
+}
+
+export const minusDays = (date: DateTime | string, days: number): string => {
+  if (typeof date === 'string') {
+    return minusDays(toDateTime(date), days);
+  }
+
+  return iso(date.minus({ day: days }))
+}
+
 export const getMonthCalendarByWeek = (now: DateTime): Interval[][] => {
   const weeks = Interval.fromDateTimes(
     now.startOf('month').startOf('week'),

@@ -76,8 +76,6 @@
 			console.error(`Failed to import ${file.name}: ${error}`);
 		}
 	};
-
-	const allDays = db.getAllDays();
 </script>
 
 <div class="bg-base-100 p-4 rounded-xl">
@@ -98,13 +96,13 @@
 	</div>
 </div>
 
-{#await allDays then allDays}
+{#await db.getAllDays() then days}
 	<button
 		class="btn btn-primary mt-2"
 		on:click={async () => {
 			db.cycles.clear();
 
-			const cycles = calculateCycles(allDays);
+			const cycles = calculateCycles(days);
 
 			if (!cycles) {
 				return;
@@ -129,9 +127,9 @@
 	</button> -->
 <!-- </div> -->
 
-<input
+<!-- <input
 	type="file"
 	class="file-input file-input-bordered file-input-primary w-full max-w-xs"
 	bind:this={uploader}
 	on:change|preventDefault={upload}
-/>
+/> -->

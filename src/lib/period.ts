@@ -1,19 +1,7 @@
-import { Interval } from "luxon";
-import { arrayToObject } from "./utils/array";
-import { iso, toDateTime } from "./utils/date";
-
-export interface Cycle {
-  start: string
-  end?: string
-  endOfPeriod?: string
-  duration?: number
-}
-
-interface Day {
-  date: string;
-  temperature?: number;
-  flow?: number;
-}
+import { Cycle } from "./models/cycle";
+import type { Day } from "./models/day";
+import { byDate, type Days, type Optional } from "./models/models";
+import { datesBetween, diffDays, minusDays } from "./utils/date";
 
 export interface CyclesStats {
   cyclesLength: number;
@@ -23,78 +11,61 @@ export interface CyclesStats {
   longestCycle: Cycle;
 }
 
-const dayHasFlow = (day: Day) => {
-  if (!day) return false;
-  return day.flow !== undefined && day.flow > 0
+const dayIsStartOfPeriod = (day: Optional<Day>, prevDay: Optional<Day>): boolean => {
+  if (!day) {
+    return false
+  };
+
+  if (!prevDay) {
+    return day.hasPeriod();
+  }
+
+  return day.hasPeriod() && !prevDay.hasPeriod();
 };
 
-const dayIsStartOfPeriod = (day: Day, prevDay: Day | undefined) => dayHasFlow(day) && !dayHasFlow(prevDay);
-
-const getEndOfPeriod = (cycle: Cycle, days: { [key: string]: Day }): string | undefined => {
+const getEndOfPeriod = (cycle: Cycle, days: Days): Optional<string> => {
   if (!cycle.end) {
     return undefined
   };
 
-  const cycleDays = Interval.fromDateTimes(
-    toDateTime(cycle.start),
-    toDateTime(cycle.end)
-  ).splitBy({ days: 1 });
+  const cycleDays = datesBetween(cycle.start, cycle.end)
 
   for (let i = 1; i < cycleDays.length; i++) {
-    const date = iso(cycleDays[i]);
+    const date = cycleDays[i];
 
-    if (!dayHasFlow(days[date])) {
-      return iso(cycleDays[i - 1]);
+    if (!days[date].hasPeriod()) {
+      return cycleDays[i - 1];
     }
   }
 
   return undefined;
 }
 
-export const calculateCycles = (days: Day[]): Cycle[] | undefined => {
-  const daysByDate = arrayToObject(days, 'date');
-
+export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
+  const daysByDate = byDate(days);
   const cycles: Cycle[] = [];
 
-  const firstDay = days[0];
-  const lastDay = days[days.length - 1];
+  let date: string = '';
+  let prevDate: string = '';
 
-  const allDays = Interval.fromDateTimes(
-    toDateTime(firstDay.date),
-    toDateTime(lastDay.date).plus({ day: 1 })
-  ).splitBy({ days: 1 });
+  const dates = datesBetween(days[0].date, days[days.length - 1].date)
 
-  for (let i = 0; i < allDays.length; i++) {
-    const day = iso(allDays[i]);
-    const prevDay = i === 0 ? undefined : iso(allDays[i - 1]);
+  for (let i = 0; i < dates.length; i++) {
+    date = dates[i];
+    prevDate = dates[i - 1];
 
-    if (!prevDay && dayHasFlow(daysByDate[day])) {
-      cycles.push({
-        number: cycles.length + 1,
-        start: day,
-      } as Cycle);
-      continue;
-    }
-
-    if (prevDay && dayIsStartOfPeriod(daysByDate[day], daysByDate[prevDay])) {
-      cycles.push({
-        number: cycles.length + 1,
-        start: day,
-      } as Cycle);
+    if (dayIsStartOfPeriod(daysByDate[date], daysByDate[prevDate])) {
+      cycles.push(new Cycle(cycles.length + 1, date));
     }
   }
 
-  cycles.forEach((cycle, i) => {
-    cycles[i].end = cycles[i + 1] ? iso(toDateTime(cycles[i + 1].start).minus({ day: 1 })) : undefined;
+  return cycles.map((cycle: Cycle, i: number) => {
+    const end = cycles[i + 1] ? minusDays(cycles[i + 1].start, 1) : undefined;
+    const duration = end ? diffDays(cycle.start, end) : undefined;
+    const endOfPeriod = getEndOfPeriod(cycle, daysByDate);
 
-    if (cycle.end) {
-      cycles[i].duration = toDateTime(cycle.end).diff(toDateTime(cycle.start), 'days').days + 1;
-    }
-
-    cycles[i].endOfPeriod = getEndOfPeriod(cycle, daysByDate);
+    return new Cycle(cycle.number, cycle.start, end, endOfPeriod, duration);
   });
-
-  return cycles;
 }
 
 const getMean = (data) => {
