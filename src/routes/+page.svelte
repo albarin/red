@@ -2,6 +2,7 @@
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
+	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
 	import type { Cycle } from '$lib/models/cycle';
 	import { Day } from '$lib/models/day';
@@ -9,13 +10,12 @@
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../stores/db';
-	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
-
-	const today = now();
-	let currentMonth = now();
 
 	let showCalendarView = true;
 	let isAddDayModalOpen = false;
+
+	const today = now();
+	let currentMonth = now();
 
 	$: days = liveQuery(async () => {
 		return await db.getDaysBetween(
@@ -23,6 +23,15 @@
 			iso(currentMonth.endOf('month'))
 		);
 	});
+
+	$: cycles = liveQuery(async () => {
+		return await db.cycles.toArray();
+	});
+
+	let currentCycle: Cycle;
+	$: if ($cycles?.length) {
+		currentCycle = $cycles[$cycles.length - 1];
+	}
 
 	let selectedDay: Day = $days && $days[iso(today)] ? $days[iso(today)] : new Day(iso(today));
 	const changeSelectedDay = (day: Interval) => {
@@ -36,22 +45,13 @@
 		isAddDayModalOpen = true;
 	};
 
-	$: cycles = liveQuery(async () => {
-		return await db.cycles.toArray();
-	});
-
-	const handleBack = (event) => {
+	const handleMonthBack = (event: CustomEvent) => {
 		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
 
-	const handleForward = (event) => {
+	const handleMonthForward = (event: CustomEvent) => {
 		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
-
-	let currentCycle: Cycle;
-	$: if ($cycles?.length) {
-		currentCycle = $cycles[$cycles.length - 1];
-	}
 
 	let currentMonthIsNow: boolean;
 	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
@@ -67,8 +67,8 @@
 				{currentMonth}
 				days={$days}
 				on:change-day={(event) => changeSelectedDay(event.detail.day)}
-				on:back={handleBack}
-				on:forward={handleForward}
+				on:back={handleMonthBack}
+				on:forward={handleMonthForward}
 			/>
 		{:else if currentCycle}
 			<CycleCalendar cycle={currentCycle} />
