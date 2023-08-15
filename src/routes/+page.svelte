@@ -1,18 +1,20 @@
 <script lang="ts">
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
-	import Calendar from '$lib/components/Calendar.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
+	import GlobalStats from '$lib/components/GlobalStats.svelte';
+	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
+	import type { Cycle } from '$lib/models/cycle';
 	import { Day } from '$lib/models/day';
 	import { iso, now } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
-	import type { Cycle } from '../lib/models/cycle';
 	import { db } from '../stores/db';
-	import GlobalStats from '$lib/components/GlobalStats.svelte';
+	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 
 	const today = now();
 	let currentMonth = now();
 
+	let showCalendarView = true;
 	let isAddDayModalOpen = false;
 
 	$: days = liveQuery(async () => {
@@ -60,18 +62,31 @@
 
 <div class="flex bg-accent h-screen">
 	<div class="sm:p-4 w-full md:w-3/4">
-		<Calendar
-			{currentMonth}
-			days={$days}
-			on:change-day={(event) => changeSelectedDay(event.detail.day)}
-			on:back={handleBack}
-			on:forward={handleForward}
-		/>
+		{#if showCalendarView}
+			<NaturalCalendar
+				{currentMonth}
+				days={$days}
+				on:change-day={(event) => changeSelectedDay(event.detail.day)}
+				on:back={handleBack}
+				on:forward={handleForward}
+			/>
+		{:else if currentCycle}
+			<CycleCalendar cycle={currentCycle} />
+		{/if}
+
+		<button class="btn absolute right-4" on:click={() => (showCalendarView = !showCalendarView)}>
+			{#if showCalendarView}
+				Show cycle view
+			{:else}
+				Show calendar view
+			{/if}
+		</button>
 
 		{#if !currentMonthIsNow}
 			<button class="btn absolute right-4" on:click={goToToday}>Today</button>
 		{/if}
 	</div>
+
 	<div class="py-4 pr-4 md:w-1/4">
 		<CycleStats cycle={currentCycle} />
 		<GlobalStats cycles={$cycles} />
