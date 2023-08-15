@@ -14,7 +14,7 @@ export class Day {
   }
 
   hasPeriod(): boolean {
-    return this.flow !== undefined && this.flow > 1;
+    return this.flow !== undefined && this.flow > 0;
   }
 
   hasSpotting(): boolean {
