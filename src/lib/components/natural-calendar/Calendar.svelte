@@ -4,9 +4,9 @@
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { db } from '../../../stores/db';
-	import CalendarHeader from './Header.svelte';
 	import DayButton from '../DayButton.svelte';
 	import MonthHeader from '../MonthHeader.svelte';
+	import WeekHeader from '../WeekHeader.svelte';
 
 	export let days: Days;
 	export let currentMonth: DateTime = now();
@@ -82,7 +82,7 @@
 	<MonthHeader month={currentMonth} on:back on:forward />
 
 	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
-		<CalendarHeader week={calendar[0]} />
+		<WeekHeader week={calendar[0]} />
 		{#each calendar as week}
 			{#each week as date}
 				<DayButton

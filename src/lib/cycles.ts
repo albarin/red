@@ -1,5 +1,5 @@
 import { Cycle } from "./models/cycle";
-import type { Day, Days } from "./models/day";
+import { byDate, type Day, type Days } from "./models/day";
 import type { Optional } from "./models/optional";
 import { datesBetween, diffDays, minusDays } from "./utils/date";
 
