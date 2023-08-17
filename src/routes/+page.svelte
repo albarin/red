@@ -3,7 +3,9 @@
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
+	import CycleHeader from '$lib/components/cycle-calendar/Header.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
+	import MonthHeader from '$lib/components/natural-calendar/Header.svelte';
 	import { calculateCycles } from '$lib/cycles';
 	import type { Cycle } from '$lib/models/cycle';
 	import { Day } from '$lib/models/day';
@@ -13,39 +15,38 @@
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../stores/db';
 
+	// 'Calendar' logic
 	let showCalendarView = true;
-	let isAddDayModalOpen = false;
 
 	const today = now();
 	let currentMonth = now();
-
-	$: days = liveQuery(async () => {
-		if (showCalendarView) {
-			return await db.getDaysBetween(
-				iso(currentMonth.startOf('month')),
-				iso(currentMonth.endOf('month'))
-			);
-		}
-
-		return await db.getDaysBetween(
-			iso(currentCycle.start),
-			currentCycle?.end ? iso(currentCycle?.end) : iso(today)
-		);
-	});
-
-	$: cycles = liveQuery(async () => {
-		return await db.cycles.toArray();
-	});
 
 	let currentCycle: Cycle;
 	let currentCycleIndex: Optional<number>;
 	$: if ($cycles?.length && currentCycleIndex === undefined) {
 		currentCycleIndex = $cycles.length - 1;
 	}
-
-	$: {
+	$: if ($cycles && currentCycleIndex !== undefined) {
 		currentCycle = $cycles && $cycles[currentCycleIndex];
 	}
+
+	$: days = liveQuery(async () => {
+		const startDate: string = showCalendarView
+			? iso(currentMonth.startOf('month'))
+			: currentCycle?.start;
+		const endDate: string = showCalendarView
+			? iso(currentMonth.endOf('month'))
+			: currentCycle?.end || iso(today);
+
+		return await db.getDaysBetween(startDate, endDate);
+	});
+
+	$: cycles = liveQuery(async () => {
+		return await db.getAllCycles();
+	});
+
+	// 'Add day' modal logic
+	let isAddDayModalOpen = false;
 
 	let selectedDay: Day = $days && $days[iso(today)] ? $days[iso(today)] : new Day(iso(today));
 	const changeSelectedDay = (day: Interval) => {
@@ -59,6 +60,19 @@
 		isAddDayModalOpen = true;
 	};
 
+	// 'Go to current' button logic
+	let currentMonthIsNow: boolean;
+	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
+	let currentCycleIsNow: boolean;
+	$: currentCycleIsNow =
+		currentCycle && currentCycle?.number == $cycles[$cycles.length - 1]?.number;
+
+	// Handlers to navigate the calendar
+	const goToCurrent = () => {
+		currentMonth = today;
+		currentCycleIndex = $cycles.length - 1;
+	};
+
 	const handleMonthBack = (event: CustomEvent) => {
 		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
 	};
@@ -68,15 +82,14 @@
 	};
 
 	const handleCycleBack = () => {
-		if (currentCycleIndex === 0) {
+		if (!currentCycleIndex) {
 			return;
 		}
-		
 		currentCycleIndex--;
 	};
 
 	const handleCycleForward = () => {
-		if (currentCycleIndex == $cycles.length - 1) {
+		if (!currentCycleIndex || currentCycleIndex == $cycles.length - 1) {
 			return;
 		}
 		currentCycleIndex++;
@@ -84,17 +97,14 @@
 
 	const handleCycleFirst = () => {
 		currentCycleIndex = 0;
+		console.log('first', currentCycle);
 	};
 
 	const handleCycleLast = () => {
+		if (!$cycles.length) {
+			return;
+		}
 		currentCycleIndex = $cycles.length - 1;
-		console.log('last', currentCycleIndex);
-	};
-
-	let currentMonthIsNow: boolean;
-	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
-	const goToToday = () => {
-		currentMonth = today;
 	};
 </script>
 
@@ -128,8 +138,8 @@
 			{/if}
 		</button>
 
-		{#if !currentMonthIsNow}
-			<button class="btn absolute right-4" on:click={goToToday}>Today</button>
+		{#if !currentMonthIsNow || !currentCycleIsNow}
+			<button class="btn absolute right-4" on:click={goToCurrent}>Today</button>
 		{/if}
 	</div>
 

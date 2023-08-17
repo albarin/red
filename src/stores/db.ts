@@ -1,7 +1,7 @@
 import { Day } from '$lib/models/day';
 import { iso, toDateTime } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
-import type { Cycle } from '../lib/models/cycle';
+import { Cycle } from '../lib/models/cycle';
 import type { Days } from '$lib/models/optional';
 
 export class RedDB extends Dexie {
@@ -21,6 +21,14 @@ export class RedDB extends Dexie {
 
     return days.map((day: Day) => {
       return new Day(day.date, day.temperature, day.flow, day.fluid, day.notes)
+    });
+  }
+
+  async getAllCycles(): Promise<Cycle[]> {
+    const cycles = await this.cycles.toArray();
+
+    return cycles.map((cycle: Cycle) => {
+      return new Cycle(cycle.number, cycle.start, cycle.end, cycle.endOfPeriod, cycle.duration);
     });
   }
 

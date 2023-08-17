@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { calculateCycles } from '$lib/cycles';
 	import type { Days } from '$lib/models/day';
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
 	import { Interval, type DateTime } from 'luxon';
 	import { db } from '../../../stores/db';
 	import DayButton from '../DayButton.svelte';
 	import WeekHeader from '../WeekHeader.svelte';
-	import MonthHeader from './Header.svelte';
+	import Header from './Header.svelte';
 
 	export let days: Days;
 	export let currentMonth: DateTime = now();
@@ -82,10 +81,11 @@
 </script>
 
 <div class="bg-base-100 p-4 rounded-xl">
-	<MonthHeader month={currentMonth} on:back on:forward />
+	<Header month={currentMonth} on:back on:forward />
 
 	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
-		<WeekHeader week={calendar[0]} />
+		<WeekHeader />
+
 		{#each calendar as week}
 			{#each week as date}
 				<DayButton

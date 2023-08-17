@@ -5,7 +5,7 @@
 	import { DateTime, Interval } from 'luxon';
 	import DayButton from '../DayButton.svelte';
 	import WeekHeader from '../WeekHeader.svelte';
-	import CycleHeader from './Header.svelte';
+	import Header from './Header.svelte';
 
 	export let days: Days;
 	export let currentCycle: Cycle;
@@ -26,17 +26,17 @@
 </script>
 
 <div class="bg-base-100 p-4 rounded-xl">
-	<CycleHeader cycle={currentCycle} on:back on:forward on:first on:last />
+	<Header cycle={currentCycle} on:back on:forward on:first on:last />
 
 	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
-		<WeekHeader week={calendar[0]} />
+		<WeekHeader />
 
 		{#each calendar as week}
 			{#each week as date}
 				<DayButton
+					day={days && days[iso(date)] ? days[iso(date)] : undefined}
 					date={date.start}
 					{interval}
-					day={days && days[iso(date)] ? days[iso(date)] : undefined}
 					on:change-day
 				/>
 			{/each}
