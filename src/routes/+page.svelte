@@ -97,7 +97,6 @@
 
 	const handleCycleFirst = () => {
 		currentCycleIndex = 0;
-		console.log('first', currentCycle);
 	};
 
 	const handleCycleLast = () => {
