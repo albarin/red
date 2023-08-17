@@ -105,6 +105,10 @@
 		}
 		currentCycleIndex = $cycles.length - 1;
 	};
+
+	const handleChangeDay = () => (event: CustomEvent) => {
+		changeSelectedDay(event.detail.day);
+	};
 </script>
 
 <div class="flex bg-accent h-screen">
@@ -113,7 +117,7 @@
 			<NaturalCalendar
 				{currentMonth}
 				days={$days}
-				on:change-day={(event) => changeSelectedDay(event.detail.day)}
+				on:change-day={handleChangeDay()}
 				on:back={handleMonthBack}
 				on:forward={handleMonthForward}
 			/>
@@ -121,7 +125,7 @@
 			<CycleCalendar
 				{currentCycle}
 				days={$days}
-				on:change-day={(event) => changeSelectedDay(event.detail.day)}
+				on:change-day={handleChangeDay()}
 				on:back={handleCycleBack}
 				on:forward={handleCycleForward}
 				on:first={handleCycleFirst}
