@@ -4,6 +4,7 @@
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
+	import { calculateCycles } from '$lib/cycles';
 	import type { Cycle } from '$lib/models/cycle';
 	import { Day } from '$lib/models/day';
 	import { iso, now } from '$lib/utils/date';
@@ -18,9 +19,16 @@
 	let currentMonth = now();
 
 	$: days = liveQuery(async () => {
+		if (showCalendarView) {
+			return await db.getDaysBetween(
+				iso(currentMonth.startOf('month')),
+				iso(currentMonth.endOf('month'))
+			);
+		}
+
 		return await db.getDaysBetween(
-			iso(currentMonth.startOf('month')),
-			iso(currentMonth.endOf('month'))
+			iso(currentCycle.start),
+			currentCycle?.end ? iso(currentCycle?.end) : iso(today)
 		);
 	});
 
@@ -29,8 +37,13 @@
 	});
 
 	let currentCycle: Cycle;
-	$: if ($cycles?.length) {
-		currentCycle = $cycles[$cycles.length - 1];
+	let currentCycleIndex: number;
+	$: if ($cycles?.length && !currentCycleIndex) {
+		currentCycleIndex = $cycles.length - 1;
+	}
+
+	$: {
+		currentCycle = $cycles && $cycles[currentCycleIndex];
 	}
 
 	let selectedDay: Day = $days && $days[iso(today)] ? $days[iso(today)] : new Day(iso(today));
@@ -53,6 +66,16 @@
 		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
 	};
 
+	const handleCycleBack = () => {
+		console.log('back');
+		currentCycleIndex--;
+	};
+
+	const handleCycleForward = () => {
+		console.log('forward');
+		currentCycleIndex++;
+	};
+
 	let currentMonthIsNow: boolean;
 	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
 	const goToToday = () => {
@@ -71,7 +94,14 @@
 				on:forward={handleMonthForward}
 			/>
 		{:else if currentCycle}
-			<CycleCalendar cycle={currentCycle} />
+			<CycleCalendar
+				{currentCycle}
+				cycles={$cycles}
+				days={$days}
+				on:change-day={(event) => changeSelectedDay(event.detail.day)}
+				on:back={handleCycleBack}
+				on:forward={handleCycleForward}
+			/>
 		{/if}
 
 		<button class="btn absolute right-4" on:click={() => (showCalendarView = !showCalendarView)}>
@@ -90,6 +120,29 @@
 	<div class="py-4 pr-4 md:w-1/4">
 		<CycleStats cycle={currentCycle} />
 		<GlobalStats cycles={$cycles} />
+
+		{#await db.getAllDays() then days}
+			<button
+				class="btn btn-primary mt-2"
+				on:click={async () => {
+					db.cycles.clear();
+
+					const cycles = calculateCycles(days);
+
+					if (!cycles) {
+						return;
+					}
+
+					try {
+						await db.cycles.bulkPut(cycles);
+					} catch (error) {
+						console.error(`Failed to store cycles: ${error}`);
+					}
+				}}
+			>
+				Re-calculate
+			</button>
+		{/await}
 	</div>
 
 	{#if isAddDayModalOpen}

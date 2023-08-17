@@ -2,17 +2,20 @@
 	import { calculateCycles } from '$lib/cycles';
 	import type { Days } from '$lib/models/day';
 	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
-	import type { DateTime, Interval } from 'luxon';
+	import { Interval, type DateTime } from 'luxon';
 	import { db } from '../../../stores/db';
 	import DayButton from '../DayButton.svelte';
-	import MonthHeader from '../MonthHeader.svelte';
 	import WeekHeader from '../WeekHeader.svelte';
+	import MonthHeader from './Header.svelte';
 
 	export let days: Days;
 	export let currentMonth: DateTime = now();
 
 	let calendar: Interval[][];
 	$: calendar = getMonthCalendarByWeek(currentMonth);
+
+	let interval: Interval;
+	$: interval = Interval.fromDateTimes(currentMonth.startOf('month'), currentMonth.endOf('month'));
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
@@ -87,8 +90,8 @@
 			{#each week as date}
 				<DayButton
 					day={days && days[iso(date)] ? days[iso(date)] : undefined}
-					{date}
-					month={currentMonth}
+					date={date.start}
+					{interval}
 					on:change-day
 				/>
 			{/each}
@@ -96,28 +99,6 @@
 	</div>
 </div>
 
-{#await db.getAllDays() then days}
-	<button
-		class="btn btn-primary mt-2"
-		on:click={async () => {
-			db.cycles.clear();
-
-			const cycles = calculateCycles(days);
-
-			if (!cycles) {
-				return;
-			}
-
-			try {
-				await db.cycles.bulkPut(cycles);
-			} catch (error) {
-				console.error(`Failed to store cycles: ${error}`);
-			}
-		}}
-	>
-		Re-calculate
-	</button>
-{/await}
 <!-- <div class="absolute bottom-4"> -->
 <!-- <button class="btn btn-accent" on:click={changeSelectedDay(Interval.fromDateTimes(now, now))}>
 		Add<TempColdLine class="text-lg -ml-1" />

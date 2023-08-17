@@ -33,6 +33,12 @@ export const getMonthCalendarByWeek = (now: DateTime): Interval[][] => {
   return weeks.map((week) => week.splitBy({ days: 1 }));
 }
 
+export const getCalendarByWeek = (start: DateTime, end: DateTime): Interval[][] => {
+  const weeks = Interval.fromDateTimes(start.startOf('week'), end).splitBy({ weeks: 1 });
+
+  return weeks.map((week) => week.splitBy({ days: 1 }));
+}
+
 export const iso = (date: DateTime | Interval | string): string => {
   if (typeof date === 'string') {
     return iso(toDateTime(date));
@@ -105,7 +111,7 @@ export const isPast = (date: DateTime | Interval): boolean => {
     return false;
   }
 
-  return date < now();
+  return date <= now();
 }
 
 export const isFuture = (date: DateTime | Interval): boolean => {

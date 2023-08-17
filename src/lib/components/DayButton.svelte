@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
-	import { isCurrentMonth, isFuture, isPast, isToday, toDateTime } from '$lib/utils/date';
+	import { isFuture, isPast, isToday } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
@@ -9,24 +9,24 @@
 	const dispatch = createEventDispatcher();
 
 	export let day: Optional<Day>;
-	export let date: Interval;
-	export let month: DateTime;
+	export let date: DateTime | null;
+	export let interval: Interval;
 
-	const dayColor = (day: Optional<Day>): string => {
+	const dayColor = (day: Optional<Day>, date: DateTime): string => {
 		if (day?.flow) {
-			const colors = ['bg-red-200 ', 'bg-red-300 ', 'bg-red-400 '];
+			const colors = ['bg-red-200', 'bg-red-300', 'bg-red-400'];
 			return colors[day.flow - 1] + ' text-primary';
 		}
 
-		if (day && isCurrentMonth(toDateTime(day.date), month)) {
-			return 'bg-accent';
-		}
+		return dateIsInInterval(date) ? 'bg-accent' : 'brr';
+	};
 
-		return '';
+	const dateIsInInterval = (date: DateTime): boolean => {
+		return date && interval && interval.contains(date);
 	};
 
 	const handleClick = () => {
-		if (!isCurrentMonth(date, month)) {
+		if (isFuture(date) || !dateIsInInterval(date)) {
 			return;
 		}
 		dispatch('change-day', { day: date });
@@ -37,19 +37,19 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
 	on:click={handleClick}
-	class={`rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between ${dayColor(
-		day
-	)}`}
-	class:cursor-pointer={isPast(date) && isCurrentMonth(date, month)}
-	class:bg-accent={!day?.flow && isCurrentMonth(date, month)}
+	class={`${dayColor(
+		day,
+		date
+	)} rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between`}
+	class:cursor-pointer={isPast(date) && dateIsInInterval(date)}
 >
 	<div class="sm:text-right text-center text-lg">
 		<span
 			class={isToday(date) ? `sm:badge sm:badge-primary sm:px-2 sm:py-3` : ''}
 			class:text-secondary={isFuture(date)}
-			class:invisible={date.start?.month !== month.month}
+			class:invisible={!dateIsInInterval(date)}
 		>
-			{date.start?.day}
+			{date.day}
 		</span>
 	</div>
 
