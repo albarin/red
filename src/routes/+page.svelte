@@ -7,6 +7,7 @@
 	import { calculateCycles } from '$lib/cycles';
 	import type { Cycle } from '$lib/models/cycle';
 	import { Day } from '$lib/models/day';
+	import type { Optional } from '$lib/models/optional';
 	import { iso, now } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
@@ -37,8 +38,8 @@
 	});
 
 	let currentCycle: Cycle;
-	let currentCycleIndex: number;
-	$: if ($cycles?.length && !currentCycleIndex) {
+	let currentCycleIndex: Optional<number>;
+	$: if ($cycles?.length && currentCycleIndex === undefined) {
 		currentCycleIndex = $cycles.length - 1;
 	}
 
@@ -67,13 +68,27 @@
 	};
 
 	const handleCycleBack = () => {
-		console.log('back');
+		if (currentCycleIndex === 0) {
+			return;
+		}
+		
 		currentCycleIndex--;
 	};
 
 	const handleCycleForward = () => {
-		console.log('forward');
+		if (currentCycleIndex == $cycles.length - 1) {
+			return;
+		}
 		currentCycleIndex++;
+	};
+
+	const handleCycleFirst = () => {
+		currentCycleIndex = 0;
+	};
+
+	const handleCycleLast = () => {
+		currentCycleIndex = $cycles.length - 1;
+		console.log('last', currentCycleIndex);
 	};
 
 	let currentMonthIsNow: boolean;
@@ -96,11 +111,12 @@
 		{:else if currentCycle}
 			<CycleCalendar
 				{currentCycle}
-				cycles={$cycles}
 				days={$days}
 				on:change-day={(event) => changeSelectedDay(event.detail.day)}
 				on:back={handleCycleBack}
 				on:forward={handleCycleForward}
+				on:first={handleCycleFirst}
+				on:last={handleCycleLast}
 			/>
 		{/if}
 

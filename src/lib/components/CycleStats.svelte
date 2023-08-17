@@ -4,13 +4,17 @@
 	import type { Optional } from '$lib/models/optional';
 	import { iso, now, toDateTime, toShortHumanFormat } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
+	import type { DateTime } from 'luxon';
 	import { db } from '../../stores/db';
 
 	export let cycle: Optional<Cycle>;
 
+	let cycleEndDate: DateTime;
+	$: cycleEndDate = cycle?.end ? toDateTime(cycle.end) : now();
+
 	$: cycleDays = liveQuery(async () => {
 		if (!cycle) return null;
-		return await db.getDaysBetween(iso(cycle.start), iso(now()));
+		return await db.getDaysBetween(iso(cycle.start), iso(cycleEndDate));
 	});
 
 	let periodDays: Day[] = [];
@@ -29,14 +33,14 @@
 			<h2 class="text-xl font-bold">Cycle {cycle.number}</h2>
 			<p class="my-2">
 				<strong class="text-neutral">{toShortHumanFormat(cycle.start)}</strong> -
-				<strong class="text-neutral">{toShortHumanFormat(now())}</strong>
+				<strong class="text-neutral">{toShortHumanFormat(cycleEndDate)}</strong>
 			</p>
 
 			<div class="grid grid-cols-2 gap-2">
 				<div>
 					<h4>Cycle days</h4>
 					<p class="text-neutral text-2xl">
-						{now().diff(toDateTime(cycle.start), 'days').days + 1} days
+						{cycleEndDate.diff(toDateTime(cycle.start), 'days').days + 1} days
 					</p>
 				</div>
 				<div>
