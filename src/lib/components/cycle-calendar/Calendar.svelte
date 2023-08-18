@@ -37,6 +37,7 @@
 					day={days && days[iso(date)] ? days[iso(date)] : undefined}
 					date={intervalToDate(date)}
 					{interval}
+					showCycleDay={true}
 					on:change-day
 				/>
 			{/each}

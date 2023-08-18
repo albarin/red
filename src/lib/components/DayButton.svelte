@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
-	import { isFuture, isPast, isToday } from '$lib/utils/date';
+	import { isFuture, isPast, isToday, iso } from '$lib/utils/date';
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
@@ -11,6 +11,7 @@
 	export let day: Optional<Day>;
 	export let date: DateTime;
 	export let interval: Interval;
+	export let showCycleDay: boolean = false;
 
 	const dayColor = (day: Optional<Day>, date: DateTime): string => {
 		if (day?.flow) {
@@ -19,6 +20,10 @@
 		}
 
 		return dateIsInInterval(date) ? 'bg-accent' : 'brr';
+	};
+
+	const cycleDay = (date: DateTime): number => {
+		return interval.splitBy({ days: 1 }).findIndex((interval) => interval.contains(date)) + 1;
 	};
 
 	const dateIsInInterval = (date: DateTime): boolean => {
@@ -40,17 +45,26 @@
 	class={`${dayColor(
 		day,
 		date
-	)} rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[5.5em] flex flex-col justify-between`}
+	)} rounded-lg py-[0.6em] px-3 sm:pr-4 sm:h-[6em] flex flex-col justify-between`}
 	class:cursor-pointer={isPast(date) && dateIsInInterval(date)}
 >
 	<div class="sm:text-right text-center text-lg">
 		<span
-			class={isToday(date) ? `sm:badge sm:badge-primary sm:px-2 sm:py-3` : ''}
+			class:font-extrabold={isToday(date)}
 			class:text-secondary={isFuture(date)}
 			class:invisible={!dateIsInInterval(date)}
 		>
-			{date.day}
+			{#if showCycleDay}
+				<span class="hidden sm:inline">CD</span> {cycleDay(date)}
+			{:else}
+				{date.day}
+			{/if}
 		</span>
+		{#if showCycleDay}
+			<p class="text-xs hidden sm:block" class:invisible={!dateIsInInterval(date)}>
+				{date.toFormat('dd MMM yy')}
+			</p>
+		{/if}
 	</div>
 
 	<div class="text-left flex">
