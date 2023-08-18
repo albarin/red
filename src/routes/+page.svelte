@@ -111,8 +111,8 @@
 	};
 </script>
 
-<div class="flex bg-accent h-screen">
-	<div class="sm:p-4 w-full md:w-3/4">
+<div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
+	<div class="col-span-4 md:col-span-3">
 		{#if showCalendarView}
 			<NaturalCalendar
 				{currentMonth}
@@ -146,42 +146,44 @@
 		{/if}
 	</div>
 
-	<div class="py-4 pr-4 md:w-1/4">
-		<CycleStats cycle={currentCycle} />
-		<GlobalStats cycles={$cycles} />
-
-		{#await db.getAllDays() then days}
-			<button
-				class="btn btn-primary mt-2"
-				on:click={async () => {
-					db.cycles.clear();
-
-					const cycles = calculateCycles(days);
-
-					if (!cycles) {
-						return;
-					}
-
-					try {
-						await db.cycles.bulkPut(cycles);
-					} catch (error) {
-						console.error(`Failed to store cycles: ${error}`);
-					}
-				}}
-			>
-				Re-calculate
-			</button>
-		{/await}
+	<div class="col-span-4 md:col-span-1">
+		<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
+			<CycleStats cycle={currentCycle} />
+			<GlobalStats cycles={$cycles} />
+		</div>
 	</div>
-
-	{#if isAddDayModalOpen}
-		<AddDayForm
-			date={selectedDay?.date}
-			temperature={selectedDay?.temperature}
-			flow={selectedDay?.flow}
-			fluid={selectedDay?.fluid}
-			notes={selectedDay?.notes}
-			on:close={() => (isAddDayModalOpen = false)}
-		/>
-	{/if}
 </div>
+
+{#await db.getAllDays() then days}
+	<button
+		class="btn btn-primary mt-2"
+		on:click={async () => {
+			db.cycles.clear();
+
+			const cycles = calculateCycles(days);
+
+			if (!cycles) {
+				return;
+			}
+
+			try {
+				await db.cycles.bulkPut(cycles);
+			} catch (error) {
+				console.error(`Failed to store cycles: ${error}`);
+			}
+		}}
+	>
+		Re-calculate
+	</button>
+{/await}
+
+{#if isAddDayModalOpen}
+	<AddDayForm
+		date={selectedDay?.date}
+		temperature={selectedDay?.temperature}
+		flow={selectedDay?.flow}
+		fluid={selectedDay?.fluid}
+		notes={selectedDay?.notes}
+		on:close={() => (isAddDayModalOpen = false)}
+	/>
+{/if}

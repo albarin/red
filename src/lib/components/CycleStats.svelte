@@ -27,7 +27,7 @@
 	}
 </script>
 
-<div class="card bg-white text-primary rounded-lg mb-4">
+<div class="bg-white text-primary rounded-lg">
 	<div class="card-body !p-5">
 		{#if cycle}
 			<h2 class="text-xl font-bold">Cycle {cycle.number}</h2>
