@@ -135,3 +135,7 @@ export const isCurrentMonth = (day: DateTime | Interval, month: DateTime): boole
 
   return day.month === month.month;
 };
+
+export const intervalToDate = (interval: Interval): DateTime => {
+  return interval.start as DateTime
+}

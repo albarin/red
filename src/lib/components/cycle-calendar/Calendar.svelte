@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
 	import type { Days } from '$lib/models/day';
-	import { getCalendarByWeek, iso, now, toDateTime } from '$lib/utils/date';
+	import { getCalendarByWeek, intervalToDate, iso, now, toDateTime } from '$lib/utils/date';
 	import { DateTime, Interval } from 'luxon';
 	import DayButton from '../DayButton.svelte';
 	import WeekHeader from '../WeekHeader.svelte';
@@ -35,7 +35,7 @@
 			{#each week as date}
 				<DayButton
 					day={days && days[iso(date)] ? days[iso(date)] : undefined}
-					date={date.start}
+					date={intervalToDate(date)}
 					{interval}
 					on:change-day
 				/>

@@ -9,7 +9,7 @@
 	const dispatch = createEventDispatcher();
 
 	export let day: Optional<Day>;
-	export let date: DateTime | null;
+	export let date: DateTime;
 	export let interval: Interval;
 
 	const dayColor = (day: Optional<Day>, date: DateTime): string => {
