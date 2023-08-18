@@ -80,23 +80,21 @@
 	};
 </script>
 
-<div class="bg-base-100 p-4 rounded-xl">
-	<Header month={currentMonth} on:back on:forward />
+<Header month={currentMonth} on:back on:forward />
 
-	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
-		<WeekHeader />
+<div class="grid grid-cols-7 gap-2 text-center text-neutral">
+	<WeekHeader />
 
-		{#each calendar as week}
-			{#each week as date}
-				<DayButton
-					day={days && days[iso(date)] ? days[iso(date)] : undefined}
-					date={date.start}
-					{interval}
-					on:change-day
-				/>
-			{/each}
+	{#each calendar as week}
+		{#each week as date}
+			<DayButton
+				day={days && days[iso(date)] ? days[iso(date)] : undefined}
+				date={date.start}
+				{interval}
+				on:change-day
+			/>
 		{/each}
-	</div>
+	{/each}
 </div>
 
 <!-- <div class="absolute bottom-4"> -->

@@ -25,22 +25,20 @@
 	$: interval = Interval.fromDateTimes(currentCycleStart, currentCycleEnd);
 </script>
 
-<div class="bg-base-100 p-4 rounded-xl">
-	<Header cycle={currentCycle} on:back on:forward on:first on:last />
+<Header cycle={currentCycle} on:back on:forward on:first on:last />
 
-	<div class="grid grid-cols-7 gap-2 text-center text-neutral">
-		<WeekHeader />
+<div class="grid grid-cols-7 gap-2 text-center text-neutral">
+	<WeekHeader />
 
-		{#each calendar as week}
-			{#each week as date}
-				<DayButton
-					day={days && days[iso(date)] ? days[iso(date)] : undefined}
-					date={intervalToDate(date)}
-					{interval}
-					showCycleDay={true}
-					on:change-day
-				/>
-			{/each}
+	{#each calendar as week}
+		{#each week as date}
+			<DayButton
+				day={days && days[iso(date)] ? days[iso(date)] : undefined}
+				date={intervalToDate(date)}
+				{interval}
+				showCycleDay={true}
+				on:change-day
+			/>
 		{/each}
-	</div>
+	{/each}
 </div>

@@ -113,69 +113,75 @@
 
 <div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
 	<div class="col-span-4 md:col-span-3">
-		{#if showCalendarView}
-			<NaturalCalendar
-				{currentMonth}
-				days={$days}
-				on:change-day={handleChangeDay()}
-				on:back={handleMonthBack}
-				on:forward={handleMonthForward}
-			/>
-		{:else if currentCycle}
-			<CycleCalendar
-				{currentCycle}
-				days={$days}
-				on:change-day={handleChangeDay()}
-				on:back={handleCycleBack}
-				on:forward={handleCycleForward}
-				on:first={handleCycleFirst}
-				on:last={handleCycleLast}
-			/>
-		{/if}
-
-		<button class="btn absolute right-4" on:click={() => (showCalendarView = !showCalendarView)}>
+		<div class="bg-base-100 p-4 rounded-xl">
 			{#if showCalendarView}
-				Show cycle view
-			{:else}
-				Show calendar view
+				<NaturalCalendar
+					{currentMonth}
+					days={$days}
+					on:change-day={handleChangeDay()}
+					on:back={handleMonthBack}
+					on:forward={handleMonthForward}
+				/>
+			{:else if currentCycle}
+				<CycleCalendar
+					{currentCycle}
+					days={$days}
+					on:change-day={handleChangeDay()}
+					on:back={handleCycleBack}
+					on:forward={handleCycleForward}
+					on:first={handleCycleFirst}
+					on:last={handleCycleLast}
+				/>
 			{/if}
-		</button>
 
-		{#if !currentMonthIsNow || !currentCycleIsNow}
-			<button class="btn absolute right-4" on:click={goToCurrent}>Today</button>
-		{/if}
+			<div class="flex gap-2 mt-4 justify-between">
+				<button
+					class="btn btn-sm btn-primary"
+					on:click={() => (showCalendarView = !showCalendarView)}
+				>
+					{#if showCalendarView}
+						Show cycle view
+					{:else}
+						Show calendar view
+					{/if}
+				</button>
+				{#if !currentMonthIsNow || !currentCycleIsNow}
+					<button class="btn btn-sm btn-primary" on:click={goToCurrent}>Today</button>
+				{/if}
+			</div>
+		</div>
 	</div>
 
 	<div class="col-span-4 md:col-span-1">
 		<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
 			<CycleStats cycle={currentCycle} />
 			<GlobalStats cycles={$cycles} />
+
+			{#await db.getAllDays() then days}
+				<button
+					class="btn btn-primary mt-2"
+					on:click={async () => {
+						db.cycles.clear();
+
+						const cycles = calculateCycles(days);
+
+						if (!cycles) {
+							return;
+						}
+
+						try {
+							await db.cycles.bulkPut(cycles);
+						} catch (error) {
+							console.error(`Failed to store cycles: ${error}`);
+						}
+					}}
+				>
+					Re-calculate
+				</button>
+			{/await}
 		</div>
 	</div>
 </div>
-
-{#await db.getAllDays() then days}
-	<button
-		class="btn btn-primary mt-2"
-		on:click={async () => {
-			db.cycles.clear();
-
-			const cycles = calculateCycles(days);
-
-			if (!cycles) {
-				return;
-			}
-
-			try {
-				await db.cycles.bulkPut(cycles);
-			} catch (error) {
-				console.error(`Failed to store cycles: ${error}`);
-			}
-		}}
-	>
-		Re-calculate
-	</button>
-{/await}
 
 {#if isAddDayModalOpen}
 	<AddDayForm
