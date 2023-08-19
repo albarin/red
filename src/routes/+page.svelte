@@ -137,11 +137,11 @@
 
 			<div class="flex gap-2 mt-4 justify-between">
 				<div class="form-control">
-					<label class="label cursor-pointer">
+					<label class="label cursor-pointer p-0">
 						<span class="label-text mr-2">Cycle view</span>
 						<input
 							type="checkbox"
-							class="toggle toggle-primary !bg-opacity-100 !bg-primary"
+							class="toggle toggle-primary toggle-md !bg-opacity-100 !bg-primary"
 							on:change={() => (showCalendarView = !showCalendarView)}
 							checked
 						/>
@@ -149,18 +149,8 @@
 					</label>
 				</div>
 
-				<button
-					class="btn btn-sm btn-primary"
-					on:click={() => (showCalendarView = !showCalendarView)}
-				>
-					{#if showCalendarView}
-						Cycle view
-					{:else}
-						Calendar view
-					{/if}
-				</button>
 				{#if !currentMonthIsNow || !currentCycleIsNow}
-					<button class="btn btn-sm btn-primary" on:click={goToCurrent}>Today</button>
+					<button class="btn btn-xs btn-primary" on:click={goToCurrent}>Today</button>
 				{/if}
 			</div>
 		</div>
