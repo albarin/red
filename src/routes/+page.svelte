@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Cycle } from './../lib/models/cycle.ts';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
@@ -135,14 +136,27 @@
 			{/if}
 
 			<div class="flex gap-2 mt-4 justify-between">
+				<div class="form-control">
+					<label class="label cursor-pointer">
+						<span class="label-text mr-2">Cycle view</span>
+						<input
+							type="checkbox"
+							class="toggle toggle-primary !bg-opacity-100 !bg-primary"
+							on:change={() => (showCalendarView = !showCalendarView)}
+							checked
+						/>
+						<span class="label-text ml-2">Calendar view</span>
+					</label>
+				</div>
+
 				<button
 					class="btn btn-sm btn-primary"
 					on:click={() => (showCalendarView = !showCalendarView)}
 				>
 					{#if showCalendarView}
-						Show cycle view
+						Cycle view
 					{:else}
-						Show calendar view
+						Calendar view
 					{/if}
 				</button>
 				{#if !currentMonthIsNow || !currentCycleIsNow}
