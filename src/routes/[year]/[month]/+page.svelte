@@ -1,26 +1,26 @@
 <script lang="ts">
-	import { Cycle } from './../lib/models/cycle.ts';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
-	import CycleHeader from '$lib/components/cycle-calendar/Header.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
-	import MonthHeader from '$lib/components/natural-calendar/Header.svelte';
 	import { calculateCycles } from '$lib/cycles';
-	import type { Cycle } from '$lib/models/cycle';
+	import type { Cycle } from '$lib/models/cycle.js';
 	import { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
 	import { iso, now } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
-	import { db } from '../stores/db';
+	import { db } from '../../../stores/db.js';
+
+	export let data;
 
 	// 'Calendar' logic
 	let showCalendarView = true;
 
 	const today = now();
-	let currentMonth = now();
+	let currentMonth: DateTime;
+	$: currentMonth = DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M');
 
 	let currentCycle: Cycle;
 	let currentCycleIndex: Optional<number>;
@@ -69,19 +69,6 @@
 		currentCycle && currentCycle?.number == $cycles[$cycles.length - 1]?.number;
 
 	// Handlers to navigate the calendar
-	const goToCurrent = () => {
-		currentMonth = today;
-		currentCycleIndex = $cycles.length - 1;
-	};
-
-	const handleMonthBack = (event: CustomEvent) => {
-		currentMonth = currentMonth.minus({ [event.detail.interval]: 1 });
-	};
-
-	const handleMonthForward = (event: CustomEvent) => {
-		currentMonth = currentMonth.plus({ [event.detail.interval]: 1 });
-	};
-
 	const handleCycleBack = () => {
 		if (!currentCycleIndex) {
 			return;
@@ -116,13 +103,7 @@
 	<div class="col-span-4 md:col-span-3">
 		<div class="bg-base-100 p-4 rounded-xl">
 			{#if showCalendarView}
-				<NaturalCalendar
-					{currentMonth}
-					days={$days}
-					on:change-day={handleChangeDay()}
-					on:back={handleMonthBack}
-					on:forward={handleMonthForward}
-				/>
+				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
 			{:else if currentCycle}
 				<CycleCalendar
 					{currentCycle}
@@ -150,7 +131,7 @@
 				</div>
 
 				{#if !currentMonthIsNow || !currentCycleIsNow}
-					<button class="btn btn-xs btn-primary" on:click={goToCurrent}>Today</button>
+					<a href="/" class="btn btn-xs btn-primary">Today</a>
 				{/if}
 			</div>
 		</div>
