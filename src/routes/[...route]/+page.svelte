@@ -26,7 +26,12 @@
 
 	let currentCycle: Cycle;
 	let currentCycleIndex: Optional<number>;
-	$: currentCycleIndex = data.type === 'cycle' ? data.cycle : undefined;
+	$: {
+		currentCycleIndex = data.type === 'cycle' ? data.cycle : undefined;
+		if (currentCycleIndex && $cycles && currentCycleIndex > $cycles.length) {
+			currentCycleIndex = $cycles.length;
+		}
+	}
 
 	$: if ($cycles?.length && currentCycleIndex === undefined) {
 		currentCycleIndex = $cycles.length;
