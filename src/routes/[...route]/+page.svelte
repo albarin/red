@@ -17,17 +17,17 @@
 
 	// 'Calendar' logic
 	let showCalendarView: boolean = true;
-	$: showCalendarView = data.type === 'month';
+	$: showCalendarView = data.view === 'month';
 
 	const today = now();
 	let currentMonth: DateTime;
 	$: currentMonth =
-		data.type === 'month' ? DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M') : now();
+		data.view === 'month' ? DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M') : now();
 
 	let currentCycle: Cycle;
 	let currentCycleIndex: Optional<number>;
 	$: {
-		currentCycleIndex = data.type === 'cycle' ? data.cycle : undefined;
+		currentCycleIndex = data.view === 'cycle' ? data.cycle : undefined;
 		if (currentCycleIndex && $cycles && currentCycleIndex > $cycles.length) {
 			currentCycleIndex = $cycles.length;
 		}
@@ -100,10 +100,10 @@
 				<div class="join">
 					<a
 						href={`/cycle/${currentCycleIndex}`}
-						class:btn-primary={data.type === 'cycle'}
+						class:btn-primary={data.view === 'cycle'}
 						class="btn btn-sm join-item">Cycle view</a
 					>
-					<a href="/" class:btn-primary={data.type === 'month'} class="btn btn-sm join-item"
+					<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item"
 						>Calendar view</a
 					>
 				</div>

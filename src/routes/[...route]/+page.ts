@@ -9,7 +9,7 @@ export const load = ({ params }) => {
   const cycleRouteRegex = /^cycle\/([1-9]\d*)$/;
   if (cycleRouteRegex.test(params.route)) {
     return {
-      type: 'cycle',
+      view: 'cycle',
       cycle: Number(params.route.split('/')[1]),
     };
   }
@@ -18,7 +18,7 @@ export const load = ({ params }) => {
   if (monthPattern.test(params.route)) {
     const [year, month] = params.route.split('/');
     return {
-      type: 'month',
+      view: 'month',
       year,
       month,
     };
