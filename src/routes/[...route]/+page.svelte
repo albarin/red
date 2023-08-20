@@ -11,24 +11,28 @@
 	import { iso, now } from '$lib/utils/date';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
-	import { db } from '../../../stores/db.js';
+	import { db } from '../../stores/db.js';
 
 	export let data;
 
 	// 'Calendar' logic
-	let showCalendarView = true;
+	let showCalendarView: boolean = true;
+	$: showCalendarView = data.type === 'month';
 
 	const today = now();
 	let currentMonth: DateTime;
-	$: currentMonth = DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M');
+	$: currentMonth =
+		data.type === 'month' ? DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M') : now();
 
 	let currentCycle: Cycle;
 	let currentCycleIndex: Optional<number>;
+	$: currentCycleIndex = data.type === 'cycle' ? data.cycle : undefined;
+
 	$: if ($cycles?.length && currentCycleIndex === undefined) {
 		currentCycleIndex = $cycles.length - 1;
 	}
 	$: if ($cycles && currentCycleIndex !== undefined) {
-		currentCycle = $cycles && $cycles[currentCycleIndex];
+		currentCycle = $cycles && $cycles[currentCycleIndex - 1];
 	}
 
 	$: days = liveQuery(async () => {
@@ -105,15 +109,7 @@
 			{#if showCalendarView}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
 			{:else if currentCycle}
-				<CycleCalendar
-					{currentCycle}
-					days={$days}
-					on:change-day={handleChangeDay()}
-					on:back={handleCycleBack}
-					on:forward={handleCycleForward}
-					on:first={handleCycleFirst}
-					on:last={handleCycleLast}
-				/>
+				<CycleCalendar {currentCycle} days={$days} lastCycleIndex={$cycles.length} on:change-day={handleChangeDay()} />
 			{/if}
 
 			<div class="flex gap-2 mt-4 justify-between">

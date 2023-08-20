@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Days } from '$lib/models/day';
-	import { getMonthCalendarByWeek, iso, now } from '$lib/utils/date';
+	import { getMonthCalendarByWeek, intervalToDate, iso, now } from '$lib/utils/date';
 	import { Interval, type DateTime } from 'luxon';
 	import { db } from '../../../stores/db';
 	import DayButton from '../DayButton.svelte';
@@ -80,7 +80,7 @@
 	};
 </script>
 
-<Header month={currentMonth} on:back on:forward />
+<Header month={currentMonth} />
 
 <div class="grid grid-cols-7 gap-2 text-center text-neutral">
 	<WeekHeader />
@@ -89,7 +89,7 @@
 		{#each week as date}
 			<DayButton
 				day={days && days[iso(date)] ? days[iso(date)] : undefined}
-				date={date.start}
+				date={intervalToDate(date)}
 				{interval}
 				on:change-day
 			/>
