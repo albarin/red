@@ -29,7 +29,7 @@
 	$: currentCycleIndex = data.type === 'cycle' ? data.cycle : undefined;
 
 	$: if ($cycles?.length && currentCycleIndex === undefined) {
-		currentCycleIndex = $cycles.length - 1;
+		currentCycleIndex = $cycles.length;
 	}
 	$: if ($cycles && currentCycleIndex !== undefined) {
 		currentCycle = $cycles && $cycles[currentCycleIndex - 1];
@@ -72,32 +72,6 @@
 	$: currentCycleIsNow =
 		currentCycle && currentCycle?.number == $cycles[$cycles.length - 1]?.number;
 
-	// Handlers to navigate the calendar
-	const handleCycleBack = () => {
-		if (!currentCycleIndex) {
-			return;
-		}
-		currentCycleIndex--;
-	};
-
-	const handleCycleForward = () => {
-		if (!currentCycleIndex || currentCycleIndex == $cycles.length - 1) {
-			return;
-		}
-		currentCycleIndex++;
-	};
-
-	const handleCycleFirst = () => {
-		currentCycleIndex = 0;
-	};
-
-	const handleCycleLast = () => {
-		if (!$cycles.length) {
-			return;
-		}
-		currentCycleIndex = $cycles.length - 1;
-	};
-
 	const handleChangeDay = () => (event: CustomEvent) => {
 		changeSelectedDay(event.detail.day);
 	};
@@ -109,21 +83,24 @@
 			{#if showCalendarView}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
 			{:else if currentCycle}
-				<CycleCalendar {currentCycle} days={$days} lastCycleIndex={$cycles.length} on:change-day={handleChangeDay()} />
+				<CycleCalendar
+					{currentCycle}
+					days={$days}
+					lastCycleIndex={$cycles.length}
+					on:change-day={handleChangeDay()}
+				/>
 			{/if}
 
 			<div class="flex gap-2 mt-4 justify-between">
-				<div class="form-control">
-					<label class="label cursor-pointer p-0">
-						<span class="label-text mr-2">Cycle view</span>
-						<input
-							type="checkbox"
-							class="toggle toggle-primary toggle-md !bg-opacity-100 !bg-primary"
-							on:change={() => (showCalendarView = !showCalendarView)}
-							checked
-						/>
-						<span class="label-text ml-2">Calendar view</span>
-					</label>
+				<div class="join">
+					<a
+						href={`/cycle/${currentCycleIndex}`}
+						class:btn-primary={data.type === 'cycle'}
+						class="btn btn-sm join-item">Cycle view</a
+					>
+					<a href="/" class:btn-primary={data.type === 'month'} class="btn btn-sm join-item"
+						>Calendar view</a
+					>
 				</div>
 
 				{#if !currentMonthIsNow || !currentCycleIsNow}
