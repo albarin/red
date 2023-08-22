@@ -40,6 +40,10 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
   let date = '';
   let prevDate = '';
 
+  if (!days.length) {
+    return undefined
+  }
+
   const dates = datesBetween(days[0].date, days[days.length - 1].date)
 
   for (let i = 0; i < dates.length; i++) {
