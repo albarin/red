@@ -1,18 +1,24 @@
-import { Day } from '$lib/models/day';
+import { Day, type Days } from '$lib/models/day';
 import { iso, toDateTime } from '$lib/utils/date';
 import Dexie, { type Table } from 'dexie';
 import { Cycle } from '../lib/models/cycle';
-import type { Days } from '$lib/models/optional';
+import dexieCloud from "dexie-cloud-addon";
+import { PUBLIC_DATABASE_URL } from '$env/static/public'
 
 export class RedDB extends Dexie {
   days!: Table<Day>;
   cycles!: Table<Cycle>;
 
   constructor() {
-    super('reddb');
+    super('reddb', { addons: [dexieCloud] });
     this.version(1).stores({
-      days: 'date, temperature',
-      cycles: 'start, end, endOfPeriod, duration',
+      days: '@id, date, temperature',
+      cycles: '@id, start, end, endOfPeriod, duration',
+    });
+
+    this.cloud.configure({
+      databaseUrl: PUBLIC_DATABASE_URL || '',
+      requireAuth: true,
     });
   }
 

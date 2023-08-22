@@ -1,0 +1,12 @@
+{
+  "schema": {
+    "days": "@id",
+    "roles": "[realmId+name]",
+    "cycles": "@id",
+    "realms": "@realmId",
+    "members": "@id",
+    "$$logins": "claims.sub",
+    "$$baseRevs": "[tableName+clientRev]"
+  },
+  "sealed": false
+}
