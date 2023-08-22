@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
+	import type { Optional } from '$lib/models/optional';
 	import { getStats, type CyclesStats } from '$lib/models/stats';
 
 	import { toHuman } from '$lib/utils/date';
 
 	export let cycles: Cycle[] = [];
 
-	let stats: CyclesStats;
+	let stats: Optional<CyclesStats>;
 	$: if (cycles.length) {
 		stats = getStats(cycles);
 	}

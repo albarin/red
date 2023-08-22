@@ -1,4 +1,5 @@
 import type { Cycle } from "./cycle";
+import type { Optional } from "./optional";
 
 export interface CyclesStats {
   cyclesLength: number;
@@ -37,13 +38,17 @@ const getLongestCycle = (cycles: Cycle[]): Cycle => {
   });
 }
 
-export const getStats = (cycles: Cycle[]): CyclesStats => {
+export const getStats = (cycles: Cycle[]): Optional<CyclesStats> => {
   const cyclesLength = cycles.length;
   const finishedCycles = cycles.slice(0, cycles.length - 1);
 
+  if (!finishedCycles.length) {
+    return undefined;
+  }
+
   const durations = finishedCycles.map(cycle => cycle.duration || 0);
   if (!durations.length) {
-    return {} as CyclesStats
+    return undefined;
   }
 
   return {
