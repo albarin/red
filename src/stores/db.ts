@@ -26,7 +26,7 @@ export class RedDB extends Dexie {
     const days = await this.days.toArray();
 
     return days.map((day: Day) => {
-      return new Day(day.date, day.temperature, day.flow, day.fluid, day.notes)
+      return new Day(day.date, day.temperature, day.flow, day.fluid, day.notes, day.id)
     });
   }
 
@@ -34,7 +34,7 @@ export class RedDB extends Dexie {
     const cycles = await this.cycles.toArray();
 
     return cycles.map((cycle: Cycle) => {
-      return new Cycle(cycle.number, cycle.start, cycle.end, cycle.endOfPeriod, cycle.duration);
+      return new Cycle(cycle.number, cycle.start, cycle.end, cycle.endOfPeriod, cycle.duration, cycle.id)
     });
   }
 
@@ -45,7 +45,7 @@ export class RedDB extends Dexie {
       .toArray();
 
     return days.reduce((days, item: Day) => {
-      days[item.date] = new Day(item.date, item.temperature, item.flow, item.fluid, item.notes);
+      days[item.date] = new Day(item.date, item.temperature, item.flow, item.fluid, item.notes, item.id);
       return days;
     }, []);
   }

@@ -1,16 +1,18 @@
 export class Day {
+  id?: number;
   date: string;
   temperature?: number;
   flow?: number;
   fluid?: string;
   notes?: string;
 
-  constructor(date: string, temperature?: number, flow?: number, fluid?: string, notes?: string) {
+  constructor(date: string, temperature?: number, flow?: number, fluid?: string, notes?: string, id?: number) {
     this.date = date;
     this.temperature = temperature;
     this.flow = flow;
     this.fluid = fluid;
     this.notes = notes;
+    this.id = id;
   }
 
   hasPeriod(): boolean {

@@ -37,8 +37,8 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
   const daysByDate = byDate(days);
   const cycles: Cycle[] = [];
 
-  let date: string = '';
-  let prevDate: string = '';
+  let date = '';
+  let prevDate = '';
 
   const dates = datesBetween(days[0].date, days[days.length - 1].date)
 

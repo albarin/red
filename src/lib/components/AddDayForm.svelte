@@ -14,6 +14,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	export let id: Optional<number> = undefined;
 	export let date: Optional<string> = undefined;
 	export let temperature: Optional<number> = undefined;
 	export let flow: Optional<number> = undefined;
@@ -107,7 +108,11 @@
 
 	const handleDelete = async () => {
 		try {
-			await db.days.delete(date);
+			if (id) {
+				await db.days.delete(id);
+			} else {
+				await db.days.delete(date);
+			}
 		} catch (error) {
 			console.error(`Failed to delete ${date}: ${error}`);
 		}

@@ -148,6 +148,7 @@
 
 {#if isAddDayModalOpen}
 	<AddDayForm
+		id={selectedDay?.id}
 		date={selectedDay?.date}
 		temperature={selectedDay?.temperature}
 		flow={selectedDay?.flow}
