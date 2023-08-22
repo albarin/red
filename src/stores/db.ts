@@ -18,7 +18,7 @@ export class RedDB extends Dexie {
 
     this.cloud.configure({
       databaseUrl: PUBLIC_DATABASE_URL || '',
-      requireAuth: true,
+      requireAuth: false,
     });
   }
 
