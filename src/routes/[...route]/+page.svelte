@@ -98,13 +98,13 @@
 
 			<div class="flex gap-2 mt-4 justify-between">
 				<div class="join">
+					<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
+						Calendar
+					</a>
 					<a
 						href={`/cycle/${currentCycleIndex}`}
 						class:btn-primary={data.view === 'cycle'}
-						class="btn btn-sm join-item">Cycle view</a
-					>
-					<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item"
-						>Calendar view</a
+						class="btn btn-sm join-item">Cycle</a
 					>
 				</div>
 
