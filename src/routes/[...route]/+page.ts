@@ -14,6 +14,13 @@ export const load = ({ params }) => {
     };
   }
 
+  const cyclesRouteRegex = /^cycles$/;
+  if (cyclesRouteRegex.test(params.route)) {
+    return {
+      view: 'cycles',
+    };
+  }
+
   const monthPattern = /^\d{4}\/(0?[1-9]|1[0-2])$/;
   if (monthPattern.test(params.route)) {
     const [year, month] = params.route.split('/');

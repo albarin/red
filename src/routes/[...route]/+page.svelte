@@ -13,6 +13,7 @@
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
 	import Import from '$lib/components/Import.svelte';
+	import Cycles from '$lib/components/Cycles.svelte';
 
 	export let data;
 
@@ -83,13 +84,15 @@
 		<div class="bg-base-100 p-4 rounded-xl">
 			{#if data.view === 'month'}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
-			{:else if currentCycle}
+			{:else if data.view === 'cycle' && currentCycle}
 				<CycleCalendar
 					{currentCycle}
 					days={$days}
 					lastCycleIndex={$cycles.length}
 					on:change-day={handleChangeDay()}
 				/>
+			{:else if data.view === 'cycles'}
+				<Cycles />
 			{/if}
 
 			<div class="flex gap-2 mt-4 justify-between">
@@ -103,6 +106,13 @@
 							class:btn-primary={data.view === 'cycle'}
 							class="btn btn-sm join-item">Cycle</a
 						>
+						<a
+							href="/cycles"
+							class:btn-primary={data.view === 'cycles'}
+							class="btn btn-sm join-item"
+						>
+							All cycles
+						</a>
 					</div>
 				{/if}
 
