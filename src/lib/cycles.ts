@@ -36,7 +36,6 @@ const getEndOfPeriod = (cycle: Cycle, days: Days): Optional<string> => {
 export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
   const daysByDate = byDate(days);
   const cycles: Cycle[] = [];
-
   let date = '';
   let prevDate = '';
 

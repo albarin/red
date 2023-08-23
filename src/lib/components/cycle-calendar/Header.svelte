@@ -8,6 +8,7 @@
 	export let cycle: Cycle;
 	export let lastCycleIndex: number;
 
+	const prevCycleIndex = cycle.number <= 1 ? 1 : cycle.number - 1;
 	const nextCycleIndex = cycle.number >= lastCycleIndex ? lastCycleIndex : cycle.number + 1;
 </script>
 
@@ -15,7 +16,7 @@
 	<a href="/cycle/1">
 		<ArrowLeftDoubleLine class="text-3xl hover:cursor-pointer" />
 	</a>
-	<a href={`/cycle/${cycle.number - 1}`}>
+	<a href={`/cycle/${prevCycleIndex}`}>
 		<ArrowLeftSLine class="text-3xl hover:cursor-pointer" />
 	</a>
 

@@ -16,9 +16,6 @@
 	export let data;
 
 	// 'Calendar' logic
-	let showCalendarView: boolean = true;
-	$: showCalendarView = data.view === 'month';
-
 	const today = now();
 	let currentMonth: DateTime;
 	$: currentMonth =
@@ -41,12 +38,10 @@
 	}
 
 	$: days = liveQuery(async () => {
-		const startDate: string = showCalendarView
-			? iso(currentMonth.startOf('month'))
-			: currentCycle?.start;
-		const endDate: string = showCalendarView
-			? iso(currentMonth.endOf('month'))
-			: currentCycle?.end || iso(today);
+		const startDate: string =
+			data.view === 'month' ? iso(currentMonth.startOf('month')) : currentCycle?.start;
+		const endDate: string =
+			data.view === 'month' ? iso(currentMonth.endOf('month')) : currentCycle?.end || iso(today);
 
 		return await db.getDaysBetween(startDate, endDate);
 	});
@@ -85,7 +80,7 @@
 <div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
 	<div class="col-span-4 md:col-span-3">
 		<div class="bg-base-100 p-4 rounded-xl">
-			{#if showCalendarView}
+			{#if data.view === 'month'}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
 			{:else if currentCycle}
 				<CycleCalendar
@@ -97,19 +92,21 @@
 			{/if}
 
 			<div class="flex gap-2 mt-4 justify-between">
-				<div class="join">
-					<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
-						Calendar
-					</a>
-					<a
-						href={`/cycle/${currentCycleIndex}`}
-						class:btn-primary={data.view === 'cycle'}
-						class="btn btn-sm join-item">Cycle</a
-					>
-				</div>
+				{#if currentCycleIndex}
+					<div class="join">
+						<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
+							Calendar
+						</a>
+						<a
+							href={`/cycle/${currentCycleIndex}`}
+							class:btn-primary={data.view === 'cycle'}
+							class="btn btn-sm join-item">Cycle</a
+						>
+					</div>
+				{/if}
 
 				{#if !currentMonthIsNow || !currentCycleIsNow}
-					<a href="/" class="btn btn-xs btn-primary">Today</a>
+					<a href="/" class="btn btn-sm btn-primary">Today</a>
 				{/if}
 			</div>
 		</div>
@@ -127,7 +124,6 @@
 						db.cycles.clear();
 
 						const cycles = calculateCycles(days);
-
 						if (!cycles) {
 							return;
 						}
