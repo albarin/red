@@ -12,6 +12,7 @@
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
+	import Import from '$lib/components/Import.svelte';
 
 	export let data;
 
@@ -137,6 +138,8 @@
 				>
 					Re-calculate
 				</button>
+
+				<Import />
 			{/await}
 		</div>
 	</div>
