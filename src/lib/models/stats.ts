@@ -30,7 +30,7 @@ const getShortestCycle = (cycles: Cycle[]): Cycle => {
   });
 }
 
-const getLongestCycle = (cycles: Cycle[]): Cycle => {
+export const getLongestCycle = (cycles: Cycle[]): Cycle => {
   return cycles.reduce((longest: Cycle, current: Cycle) => {
     const longestDuration = longest.duration || 0;
     const currentDuration = current.duration || 0;
@@ -40,7 +40,7 @@ const getLongestCycle = (cycles: Cycle[]): Cycle => {
 
 export const getStats = (cycles: Cycle[]): Optional<CyclesStats> => {
   const cyclesLength = cycles.length;
-  const finishedCycles = cycles.slice(0, cycles.length - 1);
+  const finishedCycles = cycles.filter(cycle => cycle.end !== undefined);
 
   if (!finishedCycles.length) {
     return undefined;

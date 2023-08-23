@@ -80,8 +80,8 @@
 </script>
 
 <div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
-	<div class="col-span-4 md:col-span-3">
-		<div class="bg-base-100 p-4 rounded-xl">
+	<div class="col-span-4 md:col-span-3 max-h-screen overflow-scroll relative">
+		<div class="bg-base-100 p-4 rounded-xl relative">
 			{#if data.view === 'month'}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
 			{:else if data.view === 'cycle' && currentCycle}
@@ -92,10 +92,16 @@
 					on:change-day={handleChangeDay()}
 				/>
 			{:else if data.view === 'cycles'}
-				<Cycles />
+				<Cycles cycles={$cycles} />
 			{/if}
 
-			<div class="flex gap-2 mt-4 justify-between">
+			<div
+				class:sticky={data.view === 'cycles'}
+				class:bottom-0={data.view === 'cycles'}
+				class:w-full={data.view === 'cycles'}
+				class:py-4={data.view === 'cycles'}
+				class="bg-base-100 flex gap-2 mt-4 justify-between"
+			>
 				{#if currentCycleIndex}
 					<div class="join">
 						<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
