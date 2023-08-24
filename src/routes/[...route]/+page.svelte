@@ -96,7 +96,7 @@
 					on:change-day={handleChangeDay()}
 				/>
 			{:else if data.view === 'cycles'}
-				<Cycles cycles={$cycles} days={$days} />
+				<Cycles cycles={$cycles} days={$days} on:change-day={handleChangeDay()} />
 			{/if}
 
 			<div

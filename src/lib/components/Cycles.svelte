@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
 	import type { Day, Days } from '$lib/models/day';
-	import { datesBetween, iso, now, toShortHumanFormat } from '$lib/utils/date';
+	import { datesBetween, iso, now, toDateTime, toShortHumanFormat } from '$lib/utils/date';
+	import type { DateTime } from 'luxon';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let cycles: Cycle[];
 	export let days: Days;
@@ -13,6 +17,10 @@
 		}
 
 		return 'bg-secondary';
+	};
+
+	const handleClick = (date: DateTime) => () => {
+		dispatch('change-day', { day: date });
 	};
 </script>
 
@@ -34,14 +42,15 @@
 						{#each datesBetween(cycle.start, cycle.end || iso(now())) as d, i}
 							{@const day = days[iso(d)]}
 							{@const temperature = day?.temperature ? `- ${day?.temperature} ºC` : ''}
-							<div
+							<button
 								class="lg:tooltip tooltip-primary hidden sm:inline min-w-[29px] py-[3px] rounded-md {dayColor(
 									day
 								)}"
 								data-tip={`${toShortHumanFormat(d)} ${temperature}`}
+								on:click={handleClick(toDateTime(d))}
 							>
 								<span class="text-center text-sm p-1">{i + 1}</span>
-							</div>
+							</button>
 						{/each}
 					</div>
 				</div>
