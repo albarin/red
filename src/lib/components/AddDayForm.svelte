@@ -61,7 +61,7 @@
 			return;
 		}
 
-		const day = new Day(date, temperature, flow, fluid, notes);
+		const day = new Day(date, temperature, flow, fluid, notes, id);
 
 		try {
 			await db.days.put(day);
