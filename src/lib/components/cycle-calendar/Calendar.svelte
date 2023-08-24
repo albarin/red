@@ -9,7 +9,7 @@
 
 	export let days: Days;
 	export let currentCycle: Cycle;
-	export let lastCycleIndex: number;
+	export let cyclesLength: number;
 
 	let currentCycleEnd: DateTime;
 	let currentCycleStart: DateTime;
@@ -26,7 +26,7 @@
 	$: interval = Interval.fromDateTimes(currentCycleStart, currentCycleEnd);
 </script>
 
-<Header cycle={currentCycle} {lastCycleIndex} />
+<Header cycle={currentCycle} {cyclesLength} />
 
 <div class="grid grid-cols-7 gap-2 text-center text-neutral">
 	<WeekHeader />

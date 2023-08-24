@@ -36,10 +36,14 @@
 		currentCycleIndex = $cycles.length;
 	}
 	$: if ($cycles && currentCycleIndex !== undefined) {
-		currentCycle = $cycles && $cycles[currentCycleIndex - 1];
+		currentCycle = $cycles && $cycles[$cycles.length - currentCycleIndex];
 	}
 
 	$: days = liveQuery(async () => {
+		if (data.view === 'cycles') {
+			return await db.getAllDaysByDate();
+		}
+
 		const startDate: string =
 			data.view === 'month' ? iso(currentMonth.startOf('month')) : currentCycle?.start;
 		const endDate: string =
@@ -88,11 +92,11 @@
 				<CycleCalendar
 					{currentCycle}
 					days={$days}
-					lastCycleIndex={$cycles.length}
+					cyclesLength={$cycles.length}
 					on:change-day={handleChangeDay()}
 				/>
 			{:else if data.view === 'cycles'}
-				<Cycles cycles={$cycles} />
+				<Cycles cycles={$cycles} days={$days} />
 			{/if}
 
 			<div
@@ -102,7 +106,7 @@
 				class:py-4={data.view === 'cycles'}
 				class="bg-base-100 flex gap-2 mt-4 justify-between"
 			>
-				{#if currentCycleIndex}
+				{#if currentCycleIndex !== undefined}
 					<div class="join">
 						<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
 							Calendar

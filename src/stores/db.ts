@@ -30,8 +30,17 @@ export class RedDB extends Dexie {
     });
   }
 
+  async getAllDaysByDate(): Promise<Days> {
+    const days = await this.days.toArray();
+
+    return days.reduce((days, item: Day) => {
+      days[item.date] = new Day(item.date, item.temperature, item.flow, item.fluid, item.notes, item.id);
+      return days;
+    }, []);
+  }
+
   async getAllCycles(): Promise<Cycle[]> {
-    const cycles = await this.cycles.toArray();
+    const cycles = await this.cycles.reverse().toArray();
 
     return cycles.map((cycle: Cycle) => {
       return new Cycle(cycle.number, cycle.start, cycle.end, cycle.endOfPeriod, cycle.duration, cycle.id)
