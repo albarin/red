@@ -33,11 +33,12 @@
 					<div class="flex flex-wrap gap-[4px] mt-1">
 						{#each datesBetween(cycle.start, cycle.end || iso(now())) as d, i}
 							{@const day = days[iso(d)]}
+							{@const temperature = day?.temperature ? `- ${day?.temperature} ºC` : ''}
 							<div
 								class="lg:tooltip tooltip-primary hidden sm:inline min-w-[29px] py-[3px] rounded-md {dayColor(
 									day
 								)}"
-								data-tip={toShortHumanFormat(d)}
+								data-tip={`${toShortHumanFormat(d)} ${temperature}`}
 							>
 								<span class="text-center text-sm p-1">{i + 1}</span>
 							</div>
