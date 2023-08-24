@@ -84,7 +84,9 @@
 </script>
 
 <div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
-	<div class="col-span-4 md:col-span-3 max-h-screen overflow-scroll relative rounded-xl">
+	<div
+		class="col-span-4 md:col-span-3 max-h-screen overflow-scroll overflow-x-hidden relative rounded-xl bg-red-200"
+	>
 		<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
 			{#if data.view === 'month'}
 				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
