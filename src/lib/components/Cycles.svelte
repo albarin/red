@@ -1,25 +1,44 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
-	import type { Days } from '$lib/models/day';
-	import type { Optional } from '$lib/models/optional';
-	import { getLongestCycle } from '$lib/models/stats';
+	import type { Day, Days } from '$lib/models/day';
+	import { datesBetween, iso, now, toShortHumanFormat } from '$lib/utils/date';
 
 	export let cycles: Cycle[];
 	export let days: Days;
 
-	let longestCycle: Optional<Cycle>;
-	$: longestCycle = cycles?.length ? getLongestCycle(cycles) : undefined;
+	const dayColor = (day: Day): string => {
+		if (day?.flow) {
+			const colors = ['bg-red-200', 'bg-red-300', 'bg-red-400'];
+			return colors[day?.flow - 1];
+		}
+
+		return 'bg-secondary';
+	};
 </script>
 
 {#if cycles}
 	{#each cycles as cycle}
-		<div class="mb-4 text-primary">
-			<a href={`/cycle/${cycle.number}`} class="font-semibold">
-				Cycle {cycle.number}
-			</a>
-			<div class="flex flex-wrap gap-1 mt-1">
-				{#each Array(cycle.duration) as _, row}
-					<span class="text-center text-sm bg-secondary min-w-[30px] p-1">{row + 1}</span>
+		<div class="mb-4 text-primary bg-accent pt-2 pb-3 px-4 rounded-md">
+			<div class="flex justify-between">
+				<a href={`/cycle/${cycle.number}`} class="font-semibold">
+					Cycle {cycle.number}
+				</a>
+				<span class="ml-2 text-neutral text-sm">
+					<span>{toShortHumanFormat(cycle.start)}</span>
+					- <span>{cycle.end ? toShortHumanFormat(cycle.end) : 'today'}</span>
+				</span>
+			</div>
+			<div class="flex flex-wrap gap-[4px] mt-1">
+				{#each datesBetween(cycle.start, cycle.end || iso(now())) as d, i}
+					{@const day = days[iso(d)]}
+					<div
+						class="lg:tooltip tooltip-primary hidden sm:inline min-w-[29px] py-[3px] {dayColor(
+							day
+						)}"
+						data-tip={toShortHumanFormat(d)}
+					>
+						<span class="text-center text-sm p-1">{i + 1}</span>
+					</div>
 				{/each}
 			</div>
 		</div>
