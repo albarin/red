@@ -23,7 +23,7 @@ export class RedDB extends Dexie {
   }
 
   async getAllDays(): Promise<Day[]> {
-    const days = await this.days.toArray();
+    const days = await this.days.orderBy('date').toArray();
 
     return days.map((day: Day) => {
       return new Day(day.date, day.temperature, day.flow, day.fluid, day.notes, day.id)
