@@ -19,10 +19,7 @@
 		<p class="mb-2">
 			with an average length of
 			<span class="text-neutral text-2xl">
-				{stats.averageCycleLength}
-				{#if stats.standardDeviationCycleLength}
-					±{stats.standardDeviationCycleLength}
-				{/if}
+				{stats.averageCycleLength}{#if stats.standardDeviationCycleLength}±{stats.standardDeviationCycleLength}{/if}
 			</span> days
 		</p>
 
