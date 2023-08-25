@@ -5,6 +5,7 @@
 	import type { DateTime, Interval } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
 	import TempColdLine from 'svelte-remixicon/lib/icons/TempColdLine.svelte';
+	import StickyNoteLine from 'svelte-remixicon/lib/icons/StickyNoteLine.svelte';
 
 	const dispatch = createEventDispatcher();
 
@@ -77,6 +78,13 @@
 				<div class="lg:tooltip tooltip-primary hidden sm:inline" data-tip={`${day.temperature} ºC`}>
 					<span class="text-2xl text-primary text-right">
 						<TempColdLine />
+					</span>
+				</div>
+			{/if}
+			{#if day.notes}
+				<div class="lg:tooltip tooltip-primary hidden sm:inline" data-tip={day.notes}>
+					<span class="text-2xl text-primary text-right">
+						<StickyNoteLine />
 					</span>
 				</div>
 			{/if}
