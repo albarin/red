@@ -15,6 +15,14 @@ export class Day {
     this.id = id;
   }
 
+  has(attribute: string) {
+    if (attribute === 'spotting') {
+      return this.hasSpotting();
+    }
+
+    return this[attribute] !== undefined;
+  }
+
   hasPeriod(): boolean {
     return this.flow !== undefined && this.flow > 0;
   }
@@ -25,6 +33,10 @@ export class Day {
 
   hasTemperature(): boolean {
     return this.temperature !== undefined;
+  }
+
+  hasNotes(): boolean {
+    return this.notes !== undefined;
   }
 }
 
