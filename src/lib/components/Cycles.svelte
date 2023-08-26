@@ -11,16 +11,17 @@
 	export let cycles: Cycle[];
 	export let days: Days;
 
-	let filter: string = '';
+	let filters: string[];
 
-	const dayColor = (day: Day, filter: string): string => {
+	const dayColor = (day: Day, filters: string[]): string => {
 		if (day?.flow) {
 			const colors = ['bg-red-200', 'bg-red-300', 'bg-red-400'];
 			return colors[day?.flow - 1];
 		}
 
-		if (filter && day && day.has(filter)) {
-			return 'bg-neutral text-accent';
+		if (filters && day) {
+			const found = filters.find((filter) => day?.has(filter));
+			return found ? 'bg-neutral text-accent' : 'bg-secondary';
 		}
 
 		return 'bg-secondary';
@@ -37,34 +38,34 @@
 			<p class="">Days with:</p>
 			<div>
 				<input
-					bind:group={filter}
+					bind:group={filters}
 					name="filter"
 					class="btn btn-xs border-none hover:bg-secondary bg-accent text-neutral"
-					type="radio"
+					type="checkbox"
 					aria-label="Temperature"
 					value="temperature"
 				/>
 				<input
-					bind:group={filter}
+					bind:group={filters}
 					name="filter"
 					class="btn btn-xs border-none hover:bg-secondary bg-accent text-neutral"
-					type="radio"
+					type="checkbox"
 					aria-label="Notes"
 					value="notes"
 				/>
 				<input
-					bind:group={filter}
+					bind:group={filters}
 					name="filter"
 					class="btn btn-xs border-none hover:bg-secondary bg-accent text-neutral"
-					type="radio"
+					type="checkbox"
 					aria-label="Cervical fluid"
 					value="fluid"
 				/>
 				<input
-					bind:group={filter}
+					bind:group={filters}
 					name="filter"
 					class="btn btn-xs border-none hover:bg-secondary bg-accent text-neutral"
-					type="radio"
+					type="checkbox"
 					aria-label="Spotting"
 					value="spotting"
 				/>
@@ -91,7 +92,7 @@
 							<button
 								class="lg:tooltip tooltip-primary hidden sm:inline min-w-[29px] py-[3px] rounded-md {dayColor(
 									day,
-									filter
+									filters
 								)}"
 								data-tip={`${toShortHumanFormat(d)} ${temperature} ${notes}`}
 								on:click={handleClick(toDateTime(d))}
