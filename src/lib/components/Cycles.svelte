@@ -1,17 +1,19 @@
 <script lang="ts">
 	import type { Cycle } from '$lib/models/cycle';
 	import type { Day, Days } from '$lib/models/day';
-	import type { Optional } from '$lib/models/optional';
 	import { datesBetween, iso, now, toDateTime, toShortHumanFormat } from '$lib/utils/date';
 	import type { DateTime } from 'luxon';
 	import { createEventDispatcher } from 'svelte';
+	import Chart from './Chart.svelte';
 
 	const dispatch = createEventDispatcher();
 
-	export let cycles: Cycle[];
 	export let days: Days;
+	export let cycles: Cycle[];
 
 	let filters: string[];
+	let chartsToShow = {};
+	$: console.log(chartsToShow);
 
 	const dayColor = (day: Day, filters: string[]): string => {
 		if (day?.flow) {
@@ -72,20 +74,35 @@
 			</div>
 		</div>
 
-		{#each cycles as cycle}
+		{#each cycles as cycle, i}
+			{@const cycleDays = datesBetween(cycle.start, cycle.end || iso(now()))}
 			<div class="text-primary bg-accent pt-2 pb-2 sm:pb-3 px-4 rounded-md">
 				<div class="flex justify-between">
 					<a href={`/cycle/${cycle.number}`} class="font-semibold">
 						Cycle {cycle.number}
 					</a>
-					<span class="ml-2 text-neutral text-sm">
-						<span>{toShortHumanFormat(cycle.start)}</span>
-						- <span>{cycle.end ? toShortHumanFormat(cycle.end) : 'today'}</span>
-					</span>
+					<div>
+						<span class="mx-2 text-neutral text-sm">
+							<span>{toShortHumanFormat(cycle.start)}</span>
+							- <span>{cycle.end ? toShortHumanFormat(cycle.end) : 'today'}</span>
+						</span>
+						<button
+							class="btn btn-xs btn-link !px-0"
+							on:click={() => {
+								if (chartsToShow[i]) {
+									chartsToShow[i] = false;
+									return;
+								}
+								chartsToShow[i] = true;
+							}}
+						>
+							{chartsToShow[i] ? 'Hide' : 'Show'} chart
+						</button>
+					</div>
 				</div>
 				<div class="hidden sm:inline">
 					<div class="flex flex-wrap gap-[4px] mt-1">
-						{#each datesBetween(cycle.start, cycle.end || iso(now())) as d, i}
+						{#each cycleDays as d, i}
 							{@const day = days[iso(d)]}
 							{@const temperature = day?.hasTemperature() ? `- ${day?.temperature} ºC` : ''}
 							{@const notes = day?.hasNotes() ? `- ${day?.notes}` : ''}
@@ -102,6 +119,11 @@
 						{/each}
 					</div>
 				</div>
+				{#if chartsToShow[i]}
+					<div class="mt-4 mb-1">
+						<Chart {days} {cycleDays} />
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>

@@ -44,6 +44,8 @@
 		"@fontsource/roboto": "^5.0.3",
 		"dexie": "^4.0.1-alpha.22",
 		"dexie-cloud-addon": "^4.0.1-beta.45",
-		"luxon": "^3.3.0"
+		"lightweight-charts": "^4.0.1",
+		"luxon": "^3.3.0",
+		"svelte-lightweight-charts": "^2.2.0"
 	}
 }
