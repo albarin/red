@@ -3,7 +3,7 @@ export const validateTemperature = (temperature: number | undefined): string | u
     return;
   }
 
-  if (temperature < 30 || temperature > 40) {
-    return 'Temperature must be between 30 and 40';
+  if (temperature < 35 || temperature > 40) {
+    return 'Temperature must be between 35 and 40';
   }
 };

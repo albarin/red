@@ -12,8 +12,7 @@
 	export let cycles: Cycle[];
 
 	let filters: string[];
-	let chartsToShow = {};
-	$: console.log(chartsToShow);
+	let chartsToShow = { 0: true };
 
 	const dayColor = (day: Day, filters: string[]): string => {
 		if (day?.flow) {
