@@ -81,6 +81,26 @@
 	const handleChangeDay = () => (event: CustomEvent) => {
 		changeSelectedDay(event.detail.day);
 	};
+
+	// Re-calculates cycles when days change
+	const updateCycles = async () => {
+		const days = await db.getAllDays();
+		if (!days) {
+			return;
+		}
+		await db.cycles.clear();
+
+		const cycles = calculateCycles(days);
+		if (!cycles) {
+			return;
+		}
+
+		try {
+			await db.cycles.bulkPut(cycles);
+		} catch (error) {
+			console.error(`Failed to store cycles: ${error}`);
+		}
+	};
 </script>
 
 <div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
@@ -139,29 +159,7 @@
 			<CycleStats cycle={currentCycle} />
 			<GlobalStats cycles={$cycles} />
 
-			{#await db.getAllDays() then days}
-				<button
-					class="btn btn-primary mt-2"
-					on:click={async () => {
-						db.cycles.clear();
-
-						const cycles = calculateCycles(days);
-						if (!cycles) {
-							return;
-						}
-
-						try {
-							await db.cycles.bulkPut(cycles);
-						} catch (error) {
-							console.error(`Failed to store cycles: ${error}`);
-						}
-					}}
-				>
-					Re-calculate
-				</button>
-
-				<Import />
-			{/await}
+			<Import />
 		</div>
 	</div>
 </div>
@@ -175,5 +173,6 @@
 		fluid={selectedDay?.fluid}
 		notes={selectedDay?.notes}
 		on:close={() => (isAddDayModalOpen = false)}
+		on:day-updated={() => updateCycles()}
 	/>
 {/if}

@@ -74,6 +74,7 @@
 		}
 
 		wasSubmitted = false;
+		dispatch('day-updated');
 		dispatch('close');
 	};
 
@@ -118,6 +119,7 @@
 		}
 
 		wasSubmitted = false;
+		dispatch('day-updated');
 		dispatch('close');
 	};
 

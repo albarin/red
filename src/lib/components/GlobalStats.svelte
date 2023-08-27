@@ -43,6 +43,8 @@
 				</div>
 			</div>
 		</div>
+	{:else if cycles.length}
+		No finished cycles yet, stats will be available once you finish your first cycle.
 	{:else}
 		No data available, start filling some days to see the global cycle stats.
 	{/if}
