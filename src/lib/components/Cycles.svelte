@@ -12,7 +12,7 @@
 	export let cycles: Cycle[];
 
 	let filters: string[];
-	let chartsToShow = {};
+	let chartsToShow: { [key: string]: boolean } = {};
 
 	const dayColor = (day: Day, filters: string[]): string => {
 		if (day?.flow) {
@@ -30,6 +30,15 @@
 
 	const handleClick = (date: DateTime) => () => {
 		dispatch('change-day', { day: date });
+	};
+
+	const toggleChart = (i: number) => () => {
+		if (chartsToShow[i] === undefined) {
+			chartsToShow[i] = true;
+			return;
+		}
+
+		chartsToShow[i] = !chartsToShow[i];
 	};
 </script>
 
@@ -85,16 +94,7 @@
 							<span>{toShortHumanFormat(cycle.start)}</span>
 							- <span>{cycle.end ? toShortHumanFormat(cycle.end) : 'today'}</span>
 						</span>
-						<button
-							class="btn btn-xs btn-link !px-0"
-							on:click={() => {
-								if (chartsToShow[i]) {
-									chartsToShow[i] = false;
-									return;
-								}
-								chartsToShow[i] = true;
-							}}
-						>
+						<button class="btn btn-xs btn-link !px-0" on:click={toggleChart(i)}>
 							{chartsToShow[i] ? 'Hide' : 'Show'} chart
 						</button>
 					</div>
