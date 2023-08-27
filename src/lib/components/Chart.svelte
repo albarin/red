@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { toHuman } from '$lib/utils/date';
 	import type { Days } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
 	import {
@@ -9,7 +10,8 @@
 		LinearScale,
 		PointElement,
 		Title,
-		Tooltip
+		Tooltip,
+		type ScriptableLineSegmentContext
 	} from 'chart.js';
 	import { Line } from 'svelte-chartjs';
 
@@ -23,8 +25,8 @@
 			return undefined;
 		}
 		return cycleDays.reduce((acc, date) => {
-			if (days[date] && days[date].temperature && days[date].temperature > 0) {
-				return Math.min(acc, days[date].temperature);
+			if (days[date] && days[date].temperature && Number(days[date].temperature) > 0) {
+				return Math.min(acc, Number(days[date].temperature));
 			}
 			return acc;
 		}, 40);
@@ -35,20 +37,22 @@
 			return undefined;
 		}
 		return cycleDays.reduce((acc, date) => {
-			if (days[date] && days[date].temperature && days[date].temperature > 0) {
-				return Math.max(acc, days[date].temperature);
+			if (days[date] && days[date].temperature && Number(days[date].temperature) > 0) {
+				return Math.max(acc, Number(days[date].temperature));
 			}
 			return acc;
 		}, 0);
 	};
 
-	const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
+	const skipped = (ctx: ScriptableLineSegmentContext, value: string | number[]) =>
+		ctx.p0.skip || ctx.p1.skip ? value : undefined;
+
 	const data = (days: Days, cycleDays: string[]) => {
 		let labels: string[] = [];
 		let temperatures: Optional<number>[] = [];
 
 		for (const date of cycleDays) {
-			labels.push(date);
+			labels.push(toHuman(date));
 			temperatures.push(days[date]?.hasTemperature() ? days[date].temperature : undefined);
 		}
 
@@ -63,8 +67,9 @@
 					pointHoverRadius: 8,
 					tension: 0.25,
 					segment: {
-						borderColor: (ctx) => skipped(ctx, 'rgb(45, 22, 95, 0.6)'),
-						borderDash: (ctx) => skipped(ctx, [6, 6])
+						borderColor: (ctx: ScriptableLineSegmentContext) =>
+							skipped(ctx, 'rgb(45, 22, 95, 0.6)'),
+						borderDash: (ctx: ScriptableLineSegmentContext) => skipped(ctx, [6, 6])
 					},
 					spanGaps: true
 				}
