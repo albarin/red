@@ -12,7 +12,7 @@
 	export let cycles: Cycle[];
 
 	let filters: string[];
-	let chartsToShow = { 0: true };
+	let chartsToShow = {};
 
 	const dayColor = (day: Day, filters: string[]): string => {
 		if (day?.flow) {
@@ -119,7 +119,7 @@
 					</div>
 				</div>
 				{#if chartsToShow[i]}
-					<div class="mt-4 mb-1">
+					<div class="mt-4 mb-1 h-80">
 						<Chart {days} {cycleDays} />
 					</div>
 				{/if}

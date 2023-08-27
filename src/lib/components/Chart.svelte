@@ -18,19 +18,29 @@
 	export let days: Days;
 	export let cycleDays: string[];
 
-	const min = cycleDays.reduce((acc, date) => {
-		if (days[date] && days[date].temperature && days[date].temperature > 0) {
-			return Math.min(acc, days[date].temperature);
+	const min = (): Optional<number> => {
+		if (!cycleDays) {
+			return undefined;
 		}
-		return acc;
-	}, Number.MAX_VALUE);
+		return cycleDays.reduce((acc, date) => {
+			if (days[date] && days[date].temperature && days[date].temperature > 0) {
+				return Math.min(acc, days[date].temperature);
+			}
+			return acc;
+		}, 40);
+	};
 
-	const max = cycleDays.reduce((acc, date) => {
-		if (days[date] && days[date].temperature && days[date].temperature > 0) {
-			return Math.max(acc, days[date].temperature);
+	const max = (): Optional<number> => {
+		if (!cycleDays) {
+			return undefined;
 		}
-		return acc;
-	}, 0);
+		return cycleDays.reduce((acc, date) => {
+			if (days[date] && days[date].temperature && days[date].temperature > 0) {
+				return Math.max(acc, days[date].temperature);
+			}
+			return acc;
+		}, 0);
+	};
 
 	const skipped = (ctx, value) => (ctx.p0.skip || ctx.p1.skip ? value : undefined);
 	const data = (days: Days, cycleDays: string[]) => {
@@ -61,17 +71,28 @@
 			]
 		};
 	};
+
+	const yMin = min();
+	const yMax = max();
+
 	const options = {
 		responsive: true,
 		scales: {
-			y: {
-				min: min - 0.1,
-				max: max + 0.1,
+			x: {
 				ticks: {
-					stepSize: 0.1
+					color: 'rgb(45, 22, 95)'
+				}
+			},
+			y: {
+				min: yMin ? yMin - 0.02 : 35,
+				max: yMax ? yMax + 0.02 : 40,
+				ticks: {
+					stepSize: 0.1,
+					color: 'rgb(45, 22, 95)'
 				}
 			}
-		}
+		},
+		maintainAspectRatio: false
 	};
 </script>
 
