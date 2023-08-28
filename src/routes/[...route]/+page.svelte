@@ -76,8 +76,7 @@
 	let currentMonthIsNow: boolean;
 	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
 	let currentCycleIsNow: boolean;
-	$: currentCycleIsNow =
-		currentCycle && currentCycle?.number == $cycles[$cycles.length - 1]?.number;
+	$: currentCycleIsNow = currentCycle && currentCycle?.number == $cycles[0]?.number;
 
 	const handleChangeDay = () => (event: CustomEvent) => {
 		changeSelectedDay(event.detail.day);
@@ -151,8 +150,12 @@
 						</div>
 					{/if}
 
-					{#if !currentMonthIsNow || !currentCycleIsNow}
+					{#if data.view === 'month' && !currentMonthIsNow}
 						<a href="/" class="btn btn-sm btn-primary">Today</a>
+					{/if}
+
+					{#if data.view === 'cycle' && !currentCycleIsNow && $cycles}
+						<a href="/cycle/{$cycles[0]?.number}" class="btn btn-sm btn-primary">Today</a>
 					{/if}
 				</div>
 			</div>

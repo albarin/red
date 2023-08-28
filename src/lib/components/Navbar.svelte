@@ -32,36 +32,38 @@
 		<a href="/" class="normal-case font-semibold text-xl">Red</a>
 	</div>
 	<div class="navbar-center hidden sm:flex">
-		<div class="flex gap-2">
-			<a
-				href="/"
-				class:btn-primary={view === 'month'}
-				class:bg-neutral={view !== 'month'}
-				class:border-neutral={view !== 'month'}
-				class:text-accent={view !== 'month'}
-				class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
-			>
-				Calendar
-			</a>
-			<a
-				href={`/cycle/${currentCycleIndex}`}
-				class:btn-primary={view === 'cycle'}
-				class:bg-neutral={view !== 'cycle'}
-				class:border-neutral={view !== 'cycle'}
-				class:text-accent={view !== 'cycle'}
-				class="btn btn-sm hover:bg-neutral-focus hover:border-neutral">Cycle</a
-			>
-			<a
-				href="/cycles"
-				class:btn-primary={view === 'cycles'}
-				class:bg-neutral={view !== 'cycles'}
-				class:border-neutral={view !== 'cycles'}
-				class:text-accent={view !== 'cycles'}
-				class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
-			>
-				All cycles
-			</a>
-		</div>
+		{#if currentCycleIndex}
+			<div class="flex gap-2">
+				<a
+					href="/"
+					class:btn-primary={view === 'month'}
+					class:bg-neutral={view !== 'month'}
+					class:border-neutral={view !== 'month'}
+					class:text-accent={view !== 'month'}
+					class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
+				>
+					Calendar
+				</a>
+				<a
+					href={`/cycle/${currentCycleIndex}`}
+					class:btn-primary={view === 'cycle'}
+					class:bg-neutral={view !== 'cycle'}
+					class:border-neutral={view !== 'cycle'}
+					class:text-accent={view !== 'cycle'}
+					class="btn btn-sm hover:bg-neutral-focus hover:border-neutral">Cycle</a
+				>
+				<a
+					href="/cycles"
+					class:btn-primary={view === 'cycles'}
+					class:bg-neutral={view !== 'cycles'}
+					class:border-neutral={view !== 'cycles'}
+					class:text-accent={view !== 'cycles'}
+					class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
+				>
+					All cycles
+				</a>
+			</div>
+		{/if}
 	</div>
 	<div class="navbar-end">
 		<div>
