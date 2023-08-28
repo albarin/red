@@ -14,6 +14,7 @@
 	import { db } from '../../stores/db.js';
 	import Import from '$lib/components/Import.svelte';
 	import Cycles from '$lib/components/Cycles.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	export let data;
 
@@ -103,63 +104,67 @@
 	};
 </script>
 
-<div class="bg-accent h-screen grid grid-cols-4 gap-4 p-4">
-	<div
-		class="col-span-4 md:col-span-3 max-h-screen overflow-scroll overflow-x-hidden relative rounded-xl"
-	>
-		<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
-			{#if data.view === 'month'}
-				<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
-			{:else if data.view === 'cycle' && currentCycle}
-				<CycleCalendar
-					{currentCycle}
-					days={$days}
-					cyclesLength={$cycles.length}
-					on:change-day={handleChangeDay()}
-				/>
-			{:else if data.view === 'cycles'}
-				<Cycles cycles={$cycles} days={$days} on:change-day={handleChangeDay()} />
-			{/if}
+<Navbar view={data.view} {currentCycleIndex} />
 
-			<div
-				class:sticky={data.view === 'cycles'}
-				class:bottom-0={data.view === 'cycles'}
-				class:w-full={data.view === 'cycles'}
-				class="bg-base-100 flex gap-2 justify-between py-4"
-			>
-				{#if currentCycleIndex !== undefined}
-					<div class="join">
-						<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
-							Calendar
-						</a>
-						<a
-							href={`/cycle/${currentCycleIndex}`}
-							class:btn-primary={data.view === 'cycle'}
-							class="btn btn-sm join-item">Cycle</a
-						>
-						<a
-							href="/cycles"
-							class:btn-primary={data.view === 'cycles'}
-							class="btn btn-sm join-item"
-						>
-							All cycles
-						</a>
-					</div>
+<div class="flex w-full">
+	<div class="bg-accent w-full h-screen grid grid-cols-4 gap-4 p-4">
+		<div
+			class="col-span-4 md:col-span-3 max-h-screen overflow-scroll overflow-x-hidden relative rounded-xl"
+		>
+			<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
+				{#if data.view === 'month'}
+					<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
+				{:else if data.view === 'cycle' && currentCycle}
+					<CycleCalendar
+						{currentCycle}
+						days={$days}
+						cyclesLength={$cycles.length}
+						on:change-day={handleChangeDay()}
+					/>
+				{:else if data.view === 'cycles'}
+					<Cycles cycles={$cycles} days={$days} on:change-day={handleChangeDay()} />
 				{/if}
 
-				{#if !currentMonthIsNow || !currentCycleIsNow}
-					<a href="/" class="btn btn-sm btn-primary">Today</a>
-				{/if}
+				<div
+					class:sticky={data.view === 'cycles'}
+					class:bottom-0={data.view === 'cycles'}
+					class:w-full={data.view === 'cycles'}
+					class="bg-base-100 flex gap-2 justify-between py-4"
+				>
+					{#if currentCycleIndex !== undefined}
+						<div class="join">
+							<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
+								Calendar
+							</a>
+							<a
+								href={`/cycle/${currentCycleIndex}`}
+								class:btn-primary={data.view === 'cycle'}
+								class="btn btn-sm join-item">Cycle</a
+							>
+							<a
+								href="/cycles"
+								class:btn-primary={data.view === 'cycles'}
+								class="btn btn-sm join-item"
+							>
+								All cycles
+							</a>
+						</div>
+					{/if}
+
+					{#if !currentMonthIsNow || !currentCycleIsNow}
+						<a href="/" class="btn btn-sm btn-primary">Today</a>
+					{/if}
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="col-span-4 md:col-span-1">
-		<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
-			<CycleStats cycle={currentCycle} />
-			<GlobalStats cycles={$cycles} />
+		<div class="col-span-4 md:col-span-1">
+			<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
+				<CycleStats cycle={currentCycle} />
+				<GlobalStats cycles={$cycles} />
 
-			<Import />
+				<Import />
+			</div>
 		</div>
 	</div>
 </div>

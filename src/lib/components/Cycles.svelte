@@ -44,7 +44,7 @@
 
 {#if cycles}
 	<div class="flex flex-col gap-4">
-		<div class="text-primary flex justify-end gap-2">
+		<div class="text-primary justify-end gap-2 hidden sm:flex">
 			<p class="">Days with:</p>
 			<div>
 				<input
