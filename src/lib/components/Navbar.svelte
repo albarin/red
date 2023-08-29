@@ -1,9 +1,6 @@
 <script lang="ts">
 	import type { Optional } from '$lib/models/optional';
-	import { createEventDispatcher } from 'svelte';
 	import { db } from '../../stores/db.js';
-
-	const dispatch = createEventDispatcher();
 
 	export let view: string;
 	export let currentCycleIndex: Optional<number>;
@@ -28,10 +25,6 @@
 	};
 
 	let user = db.cloud.currentUser;
-
-	$: db.cloud.events.syncComplete.subscribe((e) => {
-		dispatch('refresh-cycles');
-	});
 </script>
 
 <div class="navbar bg-neutral text-white px-5">

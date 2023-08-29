@@ -24,7 +24,7 @@
 	$: currentMonth =
 		data.view === 'month' ? DateTime.fromFormat(`${data.year}-${data.month}`, 'yyyy-M') : now();
 
-	let currentCycle: Cycle;
+	let currentCycle: Optional<Cycle>;
 	let currentCycleIndex: Optional<number>;
 	$: {
 		currentCycleIndex = data.view === 'cycle' ? data.cycle : undefined;
@@ -38,6 +38,8 @@
 	}
 	$: if ($cycles && currentCycleIndex !== undefined) {
 		currentCycle = $cycles && $cycles[$cycles.length - currentCycleIndex];
+	} else {
+		currentCycle = undefined;
 	}
 
 	$: days = liveQuery(async () => {
@@ -75,7 +77,7 @@
 	// 'Go to current' button logic
 	let currentMonthIsNow: boolean;
 	$: currentMonthIsNow = currentMonth?.year == today.year && currentMonth?.month == today.month;
-	let currentCycleIsNow: boolean;
+	let currentCycleIsNow: Optional<boolean>;
 	$: currentCycleIsNow = currentCycle && currentCycle?.number == $cycles[0]?.number;
 
 	const handleChangeDay = () => (event: CustomEvent) => {
@@ -83,6 +85,10 @@
 	};
 
 	// Re-calculates cycles when days change
+	$: db.cloud.events.syncComplete.subscribe(() => {
+		refreshCycles();
+	});
+
 	const refreshCycles = async () => {
 		const days = await db.getAllDays();
 		if (!days) {
@@ -97,7 +103,7 @@
 			})
 		);
 
-		const newCycles = calculateCycles(days);
+		const newCycles = calculateCycles(days)?.reverse();
 		if (!newCycles) {
 			return;
 		}
@@ -107,7 +113,6 @@
 		}
 
 		try {
-			await db.cycles.clear();
 			await db.cycles.bulkPut(newCycles);
 		} catch (error) {
 			console.error(`Failed to store cycles: ${error}`);
@@ -115,7 +120,7 @@
 	};
 </script>
 
-<Navbar view={data.view} {currentCycleIndex} on:refresh-cycles={() => refreshCycles()} />
+<Navbar view={data.view} {currentCycleIndex} />
 
 <div class="flex w-full">
 	<div class="bg-accent w-full h-screen grid grid-cols-4 gap-4 p-4">
