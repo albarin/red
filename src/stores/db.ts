@@ -13,12 +13,13 @@ export class RedDB extends Dexie {
     super('reddb', { addons: [dexieCloud] });
     this.version(1).stores({
       days: '@id, date, temperature',
-      cycles: '@id, start, end, endOfPeriod, duration',
+      cycles: 'number, start, end, endOfPeriod, duration',
     });
 
     this.cloud.configure({
       databaseUrl: PUBLIC_DATABASE_URL || '',
       requireAuth: false,
+      unsyncedTables: ['cycles'],
     });
   }
 

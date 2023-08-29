@@ -1,7 +1,10 @@
 <script lang="ts">
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
+	import Cycles from '$lib/components/Cycles.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
+	import Import from '$lib/components/Import.svelte';
+	import Navbar from '$lib/components/Navbar.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
 	import { calculateCycles } from '$lib/cycles';
@@ -9,13 +12,10 @@
 	import { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
 	import { iso, now } from '$lib/utils/date';
+	import { md5 } from '$lib/utils/md5.js';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
-	import Import from '$lib/components/Import.svelte';
-	import Cycles from '$lib/components/Cycles.svelte';
-	import Navbar from '$lib/components/Navbar.svelte';
-
 	export let data;
 
 	// 'Calendar' logic
@@ -83,27 +83,39 @@
 	};
 
 	// Re-calculates cycles when days change
-	const updateCycles = async () => {
+	const refreshCycles = async () => {
 		const days = await db.getAllDays();
 		if (!days) {
 			return;
 		}
-		await db.cycles.clear();
 
-		const cycles = calculateCycles(days);
-		if (!cycles) {
+		const savedCycles = await db.getAllCycles();
+		const hash = md5(
+			savedCycles.map((cycle) => {
+				const { id, ...rest } = cycle;
+				return rest;
+			})
+		);
+
+		const newCycles = calculateCycles(days);
+		if (!newCycles) {
+			return;
+		}
+
+		if (hash === md5(newCycles)) {
 			return;
 		}
 
 		try {
-			await db.cycles.bulkPut(cycles);
+			await db.cycles.clear();
+			await db.cycles.bulkPut(newCycles);
 		} catch (error) {
 			console.error(`Failed to store cycles: ${error}`);
 		}
 	};
 </script>
 
-<Navbar view={data.view} {currentCycleIndex} />
+<Navbar view={data.view} {currentCycleIndex} on:refresh-cycles={() => refreshCycles()} />
 
 <div class="flex w-full">
 	<div class="bg-accent w-full h-screen grid grid-cols-4 gap-4 p-4">
@@ -181,6 +193,6 @@
 		fluid={selectedDay?.fluid}
 		notes={selectedDay?.notes}
 		on:close={() => (isAddDayModalOpen = false)}
-		on:day-updated={() => updateCycles()}
+		on:refresh-cycles={() => refreshCycles()}
 	/>
 {/if}
