@@ -122,6 +122,7 @@
 		}
 
 		try {
+			await db.cycles.clear();
 			await db.cycles.bulkPut(newCycles);
 		} catch (error) {
 			console.error(`Failed to store cycles: ${error}`);
