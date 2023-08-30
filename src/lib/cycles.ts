@@ -24,8 +24,7 @@ const getEndOfPeriod = (cycle: Cycle, days: Days): Optional<string> => {
 
   for (let i = 1; i < cycleDays.length; i++) {
     const date = cycleDays[i];
-
-    if (!days[date].hasPeriod()) {
+    if (!days[date] || !days[date].hasPeriod()) {
       return cycleDays[i - 1];
     }
   }
@@ -56,10 +55,12 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
 
   return cycles.map((cycle: Cycle, i: number) => {
     const end = cycles[i + 1] ? minusDays(cycles[i + 1].start, 1) : undefined;
+    cycle.end = end;
+
     const duration = end ? diffDays(cycle.start, end) : undefined;
     const endOfPeriod = getEndOfPeriod(cycle, daysByDate);
 
-    return new Cycle(cycle.number, cycle.start, end, endOfPeriod, duration);
+    return new Cycle(cycle.number, cycle.start, cycle.end, endOfPeriod, duration);
   });
 }
 

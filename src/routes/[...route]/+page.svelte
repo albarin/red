@@ -100,24 +100,19 @@
 
 	const refreshCycles = async () => {
 		const days = await db.getAllDays();
-		if (!days) {
+		if (!days.length) {
+			await db.cycles.clear();
 			return;
 		}
 
 		const savedCycles = await db.getAllCycles();
-		const hash = md5(
-			savedCycles.map((cycle) => {
-				const { id, ...rest } = cycle;
-				return rest;
-			})
-		);
 
 		const newCycles = calculateCycles(days)?.reverse();
 		if (!newCycles) {
 			return;
 		}
 
-		if (hash === md5(newCycles)) {
+		if (md5(savedCycles) === md5(newCycles)) {
 			return;
 		}
 
