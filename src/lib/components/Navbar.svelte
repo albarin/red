@@ -3,6 +3,7 @@
 	import { db } from '../../stores/db.js';
 
 	export let view: string;
+	export let syncing: boolean = false;
 	export let currentCycleIndex: Optional<number>;
 
 	const login = async () => {
@@ -66,6 +67,9 @@
 		{/if}
 	</div>
 	<div class="navbar-end">
+		{#if syncing}
+			<span class="loading loading-spinner text-primary mr-4" />
+		{/if}
 		<div>
 			{#if $user.isLoggedIn}
 				<button on:click={logout}>Logout</button>

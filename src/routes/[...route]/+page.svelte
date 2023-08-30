@@ -20,10 +20,14 @@
 
 	export let data;
 
-	let syncState = 'initial';
+	let syncState = 'in-sync';
 	db.cloud.syncState.subscribe((state) => {
 		syncState = state.phase;
 	});
+
+	const syncing = (syncState: string): boolean => {
+		return syncState !== 'in-sync';
+	};
 
 	// 'Calendar' logic
 	const today = now();
@@ -125,8 +129,8 @@
 	};
 </script>
 
-<div class="flex flex-col h-screen bg-accent">
-	<Navbar view={data.view} {currentCycleIndex} />
+<div class="flex flex-col h-screen bg-accent" class:pointer-events-none={syncing(syncState)}>
+	<Navbar view={data.view} {currentCycleIndex} syncing={syncing(syncState)} />
 
 	{#if syncState === 'initial'}
 		<Skeleton />
