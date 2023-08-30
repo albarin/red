@@ -16,6 +16,7 @@
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
+
 	export let data;
 
 	// 'Calendar' logic
@@ -48,7 +49,9 @@
 		}
 
 		const startDate: string =
-			data.view === 'month' ? iso(currentMonth.startOf('month')) : currentCycle?.start;
+			data.view === 'month'
+				? iso(currentMonth.startOf('month'))
+				: currentCycle?.start || iso(today);
 		const endDate: string =
 			data.view === 'month' ? iso(currentMonth.endOf('month')) : currentCycle?.end || iso(today);
 
