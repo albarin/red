@@ -5,6 +5,7 @@
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
 	import Import from '$lib/components/Import.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Skeleton from '$lib/components/Skeleton.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
 	import { calculateCycles } from '$lib/cycles';
@@ -16,7 +17,6 @@
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
-	import Skeleton from '$lib/components/Skeleton.svelte';
 
 	export let data;
 
@@ -37,6 +37,7 @@
 
 	let currentCycle: Optional<Cycle>;
 	let currentCycleIndex: Optional<number>;
+
 	$: {
 		currentCycleIndex = data.view === 'cycle' ? data.cycle : undefined;
 		if (currentCycleIndex && $cycles && currentCycleIndex > $cycles.length) {

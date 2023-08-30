@@ -4,7 +4,7 @@
 
 	export let view: string;
 	export let syncing: boolean = false;
-	export let currentCycleIndex: Optional<number>;
+	export let currentCycleIndex: Optional<number> = undefined;
 
 	const login = async () => {
 		await db.cloud.login();
@@ -33,18 +33,18 @@
 		<a href="/" class="normal-case font-semibold text-xl">Red</a>
 	</div>
 	<div class="navbar-center hidden sm:flex">
-		{#if currentCycleIndex}
-			<div class="flex gap-2">
-				<a
-					href="/"
-					class:btn-primary={view === 'month'}
-					class:bg-neutral={view !== 'month'}
-					class:border-neutral={view !== 'month'}
-					class:text-accent={view !== 'month'}
-					class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
-				>
-					Calendar
-				</a>
+		<div class="flex gap-2">
+			<a
+				href="/"
+				class:btn-primary={view === 'month'}
+				class:bg-neutral={view !== 'month'}
+				class:border-neutral={view !== 'month'}
+				class:text-accent={view !== 'month'}
+				class="btn btn-sm hover:bg-neutral-focus hover:border-neutral"
+			>
+				Calendar
+			</a>
+			{#if currentCycleIndex}
 				<a
 					href={`/cycle/${currentCycleIndex}`}
 					class:btn-primary={view === 'cycle'}
@@ -63,8 +63,8 @@
 				>
 					All cycles
 				</a>
-			</div>
-		{/if}
+			{/if}
+		</div>
 	</div>
 	<div class="navbar-end">
 		{#if syncing}
@@ -75,10 +75,10 @@
 				<button on:click={logout}>Logout</button>
 				<div class="avatar placeholder ml-2">
 					<div class="bg-primary text-neutral-content rounded-full w-9">
-						<a href="/" class="text-xs" title={$user.name}>{initials($user.name)}</a>
+						<a href="/account" class="text-xs" title={$user.name}>{initials($user.name)}</a>
 					</div>
 				</div>
-			{:else}
+			{:else if !syncing}
 				<button on:click={login}>Login</button>
 			{/if}
 		</div>
