@@ -19,6 +19,11 @@
 
 	export let data;
 
+	let syncState = 'in-sync';
+	db.cloud.syncState.subscribe((state) => {
+		syncState = state.phase;
+	});
+
 	// 'Calendar' logic
 	const today = now();
 	let currentMonth: DateTime;
@@ -123,71 +128,81 @@
 	};
 </script>
 
-<Navbar view={data.view} {currentCycleIndex} />
+<div class="flex flex-col h-screen bg-accent">
+	<Navbar view={data.view} {currentCycleIndex} />
 
-<div class="flex w-full">
-	<div class="bg-accent w-full h-screen grid grid-cols-4 gap-4 p-4">
-		<div class="col-span-4 md:col-span-3 rounded-xl">
-			<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
-				{#if data.view === 'month'}
-					<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
-				{:else if data.view === 'cycle' && currentCycle}
-					<CycleCalendar
-						{currentCycle}
-						days={$days}
-						cyclesLength={$cycles.length}
-						on:change-day={handleChangeDay()}
-					/>
-				{:else if data.view === 'cycles'}
-					<Cycles cycles={$cycles} days={$days} on:change-day={handleChangeDay()} />
-				{/if}
-
-				<div
-					class:sticky={data.view === 'cycles'}
-					class:bottom-0={data.view === 'cycles'}
-					class:w-full={data.view === 'cycles'}
-					class="bg-base-100 flex gap-2 justify-between py-4"
-				>
-					{#if currentCycleIndex !== undefined}
-						<div class="join">
-							<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
-								Calendar
-							</a>
-							<a
-								href={`/cycle/${currentCycleIndex}`}
-								class:btn-primary={data.view === 'cycle'}
-								class="btn btn-sm join-item">Cycle</a
-							>
-							<a
-								href="/cycles"
-								class:btn-primary={data.view === 'cycles'}
-								class="btn btn-sm join-item"
-							>
-								All cycles
-							</a>
-						</div>
+	{#if syncState === 'in-sync'}
+		<div class="w-full grid grid-cols-4 gap-4 p-4">
+			<div class="col-span-4 md:col-span-3 rounded-xl">
+				<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
+					{#if data.view === 'month'}
+						<NaturalCalendar {currentMonth} days={$days} on:change-day={handleChangeDay()} />
+					{:else if data.view === 'cycle' && currentCycle}
+						<CycleCalendar
+							{currentCycle}
+							days={$days}
+							cyclesLength={$cycles.length}
+							on:change-day={handleChangeDay()}
+						/>
+					{:else if data.view === 'cycles'}
+						<Cycles cycles={$cycles} days={$days} on:change-day={handleChangeDay()} />
 					{/if}
 
-					{#if data.view === 'month' && !currentMonthIsNow}
-						<a href="/" class="btn btn-sm btn-primary">Today</a>
-					{/if}
+					<div
+						class:sticky={data.view === 'cycles'}
+						class:bottom-0={data.view === 'cycles'}
+						class:w-full={data.view === 'cycles'}
+						class="bg-base-100 flex gap-2 justify-between py-4"
+					>
+						{#if currentCycleIndex !== undefined}
+							<div class="join">
+								<a href="/" class:btn-primary={data.view === 'month'} class="btn btn-sm join-item">
+									Calendar
+								</a>
+								<a
+									href={`/cycle/${currentCycleIndex}`}
+									class:btn-primary={data.view === 'cycle'}
+									class="btn btn-sm join-item">Cycle</a
+								>
+								<a
+									href="/cycles"
+									class:btn-primary={data.view === 'cycles'}
+									class="btn btn-sm join-item"
+								>
+									All cycles
+								</a>
+							</div>
+						{/if}
 
-					{#if data.view === 'cycle' && !currentCycleIsNow && $cycles}
-						<a href="/cycle/{$cycles[0]?.number}" class="btn btn-sm btn-primary">Today</a>
-					{/if}
+						{#if data.view === 'month' && !currentMonthIsNow}
+							<a href="/" class="btn btn-sm btn-primary">Today</a>
+						{/if}
+
+						{#if data.view === 'cycle' && !currentCycleIsNow && $cycles}
+							<a href="/cycle/{$cycles[0]?.number}" class="btn btn-sm btn-primary">Today</a>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<div class="col-span-4 md:col-span-1">
+				<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
+					<CycleStats cycle={currentCycle} />
+					<GlobalStats cycles={$cycles} />
+
+					<Import />
 				</div>
 			</div>
 		</div>
-
-		<div class="col-span-4 md:col-span-1">
-			<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
-				<CycleStats cycle={currentCycle} />
-				<GlobalStats cycles={$cycles} />
-
-				<Import />
+	{:else}
+		<div class="grid grid-cols-4 gap-4 flex-grow m-4 text-primary">
+			<div class="col-span-3 bg-accent-focus rounded-xl animate-pulse" />
+			<div>
+				<div class="bg-accent-focus rounded-xl animate-pulse h-60 mb-4" />
+				<div class="bg-accent-focus rounded-xl animate-pulse h-60" />
 			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 
 {#if isAddDayModalOpen}
