@@ -20,7 +20,7 @@
 
 	export let data;
 
-	let syncState = 'in-sync';
+	let syncState = 'initial';
 	db.cloud.syncState.subscribe((state) => {
 		syncState = state.phase;
 	});
@@ -128,7 +128,9 @@
 <div class="flex flex-col h-screen bg-accent">
 	<Navbar view={data.view} {currentCycleIndex} />
 
-	{#if syncState !== 'initial'}
+	{#if syncState === 'initial'}
+		<Skeleton />
+	{:else}
 		<div class="w-full grid grid-cols-4 gap-4 p-4">
 			<div class="col-span-4 md:col-span-3 rounded-xl">
 				<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
@@ -191,8 +193,6 @@
 				</div>
 			</div>
 		</div>
-	{:else}
-		<Skeleton />
 	{/if}
 </div>
 
