@@ -128,7 +128,7 @@
 <div class="flex flex-col h-screen bg-accent">
 	<Navbar view={data.view} {currentCycleIndex} />
 
-	{#if syncState === 'in-sync'}
+	{#if syncState !== 'initial'}
 		<div class="w-full grid grid-cols-4 gap-4 p-4">
 			<div class="col-span-4 md:col-span-3 rounded-xl">
 				<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
