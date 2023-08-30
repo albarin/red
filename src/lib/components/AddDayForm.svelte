@@ -56,6 +56,11 @@
 		}
 
 		if (!temperature && flow === undefined && !fluid && !notes) {
+			if (id) {
+				await db.days.delete(id);
+			} else {
+				await db.days.delete(date);
+			}
 			wasSubmitted = false;
 			dispatch('close');
 			return;
