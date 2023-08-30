@@ -85,12 +85,12 @@
 		{#each cycles as cycle, i}
 			{@const cycleDays = datesBetween(cycle.start, cycle.end || iso(now()))}
 			<div class="text-primary bg-accent pt-2 pb-2 sm:pb-3 px-4 rounded-md">
-				<div class="flex justify-between">
+				<div class="sm:flex sm:justify-between">
 					<a href={`/cycle/${cycle.number}`} class="font-semibold">
 						Cycle {cycle.number}
 					</a>
-					<div>
-						<span class="mx-2 text-neutral text-sm">
+					<div class="flex justify-between items-center sm:block">
+						<span class="sm:mx-2 text-neutral text-sm">
 							<span>{toShortHumanFormat(cycle.start)}</span>
 							- <span>{cycle.end ? toShortHumanFormat(cycle.end) : 'today'}</span>
 						</span>
