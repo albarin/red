@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { Optional } from '$lib/models/optional';
 	import { db } from '../../stores/db.js';
 
@@ -13,6 +14,7 @@
 	const logout = async () => {
 		await db.delete();
 		await db.open();
+		goto('/');
 	};
 
 	const initials = (username: Optional<string>) => {
