@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import Cycles from '$lib/components/Cycles.svelte';
@@ -7,16 +8,14 @@
 	import Skeleton from '$lib/components/Skeleton.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
-	import { calculateCycles, refreshCycles } from '$lib/cycles';
+	import { refreshCycles } from '$lib/cycles';
 	import type { Cycle } from '$lib/models/cycle.js';
 	import { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
 	import { iso, now } from '$lib/utils/date';
-	import { md5 } from '$lib/utils/md5.js';
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
-	import { goto } from '$app/navigation';
 
 	export let data;
 

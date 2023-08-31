@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Export from '$lib/components/Export.svelte';
 	import Import from '$lib/components/Import.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
