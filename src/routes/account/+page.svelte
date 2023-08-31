@@ -1,4 +1,6 @@
 <script>
+	import Export from '$lib/components/Export.svelte';
+	import Import from '$lib/components/Import.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import { db } from '../../stores/db';
 
@@ -16,7 +18,7 @@
 		}
 
 		await db.days.clear();
-    await db.cycles.clear();
+		await db.cycles.clear();
 	};
 </script>
 
@@ -25,20 +27,37 @@
 
 	<div class="p-4 mx-auto w-1/2">
 		<div class="bg-base-100 rounded-xl p-6">
-			<p>
+			<div>
 				{#if $user.isLoggedIn}
 					Welcome <strong>{$user.name}</strong>
 				{:else}
-					Hi! 👋 <button class="btn-link" on:click={login}>Login</button> to make your data available
-					on all your devices.
+					<p>Hi! 👋</p>
+					<p>
+						<button class="btn-link" on:click={login}>Login</button> to make your data available on all
+						your devices.
+					</p>
 				{/if}
-			</p>
+			</div>
 
 			<div class="divider" />
 
 			<div>
-				<p>Remove all your period data</p>
-				<button class="btn btn-error btn-sm mt-2" on:click={handleDelete}>Delete</button>
+				<p class="mb-2">Import your period data from a CSV backup file</p>
+				<Import />
+			</div>
+
+			<div class="divider" />
+
+			<div>
+				<p class="mb-2">Export your period data as a CSV file</p>
+				<Export />
+			</div>
+
+			<div class="divider" />
+
+			<div>
+				<p class="mb-2">Remove all your period data</p>
+				<button class="btn btn-error btn-sm" on:click={handleDelete}>Delete</button>
 			</div>
 		</div>
 	</div>

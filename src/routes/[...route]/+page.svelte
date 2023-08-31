@@ -193,8 +193,6 @@
 				<div class="grid gap-4 sm:grid-cols-2 md:grid-cols-1">
 					<CycleStats cycle={currentCycle} />
 					<GlobalStats cycles={$cycles} />
-
-					<Import />
 				</div>
 			</div>
 		</div>
