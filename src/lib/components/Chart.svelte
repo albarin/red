@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { toHuman } from '$lib/utils/date';
 	import type { Days } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
+	import { toHuman } from '$lib/utils/date';
 	import {
 		BarElement,
 		CategoryScale,
@@ -20,10 +20,11 @@
 	export let days: Days;
 	export let cycleDays: string[];
 
-	const min = (): Optional<number> => {
+	const min = (days: Days, cycleDays: string[]): Optional<number> => {
 		if (!cycleDays) {
 			return undefined;
 		}
+
 		return cycleDays.reduce((acc, date) => {
 			if (days[date] && days[date].temperature && Number(days[date].temperature) > 0) {
 				return Math.min(acc, Number(days[date].temperature));
@@ -32,10 +33,11 @@
 		}, 40);
 	};
 
-	const max = (): Optional<number> => {
+	const max = (days: Days, cycleDays: string[]): Optional<number> => {
 		if (!cycleDays) {
 			return undefined;
 		}
+
 		return cycleDays.reduce((acc, date) => {
 			if (days[date] && days[date].temperature && Number(days[date].temperature) > 0) {
 				return Math.max(acc, Number(days[date].temperature));
@@ -47,7 +49,7 @@
 	const skipped = (ctx: ScriptableLineSegmentContext, value: string | number[]) =>
 		ctx.p0.skip || ctx.p1.skip ? value : undefined;
 
-	const data = (days: Days, cycleDays: string[]) => {
+	const calculateData = (days: Days, cycleDays: string[]) => {
 		let labels: string[] = [];
 		let temperatures: Optional<number>[] = [];
 
@@ -77,30 +79,32 @@
 		};
 	};
 
-	const yMin = min();
-	const yMax = max();
+	const calculateOptions = (days: Days, cycleDays: string[]) => {
+		const yMin = min(days, cycleDays);
+		const yMax = max(days, cycleDays);
 
-	const options = {
-		responsive: true,
-		scales: {
-			x: {
-				ticks: {
-					color: 'rgb(45, 22, 95)'
+		return {
+			responsive: true,
+			scales: {
+				x: {
+					ticks: {
+						color: 'rgb(45, 22, 95)'
+					}
+				},
+				y: {
+					min: yMin ? yMin - 0.1 : 35,
+					max: yMax ? yMax + 0.1 : 40,
+					ticks: {
+						stepSize: 0.1,
+						color: 'rgb(45, 22, 95)'
+					}
 				}
 			},
-			y: {
-				min: yMin ? yMin - 0.02 : 35,
-				max: yMax ? yMax + 0.02 : 40,
-				ticks: {
-					stepSize: 0.1,
-					color: 'rgb(45, 22, 95)'
-				}
-			}
-		},
-		maintainAspectRatio: false
+			maintainAspectRatio: false
+		};
 	};
 </script>
 
 {#if days}
-	<Line data={data(days, cycleDays)} {options} />
+	<Line data={calculateData(days, cycleDays)} options={calculateOptions(days, cycleDays)} />
 {/if}
