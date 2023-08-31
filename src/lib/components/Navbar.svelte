@@ -73,13 +73,20 @@
 		<div>
 			{#if $user.isLoggedIn}
 				<button on:click={logout}>Logout</button>
-				<div class="avatar placeholder ml-2">
-					<div class="bg-primary text-neutral-content rounded-full w-9">
-						<a href="/account" class="text-xs" title={$user.name}>{initials($user.name)}</a>
+				<a href="/account" class="text-xs" title={$user.name}>
+					<div class="avatar placeholder ml-2">
+						<div class="bg-primary text-neutral-content rounded-full w-9">
+							{initials($user.name)}
+						</div>
 					</div>
-				</div>
+				</a>
 			{:else if !syncing}
 				<button on:click={login}>Login</button>
+				<a href="/account">
+					<div class="avatar placeholder ml-2">
+						<div class="bg-primary text-neutral-content rounded-full w-9">?</div>
+					</div>
+				</a>
 			{/if}
 		</div>
 	</div>
