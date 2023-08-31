@@ -29,7 +29,7 @@
 				if (!values[i]) {
 					return obj;
 				}
-				obj[header] = header === 'date' ? values[i] : Number(values[i]);
+				obj[header] = ['date', 'notes', 'fluid'].includes(header) ? values[i] : Number(values[i]);
 				return obj;
 			}, {});
 		});
