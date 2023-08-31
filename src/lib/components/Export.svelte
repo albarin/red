@@ -3,16 +3,15 @@
 
 	const exportDays = async () => {
 		const days = await db.getAllDays();
-
 		if (!days) {
 			return;
 		}
 
 		const dataRows = days.map((day) => {
-			return [day.date, day.temperature, day.flow];
+			return [day.date, day.temperature, day.flow, day.fluid, day.notes];
 		});
 
-		const rows = [Object.keys(days[0]), ...dataRows];
+		const rows = [Object.keys(days[0]).slice(1), ...dataRows];
 		let csvContent = 'data:text/csv;charset=utf-8,' + rows.map((e) => e.join(',')).join('\n');
 
 		var encodedUri = encodeURI(csvContent);
