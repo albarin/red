@@ -134,6 +134,12 @@
 
 		dispatch('close');
 	};
+
+	const handleKeyPress = (event: KeyboardEvent) => {
+		if (event.key === 'Enter') {
+			handleSubmit();
+		}
+	};
 </script>
 
 <dialog
@@ -141,7 +147,8 @@
 	class="modal modal-bottom sm:modal-middle text-center"
 	on:close|preventDefault={handleClose}
 >
-	<div class="modal-box w-full sm:w-96 !p-0">
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="modal-box w-full sm:w-96 !p-0" on:keypress={handleKeyPress}>
 		<div class="bg-accent p-4">
 			{#if date}
 				<p class="text-primary text-2xl mb-4">
