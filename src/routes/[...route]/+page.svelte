@@ -3,7 +3,6 @@
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import Cycles from '$lib/components/Cycles.svelte';
 	import GlobalStats from '$lib/components/GlobalStats.svelte';
-	import Import from '$lib/components/Import.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Skeleton from '$lib/components/Skeleton.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
@@ -17,6 +16,7 @@
 	import { liveQuery } from 'dexie';
 	import { DateTime, Interval } from 'luxon';
 	import { db } from '../../stores/db.js';
+	import { goto } from '$app/navigation';
 
 	export let data;
 
@@ -68,6 +68,10 @@
 
 		return await db.getDaysBetween(startDate, endDate);
 	});
+
+	$: if ($days && !Object.keys($days).length && ['cycles', 'cycle'].includes(data.view)) {
+		goto('/');
+	}
 
 	$: cycles = liveQuery(async () => {
 		return await db.getAllCycles();
