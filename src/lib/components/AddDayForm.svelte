@@ -75,7 +75,7 @@
 		}
 
 		if (fillGaps) {
-			fillPeriodGaps(date);
+			await fillPeriodGaps(date);
 		}
 
 		wasSubmitted = false;
@@ -102,7 +102,7 @@
 				prevWeekDaysByDate[iso(day)].flow = flow;
 				return prevWeekDaysByDate[iso(day)];
 			}
-			return { date: iso(day), flow } as Day;
+			return new Day(iso(day), undefined, flow);
 		});
 
 		try {

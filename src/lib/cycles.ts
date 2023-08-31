@@ -67,7 +67,6 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
 
 export const refreshCycles = async () => {
   const days = await db.getAllDays();
-
   if (!days.length) {
     await db.cycles.clear();
     return;
