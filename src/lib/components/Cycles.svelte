@@ -11,17 +11,17 @@
 	export let days: Days;
 	export let cycles: Cycle[];
 
-	let filters: string[];
+	let filters: string[] = ['flow'];
 	let chartsToShow: { [key: string]: boolean } = {};
 
 	const dayColor = (day: Day, filters: string[]): string => {
-		if (day?.flow) {
-			const colors = ['bg-red-200', 'bg-red-300', 'bg-red-400'];
-			return colors[day?.flow - 1];
-		}
-
 		if (filters && day) {
 			const found = filters.find((filter) => day?.has(filter));
+			if (found && filters.includes('flow') && day?.flow) {
+				const colors = ['bg-red-200', 'bg-red-300', 'bg-red-400'];
+				return colors[day?.flow - 1];
+			}
+
 			return found ? 'bg-neutral text-accent' : 'bg-secondary';
 		}
 
@@ -47,6 +47,14 @@
 		<div class="text-primary justify-end gap-2 hidden sm:flex">
 			<p class="">Days with:</p>
 			<div>
+				<input
+					bind:group={filters}
+					name="filter"
+					class="btn btn-xs border-none hover:bg-secondary bg-accent text-neutral"
+					type="checkbox"
+					aria-label="Period"
+					value="flow"
+				/>
 				<input
 					bind:group={filters}
 					name="filter"
