@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { refreshCycles } from '$lib/cycles';
 	import { db } from '../../stores/db';
-
-	const dispatch = createEventDispatcher();
 
 	let uploader: HTMLInputElement;
 	let uploading: boolean = false;
@@ -65,6 +63,7 @@
 
 		uploading = false;
 		finishedUploading = true;
+		refreshCycles();
 	};
 </script>
 
@@ -78,9 +77,7 @@
 
 	{#if uploading}
 		<span class="loading loading-spinner loading-md" />
-	{/if}
-
-	{#if finishedUploading}
+	{:else if finishedUploading}
 		{#if error}
 			<span class="text-error">
 				{error}

@@ -7,7 +7,7 @@
 	import Skeleton from '$lib/components/Skeleton.svelte';
 	import CycleCalendar from '$lib/components/cycle-calendar/Calendar.svelte';
 	import NaturalCalendar from '$lib/components/natural-calendar/Calendar.svelte';
-	import { calculateCycles } from '$lib/cycles';
+	import { calculateCycles, refreshCycles } from '$lib/cycles';
 	import type { Cycle } from '$lib/models/cycle.js';
 	import { Day } from '$lib/models/day';
 	import type { Optional } from '$lib/models/optional';
@@ -106,32 +106,6 @@
 	$: db.cloud.events.syncComplete.subscribe(() => {
 		refreshCycles();
 	});
-
-	const refreshCycles = async () => {
-		const days = await db.getAllDays();
-		if (!days.length) {
-			await db.cycles.clear();
-			return;
-		}
-
-		const savedCycles = await db.getAllCycles();
-
-		const newCycles = calculateCycles(days)?.reverse();
-		if (!newCycles) {
-			return;
-		}
-
-		if (md5(savedCycles) === md5(newCycles)) {
-			return;
-		}
-
-		try {
-			await db.cycles.clear();
-			await db.cycles.bulkPut(newCycles);
-		} catch (error) {
-			console.error(`Failed to store cycles: ${error}`);
-		}
-	};
 </script>
 
 <div class="flex flex-col h-screen bg-accent" class:pointer-events-none={syncing(syncState)}>

@@ -1,7 +1,9 @@
+import { db } from "../stores/db";
 import { Cycle } from "./models/cycle";
 import { byDate, type Day, type Days } from "./models/day";
 import type { Optional } from "./models/optional";
 import { datesBetween, diffDays, minusDays } from "./utils/date";
+import { md5 } from "./utils/md5";
 
 const dayIsStartOfPeriod = (day: Optional<Day>, prevDay: Optional<Day>): boolean => {
   if (!day) {
@@ -37,7 +39,6 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
   const cycles: Cycle[] = [];
   let date = '';
   let prevDate = '';
-
   if (!days.length) {
     return undefined
   }
@@ -64,3 +65,29 @@ export const calculateCycles = (days: Day[]): Optional<Cycle[]> => {
   });
 }
 
+export const refreshCycles = async () => {
+  const days = await db.getAllDays();
+
+  if (!days.length) {
+    await db.cycles.clear();
+    return;
+  }
+
+  const savedCycles = await db.getAllCycles();
+
+  const newCycles = calculateCycles(days)?.reverse();
+  if (!newCycles) {
+    return;
+  }
+
+  if (md5(savedCycles) === md5(newCycles)) {
+    return;
+  }
+
+  try {
+    await db.cycles.clear();
+    await db.cycles.bulkPut(newCycles);
+  } catch (error) {
+    console.error(`Failed to store cycles: ${error}`);
+  }
+};
