@@ -70,7 +70,6 @@ export const refreshCycles = async () => {
   const days = await db.getAllDays();
   if (!days.length) {
     await db.cycles.clear();
-    goto('/');
     return;
   }
 

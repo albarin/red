@@ -6,8 +6,9 @@
 	import { db } from '../../stores/db';
 
 	let user = db.cloud.currentUser;
-	let exportEnabled: boolean = false;
-	$: exportEnabled = $days && $days.length > 0;
+
+	let dataAvailable: boolean = false;
+	$: dataAvailable = $days && $days.length > 0;
 
 	$: days = liveQuery(async () => {
 		return await db.getAllDays();
@@ -57,14 +58,21 @@
 
 			<div>
 				<p class="mb-2">Export your period data as a CSV file</p>
-				<Export enabled={exportEnabled} />
+				<Export enabled={dataAvailable} />
 			</div>
 
 			<div class="divider" />
 
 			<div>
 				<p class="mb-2">Remove all your period data</p>
-				<button class="btn btn-error btn-sm" on:click={handleDelete}>Delete</button>
+				<div class="flex gap-4 items-center">
+					<button class="btn btn-error btn-sm" on:click={handleDelete} disabled={!dataAvailable}>
+						Delete
+					</button>
+					{#if !dataAvailable}
+						<span class="text-neutral">You still don't have any available data to delete!</span>
+					{/if}
+				</div>
 			</div>
 		</div>
 	</div>
