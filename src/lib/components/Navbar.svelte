@@ -1,11 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import type { Optional } from '$lib/models/optional';
+	import { liveQuery } from 'dexie';
 	import { db } from '../../stores/db.js';
 
 	export let view: string;
 	export let syncing: boolean = false;
 	export let currentCycleIndex: Optional<number> = undefined;
+
+	let user = db.cloud.currentUser;
+
+	$: cycles = liveQuery(async () => {
+		return await db.getAllCycles();
+	});
 
 	const login = async () => {
 		await db.cloud.login();
@@ -26,8 +33,6 @@
 
 		return `${first[0]}${last[0]}`.toUpperCase();
 	};
-
-	let user = db.cloud.currentUser;
 </script>
 
 <div class="navbar bg-neutral text-white px-5">
@@ -46,7 +51,7 @@
 			>
 				Calendar
 			</a>
-			{#if currentCycleIndex}
+			{#if $cycles && currentCycleIndex}
 				<a
 					href={`/cycle/${currentCycleIndex}`}
 					class:btn-primary={view === 'cycle'}
