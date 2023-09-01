@@ -42,7 +42,7 @@
 <div class="flex flex-col h-screen bg-accent text-primary">
 	<Navbar view="account" syncing={syncing(syncState)} />
 
-	<div class="p-4 mx-auto w-1/2">
+	<div class="p-4 mx-auto w-full md:w-3/4 lg:w-1/2">
 		{#if syncState === 'initial'}
 			<div class="bg-accent-focus animate-pulse rounded-xl p-6 h-[408px]" />
 		{:else}
