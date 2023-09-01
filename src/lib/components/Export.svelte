@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { db } from '../../stores/db';
 
+	export let enabled: boolean = false;
+
 	const exportDays = async () => {
 		const days = await db.getAllDays();
 		if (!days) {
@@ -24,4 +26,9 @@
 	};
 </script>
 
-<button class="btn btn-primary btn-sm" on:click={exportDays}> Export </button>
+<div class="flex gap-4 items-center">
+	<button class="btn btn-primary btn-sm" disabled={!enabled} on:click={exportDays}>Export</button>
+	{#if !enabled}
+		<span class="text-neutral">You still don't have any available data to export!</span>
+	{/if}
+</div>

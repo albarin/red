@@ -2,9 +2,16 @@
 	import Export from '$lib/components/Export.svelte';
 	import Import from '$lib/components/Import.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import { liveQuery } from 'dexie';
 	import { db } from '../../stores/db';
 
 	let user = db.cloud.currentUser;
+	let exportEnabled: boolean = false;
+	$: exportEnabled = $days && $days.length > 0;
+
+	$: days = liveQuery(async () => {
+		return await db.getAllDays();
+	});
 
 	const login = async () => {
 		await db.cloud.login();
@@ -50,7 +57,7 @@
 
 			<div>
 				<p class="mb-2">Export your period data as a CSV file</p>
-				<Export />
+				<Export enabled={exportEnabled} />
 			</div>
 
 			<div class="divider" />
