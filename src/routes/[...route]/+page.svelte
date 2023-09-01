@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import AddDayForm from '$lib/components/AddDayForm.svelte';
 	import CycleStats from '$lib/components/CycleStats.svelte';
 	import Cycles from '$lib/components/Cycles.svelte';
@@ -67,10 +66,6 @@
 
 		return await db.getDaysBetween(startDate, endDate);
 	});
-
-	$: if ($days && !Object.keys($days).length && ['cycles', 'cycle'].includes(data.view)) {
-		goto('/');
-	}
 
 	$: cycles = liveQuery(async () => {
 		return await db.getAllCycles();

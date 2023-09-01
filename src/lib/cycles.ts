@@ -1,3 +1,4 @@
+import { goto } from "$app/navigation";
 import { db } from "../stores/db";
 import { Cycle } from "./models/cycle";
 import { byDate, type Day, type Days } from "./models/day";
@@ -69,6 +70,7 @@ export const refreshCycles = async () => {
   const days = await db.getAllDays();
   if (!days.length) {
     await db.cycles.clear();
+    goto('/');
     return;
   }
 
