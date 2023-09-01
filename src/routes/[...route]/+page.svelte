@@ -98,7 +98,7 @@
 
 	// Re-calculates cycles when days change
 	$: db.cloud.events.syncComplete.subscribe(() => {
-		refreshCycles();
+		refreshCycles(false);
 	});
 </script>
 
