@@ -108,7 +108,7 @@
 	{#if syncState === 'initial'}
 		<Skeleton />
 	{:else}
-		<div class="w-full grid grid-cols-4 gap-4 p-4">
+		<div class="w-full grid grid-cols-4 gap-4 p-4 bg-accent">
 			<div class="col-span-4 md:col-span-3 rounded-xl">
 				<div class="bg-base-100 px-4 pt-4 rounded-xl relative">
 					{#if data.view === 'month'}
