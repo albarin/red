@@ -6,7 +6,12 @@ export default {
   theme: {
     fontFamily: {
       sans: ['Nunito', 'sans-serif'],
-    }
+    },
+    extend: {
+      screens: {
+        'md': '821px', //to have full calendar on ipad vertical
+      },
+    },
   },
   daisyui: {
     themes: [{
