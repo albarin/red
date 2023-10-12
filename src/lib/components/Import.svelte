@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { refreshCycles } from '$lib/cycles';
+	import type { Day } from '$lib/models/day';
 	import { db } from '../../stores/db';
 
 	let uploader: HTMLInputElement;
@@ -52,10 +53,11 @@
 				obj[header] = ['date', 'notes', 'fluid'].includes(header) ? values[i] : Number(values[i]);
 				return obj;
 			}, {});
-		});
+		}) as Day[];
 
 		try {
-			await db.days.bulkPut(data);
+			const overridenDays = await overrideDays(data);
+			await db.days.bulkPut(overridenDays);
 		} catch (error) {
 			setError(`Failed to import ${file.name}: ${error}`);
 			return;
@@ -64,6 +66,18 @@
 		uploading = false;
 		finishedUploading = true;
 		refreshCycles();
+	};
+
+	const overrideDays = async (daysToImport: Day[]): Promise<Day[]> => {
+		const days = await db.getAllDays();
+
+		return daysToImport.map((dayToImport) => {
+			const dayToOverride = days.find((d) => d.date === dayToImport.date);
+			if (dayToOverride) {
+				dayToImport.id = dayToOverride.id;
+			}
+			return dayToImport;
+		});
 	};
 </script>
 
