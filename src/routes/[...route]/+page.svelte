@@ -23,10 +23,6 @@
 		syncState = state.phase;
 	});
 
-	const syncing = (syncState: string): boolean => {
-		return syncState !== 'in-sync';
-	};
-
 	// 'Calendar' logic
 	const today = now();
 	let currentMonth: DateTime;
@@ -100,6 +96,12 @@
 	$: db.cloud.events.syncComplete.subscribe(() => {
 		refreshCycles(false);
 	});
+
+	const syncing = (syncState: string): boolean => {
+		return syncState !== 'in-sync';
+	};
+
+	$: console.log({ syncState });
 </script>
 
 <div class="flex flex-col h-screen bg-accent" class:pointer-events-none={syncing(syncState)}>
